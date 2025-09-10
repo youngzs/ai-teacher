@@ -1,0 +1,527 @@
+/* Utility Classes for AI Teaching Assistant System */
+
+/* Educational-specific utility classes that complement Tailwind */
+
+/* ===== LAYOUT UTILITIES ===== */
+
+/* Dashboard layouts */
+.dashboard-grid {
+  @apply grid gap-6;
+}
+
+.dashboard-grid-1 {
+  @apply dashboard-grid grid-cols-1;
+}
+
+.dashboard-grid-2 {
+  @apply dashboard-grid grid-cols-1 lg:grid-cols-2;
+}
+
+.dashboard-grid-3 {
+  @apply dashboard-grid grid-cols-1 lg:grid-cols-3;
+}
+
+.dashboard-grid-4 {
+  @apply dashboard-grid grid-cols-1 md:grid-cols-2 xl:grid-cols-4;
+}
+
+.dashboard-grid-auto {
+  @apply dashboard-grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4;
+}
+
+/* Content containers */
+.content-container {
+  @apply max-w-7xl mx-auto px-4 sm:px-6 lg:px-8;
+}
+
+.content-container-narrow {
+  @apply max-w-4xl mx-auto px-4 sm:px-6 lg:px-8;
+}
+
+.content-container-wide {
+  @apply max-w-full mx-auto px-4 sm:px-6 lg:px-8;
+}
+
+/* Sidebar layouts */
+.sidebar-layout {
+  @apply flex min-h-screen bg-gray-50;
+}
+
+.sidebar-nav {
+  @apply w-64 bg-white shadow-lg border-r border-secondary-200 flex-shrink-0;
+}
+
+.sidebar-main {
+  @apply flex-1 overflow-x-hidden;
+}
+
+/* ===== SPACING UTILITIES ===== */
+
+/* Educational content spacing */
+.spacing-content {
+  @apply space-y-6;
+}
+
+.spacing-content-tight {
+  @apply space-y-4;
+}
+
+.spacing-content-loose {
+  @apply space-y-8;
+}
+
+.spacing-section {
+  @apply space-y-8;
+}
+
+.spacing-section-large {
+  @apply space-y-12;
+}
+
+/* Form spacing */
+.spacing-form {
+  @apply space-y-4;
+}
+
+.spacing-form-tight {
+  @apply space-y-3;
+}
+
+.spacing-form-loose {
+  @apply space-y-6;
+}
+
+/* ===== TEXT UTILITIES ===== */
+
+/* Educational typography */
+.text-heading-primary {
+  @apply text-3xl font-bold text-secondary-900 leading-tight;
+}
+
+.text-heading-secondary {
+  @apply text-2xl font-semibold text-secondary-800 leading-tight;
+}
+
+.text-heading-tertiary {
+  @apply text-xl font-semibold text-secondary-800;
+}
+
+.text-subheading {
+  @apply text-lg font-medium text-secondary-700;
+}
+
+.text-body {
+  @apply text-base text-secondary-700 leading-relaxed;
+}
+
+.text-body-secondary {
+  @apply text-sm text-secondary-600;
+}
+
+.text-caption {
+  @apply text-xs text-secondary-500;
+}
+
+.text-code {
+  @apply font-mono text-sm bg-secondary-100 text-secondary-800 px-2 py-1 rounded;
+}
+
+/* Text emphasis */
+.text-success {
+  @apply text-success-700;
+}
+
+.text-warning {
+  @apply text-warning-700;
+}
+
+.text-error {
+  @apply text-error-700;
+}
+
+.text-muted {
+  @apply text-secondary-500;
+}
+
+.text-emphasis {
+  @apply text-secondary-900 font-medium;
+}
+
+/* ===== BACKGROUND UTILITIES ===== */
+
+/* Educational backgrounds */
+.bg-educational-primary {
+  @apply bg-gradient-to-r from-primary-50 to-primary-100;
+}
+
+.bg-educational-success {
+  @apply bg-gradient-to-r from-success-50 to-success-100;
+}
+
+.bg-educational-warning {
+  @apply bg-gradient-to-r from-warning-50 to-warning-100;
+}
+
+.bg-educational-ai {
+  @apply bg-gradient-to-r from-purple-50 to-purple-100;
+}
+
+/* Pattern backgrounds */
+.bg-pattern-dots {
+  background-image: radial-gradient(circle, #cbd5e1 1px, transparent 1px);
+  background-size: 20px 20px;
+}
+
+.bg-pattern-grid {
+  background-image: linear-gradient(#e2e8f0 1px, transparent 1px),
+                    linear-gradient(90deg, #e2e8f0 1px, transparent 1px);
+  background-size: 20px 20px;
+}
+
+/* ===== BORDER UTILITIES ===== */
+
+/* Educational borders */
+.border-educational {
+  @apply border border-secondary-200;
+}
+
+.border-success {
+  @apply border border-success-300;
+}
+
+.border-warning {
+  @apply border border-warning-300;
+}
+
+.border-error {
+  @apply border border-error-300;
+}
+
+.border-ai {
+  @apply border border-purple-300;
+}
+
+/* Border emphasis */
+.border-l-educational {
+  @apply border-l-4 border-l-primary-500;
+}
+
+.border-l-success {
+  @apply border-l-4 border-l-success-500;
+}
+
+.border-l-warning {
+  @apply border-l-4 border-l-warning-500;
+}
+
+.border-l-error {
+  @apply border-l-4 border-l-error-500;
+}
+
+.border-l-ai {
+  @apply border-l-4 border-l-purple-500;
+}
+
+/* ===== INTERACTION UTILITIES ===== */
+
+/* Hover effects */
+.hover-lift {
+  @apply transition-transform duration-200 hover:-translate-y-1;
+}
+
+.hover-shadow {
+  @apply transition-shadow duration-200 hover:shadow-md;
+}
+
+.hover-scale {
+  @apply transition-transform duration-200 hover:scale-105;
+}
+
+.hover-glow {
+  @apply transition-shadow duration-200 hover:shadow-lg hover:shadow-primary-500/20;
+}
+
+/* Focus states */
+.focus-ring {
+  @apply focus:outline-none focus:ring-2 focus:ring-primary-500 focus:ring-offset-2;
+}
+
+.focus-ring-inset {
+  @apply focus:outline-none focus:ring-2 focus:ring-inset focus:ring-primary-500;
+}
+
+/* Active states */
+.active-pressed {
+  @apply active:transform active:scale-95;
+}
+
+.active-dim {
+  @apply active:opacity-80;
+}
+
+/* ===== RESPONSIVE UTILITIES ===== */
+
+/* Educational breakpoints */
+.tablet-hidden {
+  @apply block md:hidden;
+}
+
+.desktop-hidden {
+  @apply block lg:hidden;
+}
+
+.mobile-only {
+  @apply md:hidden;
+}
+
+.tablet-only {
+  @apply hidden md:block lg:hidden;
+}
+
+.desktop-only {
+  @apply hidden lg:block;
+}
+
+/* Responsive text */
+.text-responsive-lg {
+  @apply text-lg sm:text-xl lg:text-2xl;
+}
+
+.text-responsive-xl {
+  @apply text-xl sm:text-2xl lg:text-3xl;
+}
+
+.text-responsive-2xl {
+  @apply text-2xl sm:text-3xl lg:text-4xl;
+}
+
+/* ===== ACCESSIBILITY UTILITIES ===== */
+
+/* Screen reader utilities */
+.sr-only-focusable {
+  @apply sr-only focus:not-sr-only focus:absolute focus:top-4 focus:left-4 focus:z-50;
+}
+
+/* High contrast mode */
+@media (prefers-contrast: high) {
+  .high-contrast-border {
+    @apply border-2 border-secondary-900;
+  }
+  
+  .high-contrast-text {
+    @apply text-secondary-900 font-semibold;
+  }
+}
+
+/* Reduced motion */
+@media (prefers-reduced-motion: reduce) {
+  .motion-safe-only {
+    @apply transition-none transform-none animate-none;
+  }
+}
+
+/* ===== EDUCATIONAL CONTENT UTILITIES ===== */
+
+/* Code highlighting */
+.highlight-line {
+  @apply bg-yellow-100 border-l-4 border-l-yellow-500 pl-4 py-1;
+}
+
+.highlight-error {
+  @apply bg-error-100 border-l-4 border-l-error-500 pl-4 py-1;
+}
+
+.highlight-success {
+  @apply bg-success-100 border-l-4 border-l-success-500 pl-4 py-1;
+}
+
+/* Progress indicators */
+.progress-complete {
+  @apply text-success-600 font-medium;
+}
+
+.progress-incomplete {
+  @apply text-secondary-500;
+}
+
+.progress-overdue {
+  @apply text-error-600 font-medium;
+}
+
+/* Status indicators */
+.status-dot {
+  @apply inline-block w-2 h-2 rounded-full mr-2;
+}
+
+.status-dot-success {
+  @apply status-dot bg-success-500;
+}
+
+.status-dot-warning {
+  @apply status-dot bg-warning-500;
+}
+
+.status-dot-error {
+  @apply status-dot bg-error-500;
+}
+
+.status-dot-inactive {
+  @apply status-dot bg-secondary-400;
+}
+
+/* ===== ANIMATION UTILITIES ===== */
+
+/* Educational animations */
+.animate-bounce-subtle {
+  animation: bounceSubtle 2s infinite;
+}
+
+@keyframes bounceSubtle {
+  0%, 20%, 50%, 80%, 100% {
+    transform: translateY(0);
+  }
+  40% {
+    transform: translateY(-5px);
+  }
+  60% {
+    transform: translateY(-3px);
+  }
+}
+
+.animate-glow {
+  animation: glow 2s ease-in-out infinite alternate;
+}
+
+@keyframes glow {
+  from {
+    box-shadow: 0 0 5px theme('colors.primary.400');
+  }
+  to {
+    box-shadow: 0 0 20px theme('colors.primary.400'), 0 0 30px theme('colors.primary.400');
+  }
+}
+
+.animate-typing {
+  overflow: hidden;
+  border-right: .15em solid theme('colors.primary.500');
+  white-space: nowrap;
+  margin: 0 auto;
+  letter-spacing: .15em;
+  animation: typing 3.5s steps(40, end), blink-caret .75s step-end infinite;
+}
+
+@keyframes typing {
+  from { width: 0; }
+  to { width: 100%; }
+}
+
+@keyframes blink-caret {
+  from, to { border-color: transparent; }
+  50% { border-color: theme('colors.primary.500'); }
+}
+
+/* ===== PRINT UTILITIES ===== */
+
+/* Print-friendly styles */
+@media print {
+  .print-hidden {
+    @apply hidden;
+  }
+  
+  .print-only {
+    @apply block;
+  }
+  
+  .print-page-break {
+    page-break-before: always;
+  }
+  
+  .print-no-break {
+    page-break-inside: avoid;
+  }
+}
+
+/* ===== EDUCATIONAL CHART UTILITIES ===== */
+
+/* Simple chart utilities */
+.chart-bar {
+  @apply bg-primary-500 transition-all duration-300;
+}
+
+.chart-bar-success {
+  @apply bg-success-500;
+}
+
+.chart-bar-warning {
+  @apply bg-warning-500;
+}
+
+.chart-bar-error {
+  @apply bg-error-500;
+}
+
+.chart-container {
+  @apply h-64 flex items-end justify-between p-4 bg-white rounded-lg border border-secondary-200;
+}
+
+/* ===== FORM VALIDATION UTILITIES ===== */
+
+/* Validation states */
+.field-valid {
+  @apply border-success-300 focus:border-success-500 focus:ring-success-500;
+}
+
+.field-invalid {
+  @apply border-error-300 focus:border-error-500 focus:ring-error-500;
+}
+
+.field-warning {
+  @apply border-warning-300 focus:border-warning-500 focus:ring-warning-500;
+}
+
+/* ===== CUSTOM SCROLLBARS ===== */
+
+.scrollbar-thin {
+  scrollbar-width: thin;
+  scrollbar-color: theme('colors.secondary.300') theme('colors.secondary.100');
+}
+
+.scrollbar-thin::-webkit-scrollbar {
+  width: 6px;
+  height: 6px;
+}
+
+.scrollbar-thin::-webkit-scrollbar-track {
+  @apply bg-secondary-100;
+}
+
+.scrollbar-thin::-webkit-scrollbar-thumb {
+  @apply bg-secondary-300 rounded-full;
+}
+
+.scrollbar-thin::-webkit-scrollbar-thumb:hover {
+  @apply bg-secondary-400;
+}
+
+/* ===== TRUNCATION UTILITIES ===== */
+
+.truncate-2-lines {
+  display: -webkit-box;
+  -webkit-line-clamp: 2;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+}
+
+.truncate-3-lines {
+  display: -webkit-box;
+  -webkit-line-clamp: 3;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+}
+
+.truncate-4-lines {
+  display: -webkit-box;
+  -webkit-line-clamp: 4;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+}

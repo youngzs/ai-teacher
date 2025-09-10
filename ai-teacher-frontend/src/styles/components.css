@@ -1,0 +1,510 @@
+/* Component Styles for AI Teaching Assistant System */
+
+/* Educational-specific component styles that extend base Tailwind */
+
+/* ===== CARDS ===== */
+
+.card-elevated {
+  @apply bg-white rounded-lg shadow-lg border border-secondary-200 transition-shadow duration-200;
+}
+
+.card-elevated:hover {
+  @apply shadow-xl;
+}
+
+.card-interactive {
+  @apply bg-white rounded-lg shadow-sm border border-secondary-200 transition-all duration-200 cursor-pointer;
+}
+
+.card-interactive:hover {
+  @apply shadow-md border-primary-300 transform -translate-y-0.5;
+}
+
+.card-success {
+  @apply bg-success-50 border-success-200 border-l-4 border-l-success-500;
+}
+
+.card-warning {
+  @apply bg-warning-50 border-warning-200 border-l-4 border-l-warning-500;
+}
+
+.card-error {
+  @apply bg-error-50 border-error-200 border-l-4 border-l-error-500;
+}
+
+.card-ai {
+  @apply bg-purple-50 border-purple-200 border-l-4 border-l-purple-500;
+}
+
+/* ===== BUTTONS ===== */
+
+/* Educational context buttons */
+.btn-primary-educational {
+  @apply bg-primary-600 hover:bg-primary-700 active:bg-primary-800 text-white font-medium px-4 py-2 rounded-lg transition-colors duration-150 focus:outline-none focus:ring-2 focus:ring-primary-500 focus:ring-offset-2;
+}
+
+.btn-success-educational {
+  @apply bg-success-600 hover:bg-success-700 active:bg-success-800 text-white font-medium px-4 py-2 rounded-lg transition-colors duration-150;
+}
+
+.btn-ai-feature {
+  @apply bg-purple-600 hover:bg-purple-700 active:bg-purple-800 text-white font-medium px-4 py-2 rounded-lg transition-all duration-150 flex items-center;
+}
+
+.btn-ai-feature::before {
+  content: "🤖";
+  @apply mr-2;
+}
+
+/* Button size variants */
+.btn-xs {
+  @apply px-2 py-1 text-xs rounded;
+}
+
+.btn-sm {
+  @apply px-3 py-1.5 text-sm rounded-md;
+}
+
+.btn-lg {
+  @apply px-6 py-3 text-lg rounded-lg;
+}
+
+/* ===== BADGES AND TAGS ===== */
+
+.badge {
+  @apply inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium;
+}
+
+.badge-success {
+  @apply badge bg-success-100 text-success-800;
+}
+
+.badge-warning {
+  @apply badge bg-warning-100 text-warning-800;
+}
+
+.badge-error {
+  @apply badge bg-error-100 text-error-800;
+}
+
+.badge-primary {
+  @apply badge bg-primary-100 text-primary-800;
+}
+
+.badge-secondary {
+  @apply badge bg-secondary-100 text-secondary-800;
+}
+
+/* Difficulty badges */
+.difficulty-easy {
+  @apply badge bg-green-100 text-green-800;
+}
+
+.difficulty-medium {
+  @apply badge bg-yellow-100 text-yellow-800;
+}
+
+.difficulty-hard {
+  @apply badge bg-red-100 text-red-800;
+}
+
+/* Status badges */
+.status-active {
+  @apply badge bg-green-100 text-green-800;
+}
+
+.status-inactive {
+  @apply badge bg-gray-100 text-gray-800;
+}
+
+.status-draft {
+  @apply badge bg-yellow-100 text-yellow-800;
+}
+
+.status-published {
+  @apply badge bg-blue-100 text-blue-800;
+}
+
+/* ===== PROGRESS INDICATORS ===== */
+
+.progress-bar {
+  @apply w-full bg-secondary-200 rounded-full overflow-hidden;
+}
+
+.progress-fill {
+  @apply h-full bg-primary-600 transition-all duration-300 ease-out;
+}
+
+.progress-success .progress-fill {
+  @apply bg-success-600;
+}
+
+.progress-warning .progress-fill {
+  @apply bg-warning-600;
+}
+
+.progress-error .progress-fill {
+  @apply bg-error-600;
+}
+
+/* Skill progress circles */
+.skill-progress {
+  @apply relative inline-flex items-center justify-center;
+}
+
+.skill-progress-circle {
+  @apply transform -rotate-90;
+}
+
+.skill-progress-background {
+  @apply stroke-current text-secondary-200;
+}
+
+.skill-progress-foreground {
+  @apply stroke-current text-primary-600 transition-all duration-500;
+}
+
+/* ===== CODE DISPLAY ===== */
+
+.code-block {
+  @apply bg-secondary-900 text-green-400 p-4 rounded-lg overflow-x-auto font-mono text-sm;
+}
+
+.code-inline {
+  @apply bg-secondary-100 text-secondary-800 px-2 py-1 rounded font-mono text-sm;
+}
+
+.code-editor {
+  @apply bg-white border border-secondary-300 rounded-lg font-mono text-sm;
+}
+
+.code-editor-dark {
+  @apply bg-secondary-900 border-secondary-700 text-green-400;
+}
+
+/* Syntax highlighting classes */
+.code-keyword {
+  @apply text-blue-400;
+}
+
+.code-string {
+  @apply text-yellow-400;
+}
+
+.code-comment {
+  @apply text-secondary-400 italic;
+}
+
+.code-function {
+  @apply text-purple-400;
+}
+
+.code-variable {
+  @apply text-green-300;
+}
+
+/* ===== FEEDBACK COMPONENTS ===== */
+
+.feedback-item {
+  @apply p-4 rounded-lg border transition-all duration-200;
+}
+
+.feedback-success {
+  @apply feedback-item bg-success-50 border-success-200;
+}
+
+.feedback-warning {
+  @apply feedback-item bg-warning-50 border-warning-200;
+}
+
+.feedback-error {
+  @apply feedback-item bg-error-50 border-error-200;
+}
+
+.feedback-improvement {
+  @apply feedback-item bg-blue-50 border-blue-200;
+}
+
+.feedback-ai {
+  @apply feedback-item bg-purple-50 border-purple-200;
+}
+
+/* Expandable feedback */
+.feedback-expandable {
+  @apply cursor-pointer;
+}
+
+.feedback-expandable:hover {
+  @apply shadow-sm;
+}
+
+/* ===== EDUCATIONAL ICONS ===== */
+
+.icon-educational {
+  @apply w-5 h-5 text-primary-600;
+}
+
+.icon-success {
+  @apply w-5 h-5 text-success-600;
+}
+
+.icon-warning {
+  @apply w-5 h-5 text-warning-600;
+}
+
+.icon-error {
+  @apply w-5 h-5 text-error-600;
+}
+
+.icon-ai {
+  @apply w-5 h-5 text-purple-600;
+}
+
+/* ===== TABLES ===== */
+
+.table-educational {
+  @apply w-full bg-white rounded-lg overflow-hidden shadow-sm border border-secondary-200;
+}
+
+.table-educational th {
+  @apply px-6 py-3 bg-secondary-50 text-left text-xs font-medium text-secondary-500 uppercase tracking-wider;
+}
+
+.table-educational td {
+  @apply px-6 py-4 whitespace-nowrap text-sm text-secondary-900;
+}
+
+.table-educational tbody tr:hover {
+  @apply bg-secondary-50;
+}
+
+.table-educational tbody tr:not(:last-child) {
+  @apply border-b border-secondary-200;
+}
+
+/* ===== FORMS ===== */
+
+.form-group {
+  @apply space-y-2;
+}
+
+.form-label {
+  @apply block text-sm font-medium text-secondary-700;
+}
+
+.form-label-required::after {
+  content: " *";
+  @apply text-error-600;
+}
+
+.form-input {
+  @apply w-full px-3 py-2 border border-secondary-300 rounded-md shadow-sm placeholder-secondary-400 focus:outline-none focus:ring-primary-500 focus:border-primary-500 transition-colors;
+}
+
+.form-input:invalid {
+  @apply border-error-300 focus:border-error-500 focus:ring-error-500;
+}
+
+.form-error {
+  @apply text-sm text-error-600;
+}
+
+.form-help {
+  @apply text-sm text-secondary-500;
+}
+
+/* ===== NAVIGATION ===== */
+
+.nav-item {
+  @apply flex items-center px-3 py-2 text-sm font-medium rounded-md transition-colors duration-150;
+}
+
+.nav-item:hover {
+  @apply bg-secondary-100;
+}
+
+.nav-item.active {
+  @apply bg-primary-100 text-primary-700;
+}
+
+.nav-item.active::before {
+  content: "";
+  @apply absolute left-0 w-1 h-8 bg-primary-600 rounded-r;
+}
+
+/* ===== MODALS ===== */
+
+.modal-overlay {
+  @apply fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50;
+}
+
+.modal-content {
+  @apply bg-white rounded-lg shadow-xl max-w-md w-full mx-4 transform transition-all duration-200;
+}
+
+.modal-header {
+  @apply px-6 py-4 border-b border-secondary-200;
+}
+
+.modal-body {
+  @apply px-6 py-4;
+}
+
+.modal-footer {
+  @apply px-6 py-4 border-t border-secondary-200 flex justify-end space-x-3;
+}
+
+/* ===== NOTIFICATIONS ===== */
+
+.notification {
+  @apply flex items-center p-4 rounded-lg shadow-lg border transition-all duration-300;
+}
+
+.notification-success {
+  @apply notification bg-success-50 border-success-200 text-success-800;
+}
+
+.notification-warning {
+  @apply notification bg-warning-50 border-warning-200 text-warning-800;
+}
+
+.notification-error {
+  @apply notification bg-error-50 border-error-200 text-error-800;
+}
+
+.notification-info {
+  @apply notification bg-blue-50 border-blue-200 text-blue-800;
+}
+
+/* ===== LOADING STATES ===== */
+
+.loading-spinner {
+  @apply animate-spin rounded-full border-2 border-primary-600 border-t-transparent;
+}
+
+.loading-skeleton {
+  @apply animate-pulse bg-secondary-200 rounded;
+}
+
+.loading-text {
+  @apply loading-skeleton h-4 w-3/4 mb-2;
+}
+
+.loading-avatar {
+  @apply loading-skeleton h-10 w-10 rounded-full;
+}
+
+/* ===== EDUCATIONAL SPECIFIC ===== */
+
+/* Assignment cards */
+.assignment-card {
+  @apply card-interactive p-6;
+}
+
+.assignment-card:hover {
+  @apply border-primary-300;
+}
+
+.assignment-overdue {
+  @apply border-l-4 border-l-error-500 bg-error-50;
+}
+
+/* Skill visualization */
+.skill-meter {
+  @apply flex items-center space-x-3 p-3 bg-white rounded-lg;
+}
+
+.skill-meter-fill {
+  @apply flex-1 h-2 bg-secondary-200 rounded-full overflow-hidden;
+}
+
+.skill-meter-progress {
+  @apply h-full bg-gradient-to-r from-primary-500 to-primary-600 transition-all duration-500;
+}
+
+/* AI feedback styling */
+.ai-suggestion {
+  @apply flex items-start p-4 bg-purple-50 border border-purple-200 rounded-lg;
+}
+
+.ai-suggestion::before {
+  content: "💡";
+  @apply mr-3 text-lg;
+}
+
+/* Code comparison */
+.code-comparison {
+  @apply grid grid-cols-1 md:grid-cols-2 gap-4;
+}
+
+.code-before {
+  @apply code-block border-l-4 border-l-error-500;
+}
+
+.code-after {
+  @apply code-block border-l-4 border-l-success-500;
+}
+
+/* ===== RESPONSIVE UTILITIES ===== */
+
+/* Hide on mobile */
+.hidden-mobile {
+  @apply hidden md:block;
+}
+
+/* Show only on mobile */
+.mobile-only {
+  @apply block md:hidden;
+}
+
+/* Educational content spacing */
+.content-spacing > * + * {
+  @apply mt-4;
+}
+
+.content-spacing-large > * + * {
+  @apply mt-6;
+}
+
+/* ===== ANIMATIONS ===== */
+
+@keyframes fadeInUp {
+  from {
+    opacity: 0;
+    transform: translateY(20px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.animate-fade-in-up {
+  animation: fadeInUp 0.3s ease-out;
+}
+
+@keyframes slideInRight {
+  from {
+    opacity: 0;
+    transform: translateX(20px);
+  }
+  to {
+    opacity: 1;
+    transform: translateX(0);
+  }
+}
+
+.animate-slide-in-right {
+  animation: slideInRight 0.3s ease-out;
+}
+
+/* Staggered animations for lists */
+.stagger-children > * {
+  animation: fadeInUp 0.5s ease-out;
+}
+
+.stagger-children > *:nth-child(1) { animation-delay: 0.1s; }
+.stagger-children > *:nth-child(2) { animation-delay: 0.2s; }
+.stagger-children > *:nth-child(3) { animation-delay: 0.3s; }
+.stagger-children > *:nth-child(4) { animation-delay: 0.4s; }
+.stagger-children > *:nth-child(5) { animation-delay: 0.5s; }

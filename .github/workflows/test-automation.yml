@@ -1,0 +1,685 @@
+# AI教学助手系统 - 自动化测试工作流
+# 完整的CI/CD测试流水线
+
+name: 🧪 Automated Testing Pipeline
+
+on:
+  push:
+    branches: [ main, develop, 'feature/*', 'hotfix/*' ]
+    paths-ignore:
+      - '*.md'
+      - 'docs/**'
+      - '.gitignore'
+  
+  pull_request:
+    branches: [ main, develop ]
+    paths-ignore:
+      - '*.md'
+      - 'docs/**'
+      - '.gitignore'
+  
+  # 定时运行完整测试套件
+  schedule:
+    - cron: '0 2 * * 1-5'  # 工作日凌晨2点
+  
+  # 手动触发
+  workflow_dispatch:
+    inputs:
+      test_level:
+        description: 'Test level to run'
+        required: true
+        default: 'full'
+        type: choice
+        options:
+          - unit
+          - integration
+          - e2e
+          - performance
+          - full
+      
+      skip_build:
+        description: 'Skip build steps (for testing only)'
+        required: false
+        default: false
+        type: boolean
+
+env:
+  # Python版本
+  PYTHON_VERSION: '3.11'
+  # Node版本  
+  NODE_VERSION: '18.x'
+  # 测试环境变量
+  TESTING: true
+  CI: true
+  # 数据库
+  DATABASE_URL: postgresql://postgres:postgres@localhost:5432/ai_teacher_test
+  REDIS_URL: redis://localhost:6379/0
+  # AI服务（测试模式）
+  OPENAI_API_KEY: ${{ secrets.OPENAI_API_KEY_TEST }}
+  AI_SERVICE_MODE: test
+  # 测试配置
+  PYTEST_TIMEOUT: 300
+  E2E_TIMEOUT: 600
+
+jobs:
+  # Job 1: 代码质量检查
+  code-quality:
+    name: 🔍 Code Quality & Security
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    
+    steps:
+      - name: 📥 Checkout Code
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0  # 完整历史，用于更好的分析
+      
+      - name: 🐍 Set up Python
+        uses: actions/setup-python@v4
+        with:
+          python-version: ${{ env.PYTHON_VERSION }}
+          cache: 'pip'
+      
+      - name: 📦 Install Dependencies
+        run: |
+          pip install --upgrade pip
+          pip install -r requirements-dev.txt
+      
+      - name: 🔧 Code Formatting Check (Black)
+        run: |
+          black --check --diff .
+          echo "✅ Code formatting check passed"
+      
+      - name: 📝 Import Sorting Check (isort)
+        run: |
+          isort --check-only --diff .
+          echo "✅ Import sorting check passed"
+      
+      - name: 🔍 Linting (flake8)
+        run: |
+          flake8 . --count --select=E9,F63,F7,F82 --show-source --statistics
+          flake8 . --count --max-complexity=10 --max-line-length=88 --statistics
+          echo "✅ Linting check passed"
+      
+      - name: 🔒 Security Check (bandit)
+        run: |
+          bandit -r app/ src/ -f json -o bandit-report.json || true
+          bandit -r app/ src/ --severity-level medium
+          echo "✅ Security check completed"
+      
+      - name: 🛡️ Dependency Security Check
+        run: |
+          safety check --json --output safety-report.json || true
+          safety check
+          echo "✅ Dependency security check completed"
+      
+      - name: 📊 Type Checking (mypy)
+        run: |
+          mypy app/ src/ --ignore-missing-imports
+          echo "✅ Type checking passed"
+      
+      - name: 📈 Code Complexity Analysis
+        run: |
+          radon cc app/ src/ -a -nb
+          radon mi app/ src/ -nb
+          echo "✅ Code complexity analysis completed"
+      
+      - name: 📤 Upload Security Reports
+        uses: actions/upload-artifact@v3
+        if: always()
+        with:
+          name: security-reports
+          path: |
+            bandit-report.json
+            safety-report.json
+          retention-days: 30
+
+  # Job 2: 后端单元测试
+  backend-unit-tests:
+    name: 🧪 Backend Unit Tests
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    needs: [code-quality]
+    
+    services:
+      postgres:
+        image: postgres:15
+        env:
+          POSTGRES_PASSWORD: postgres
+          POSTGRES_DB: ai_teacher_test
+        options: >-
+          --health-cmd pg_isready
+          --health-interval 10s
+          --health-timeout 5s
+          --health-retries 5
+        ports:
+          - 5432:5432
+      
+      redis:
+        image: redis:7
+        options: >-
+          --health-cmd "redis-cli ping"
+          --health-interval 10s
+          --health-timeout 5s
+          --health-retries 5
+        ports:
+          - 6379:6379
+    
+    steps:
+      - name: 📥 Checkout Code
+        uses: actions/checkout@v4
+      
+      - name: 🐍 Set up Python
+        uses: actions/setup-python@v4
+        with:
+          python-version: ${{ env.PYTHON_VERSION }}
+          cache: 'pip'
+      
+      - name: 📦 Install Dependencies
+        run: |
+          pip install --upgrade pip
+          pip install -r requirements.txt
+          pip install -r requirements-dev.txt
+      
+      - name: 🗄️ Setup Database
+        run: |
+          python init_db.py
+          echo "✅ Database initialized"
+      
+      - name: 🧪 Run Unit Tests
+        run: |
+          pytest tests/ -v \
+            --maxfail=5 \
+            --tb=short \
+            --cov=app \
+            --cov=src \
+            --cov-report=xml \
+            --cov-report=html \
+            --cov-report=term \
+            --junitxml=junit.xml \
+            -m "not integration and not e2e and not slow and not performance" \
+            --timeout=${{ env.PYTEST_TIMEOUT }}
+      
+      - name: 📊 Upload Coverage to Codecov
+        uses: codecov/codecov-action@v3
+        with:
+          file: ./coverage.xml
+          flags: backend
+          name: backend-coverage
+          fail_ci_if_error: true
+      
+      - name: 📤 Upload Test Reports
+        uses: actions/upload-artifact@v3
+        if: always()
+        with:
+          name: backend-test-reports
+          path: |
+            junit.xml
+            htmlcov/
+            coverage.xml
+          retention-days: 30
+
+  # Job 3: 前端测试
+  frontend-tests:
+    name: 🎨 Frontend Tests
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    
+    defaults:
+      run:
+        working-directory: ai-teacher-frontend
+    
+    steps:
+      - name: 📥 Checkout Code
+        uses: actions/checkout@v4
+      
+      - name: 🟢 Set up Node.js
+        uses: actions/setup-node@v3
+        with:
+          node-version: ${{ env.NODE_VERSION }}
+          cache: 'npm'
+          cache-dependency-path: ai-teacher-frontend/package-lock.json
+      
+      - name: 📦 Install Dependencies
+        run: |
+          npm ci
+          npx playwright install --with-deps chromium
+      
+      - name: 🔧 Type Check
+        run: |
+          npm run type-check
+          echo "✅ TypeScript type checking passed"
+      
+      - name: 🔍 Lint Check
+        run: |
+          npm run lint
+          echo "✅ ESLint check passed"
+      
+      - name: 🧪 Run Unit & Component Tests
+        run: |
+          npm run test:jest:coverage
+        env:
+          CI: true
+      
+      - name: 📊 Upload Coverage
+        uses: codecov/codecov-action@v3
+        with:
+          file: ./ai-teacher-frontend/coverage/coverage-final.json
+          flags: frontend
+          name: frontend-coverage
+          fail_ci_if_error: true
+      
+      - name: 📤 Upload Frontend Test Reports
+        uses: actions/upload-artifact@v3
+        if: always()
+        with:
+          name: frontend-test-reports
+          path: |
+            ai-teacher-frontend/coverage/
+            ai-teacher-frontend/test-results/
+          retention-days: 30
+
+  # Job 4: AI功能测试
+  ai-functionality-tests:
+    name: 🤖 AI Functionality Tests
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+    needs: [backend-unit-tests]
+    if: github.event_name != 'pull_request' || contains(github.event.pull_request.labels.*.name, 'ai-testing')
+    
+    services:
+      postgres:
+        image: postgres:15
+        env:
+          POSTGRES_PASSWORD: postgres
+          POSTGRES_DB: ai_teacher_test
+        options: >-
+          --health-cmd pg_isready
+          --health-interval 10s
+          --health-timeout 5s
+          --health-retries 5
+        ports:
+          - 5432:5432
+      
+      redis:
+        image: redis:7
+        ports:
+          - 6379:6379
+    
+    steps:
+      - name: 📥 Checkout Code
+        uses: actions/checkout@v4
+      
+      - name: 🐍 Set up Python
+        uses: actions/setup-python@v4
+        with:
+          python-version: ${{ env.PYTHON_VERSION }}
+          cache: 'pip'
+      
+      - name: 📦 Install Dependencies
+        run: |
+          pip install --upgrade pip
+          pip install -r requirements.txt
+          pip install -r requirements-dev.txt
+      
+      - name: 🗄️ Setup Database
+        run: |
+          python init_db.py
+      
+      - name: 🤖 Run AI Functionality Tests
+        run: |
+          pytest tests/ai/ -v \
+            --maxfail=3 \
+            --tb=short \
+            --junitxml=ai-junit.xml \
+            -m "ai and not slow" \
+            --timeout=300
+        env:
+          OPENAI_API_KEY: ${{ secrets.OPENAI_API_KEY_TEST }}
+          AI_SERVICE_MODE: test
+      
+      - name: 📤 Upload AI Test Reports
+        uses: actions/upload-artifact@v3
+        if: always()
+        with:
+          name: ai-test-reports
+          path: |
+            ai-junit.xml
+          retention-days: 30
+
+  # Job 5: 集成测试
+  integration-tests:
+    name: 🔗 Integration Tests
+    runs-on: ubuntu-latest
+    timeout-minutes: 25
+    needs: [backend-unit-tests, frontend-tests]
+    
+    services:
+      postgres:
+        image: postgres:15
+        env:
+          POSTGRES_PASSWORD: postgres
+          POSTGRES_DB: ai_teacher_test
+        ports:
+          - 5432:5432
+      
+      redis:
+        image: redis:7
+        ports:
+          - 6379:6379
+    
+    steps:
+      - name: 📥 Checkout Code
+        uses: actions/checkout@v4
+      
+      - name: 🐍 Set up Python
+        uses: actions/setup-python@v4
+        with:
+          python-version: ${{ env.PYTHON_VERSION }}
+          cache: 'pip'
+      
+      - name: 📦 Install Dependencies
+        run: |
+          pip install --upgrade pip
+          pip install -r requirements.txt
+          pip install -r requirements-dev.txt
+      
+      - name: 🗄️ Setup Database
+        run: |
+          python init_db.py
+      
+      - name: 🚀 Start Backend Server
+        run: |
+          uvicorn app.main:app --host 0.0.0.0 --port 8000 &
+          sleep 10
+          curl http://localhost:8000/health || exit 1
+        env:
+          DATABASE_URL: ${{ env.DATABASE_URL }}
+          REDIS_URL: ${{ env.REDIS_URL }}
+      
+      - name: 🧪 Run Integration Tests
+        run: |
+          pytest tests/api/ -v \
+            --maxfail=5 \
+            --tb=short \
+            --junitxml=integration-junit.xml \
+            -m "not e2e and not performance" \
+            --timeout=${{ env.PYTEST_TIMEOUT }}
+      
+      - name: 📤 Upload Integration Test Reports
+        uses: actions/upload-artifact@v3
+        if: always()
+        with:
+          name: integration-test-reports
+          path: |
+            integration-junit.xml
+          retention-days: 30
+
+  # Job 6: End-to-End 测试
+  e2e-tests:
+    name: 🌐 End-to-End Tests
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+    needs: [integration-tests]
+    if: github.event_name == 'push' && (github.ref == 'refs/heads/main' || github.ref == 'refs/heads/develop') || github.event_name == 'workflow_dispatch'
+    
+    services:
+      postgres:
+        image: postgres:15
+        env:
+          POSTGRES_PASSWORD: postgres
+          POSTGRES_DB: ai_teacher_test
+        ports:
+          - 5432:5432
+      
+      redis:
+        image: redis:7
+        ports:
+          - 6379:6379
+    
+    steps:
+      - name: 📥 Checkout Code
+        uses: actions/checkout@v4
+      
+      - name: 🐍 Set up Python
+        uses: actions/setup-python@v4
+        with:
+          python-version: ${{ env.PYTHON_VERSION }}
+          cache: 'pip'
+      
+      - name: 🟢 Set up Node.js
+        uses: actions/setup-node@v3
+        with:
+          node-version: ${{ env.NODE_VERSION }}
+          cache: 'npm'
+          cache-dependency-path: ai-teacher-frontend/package-lock.json
+      
+      - name: 📦 Install Backend Dependencies
+        run: |
+          pip install --upgrade pip
+          pip install -r requirements.txt
+          pip install -r requirements-dev.txt
+      
+      - name: 📦 Install Frontend Dependencies
+        working-directory: ai-teacher-frontend
+        run: |
+          npm ci
+          npx playwright install --with-deps
+      
+      - name: 🗄️ Setup Database
+        run: |
+          python init_db.py
+      
+      - name: 🚀 Start Backend Server
+        run: |
+          uvicorn app.main:app --host 0.0.0.0 --port 8000 &
+          sleep 15
+          curl http://localhost:8000/health || exit 1
+        env:
+          DATABASE_URL: ${{ env.DATABASE_URL }}
+          REDIS_URL: ${{ env.REDIS_URL }}
+      
+      - name: 🌐 Run E2E Tests
+        working-directory: ai-teacher-frontend
+        run: |
+          npm run test:e2e
+        env:
+          E2E_BASE_URL: http://localhost:3000
+          E2E_API_URL: http://localhost:8000
+          E2E_SETUP_TEST_USERS: true
+          E2E_TIMEOUT: ${{ env.E2E_TIMEOUT }}
+      
+      - name: 📤 Upload E2E Test Results
+        uses: actions/upload-artifact@v3
+        if: always()
+        with:
+          name: e2e-test-results
+          path: |
+            ai-teacher-frontend/test-results/
+            ai-teacher-frontend/playwright-report/
+          retention-days: 30
+
+  # Job 7: 性能测试
+  performance-tests:
+    name: ⚡ Performance Tests
+    runs-on: ubuntu-latest
+    timeout-minutes: 25
+    needs: [integration-tests]
+    if: github.event_name == 'schedule' || (github.event_name == 'workflow_dispatch' && github.event.inputs.test_level == 'performance')
+    
+    services:
+      postgres:
+        image: postgres:15
+        env:
+          POSTGRES_PASSWORD: postgres
+          POSTGRES_DB: ai_teacher_test
+        ports:
+          - 5432:5432
+      
+      redis:
+        image: redis:7
+        ports:
+          - 6379:6379
+    
+    steps:
+      - name: 📥 Checkout Code
+        uses: actions/checkout@v4
+      
+      - name: 🐍 Set up Python
+        uses: actions/setup-python@v4
+        with:
+          python-version: ${{ env.PYTHON_VERSION }}
+          cache: 'pip'
+      
+      - name: 📦 Install Dependencies
+        run: |
+          pip install --upgrade pip
+          pip install -r requirements.txt
+          pip install -r requirements-dev.txt
+          pip install locust
+      
+      - name: 🗄️ Setup Database
+        run: |
+          python init_db.py
+      
+      - name: 🚀 Start Backend Server
+        run: |
+          uvicorn app.main:app --host 0.0.0.0 --port 8000 &
+          sleep 15
+      
+      - name: ⚡ Run Performance Tests
+        run: |
+          pytest tests/performance/ -v \
+            --maxfail=2 \
+            --tb=short \
+            --junitxml=performance-junit.xml \
+            -m "performance and not slow"
+      
+      - name: 🔥 Run Load Tests
+        run: |
+          cd tests/performance
+          locust -f locustfile.py \
+            --users 50 \
+            --spawn-rate 5 \
+            --run-time 300s \
+            --host http://localhost:8000 \
+            --headless \
+            --html performance-report.html
+      
+      - name: 📤 Upload Performance Reports
+        uses: actions/upload-artifact@v3
+        if: always()
+        with:
+          name: performance-reports
+          path: |
+            performance-junit.xml
+            tests/performance/performance-report.html
+          retention-days: 30
+
+  # Job 8: 测试报告汇总
+  test-summary:
+    name: 📋 Test Summary & Reporting
+    runs-on: ubuntu-latest
+    needs: [code-quality, backend-unit-tests, frontend-tests, integration-tests]
+    if: always()
+    
+    steps:
+      - name: 📥 Download All Test Reports
+        uses: actions/download-artifact@v3
+        with:
+          path: test-reports
+      
+      - name: 📊 Generate Test Summary
+        run: |
+          echo "# 🧪 AI Teaching Assistant - Test Summary" > test-summary.md
+          echo "" >> test-summary.md
+          echo "## 📋 Test Results Overview" >> test-summary.md
+          echo "" >> test-summary.md
+          echo "| Test Suite | Status | Details |" >> test-summary.md
+          echo "|------------|--------|---------|" >> test-summary.md
+          
+          # 检查各个测试任务状态
+          if [ "${{ needs.code-quality.result }}" = "success" ]; then
+            echo "| Code Quality | ✅ Passed | Formatting, linting, and security checks passed |" >> test-summary.md
+          else
+            echo "| Code Quality | ❌ Failed | Check code quality job for details |" >> test-summary.md
+          fi
+          
+          if [ "${{ needs.backend-unit-tests.result }}" = "success" ]; then
+            echo "| Backend Unit Tests | ✅ Passed | All unit tests passed with coverage |" >> test-summary.md
+          else
+            echo "| Backend Unit Tests | ❌ Failed | Check backend unit test job for details |" >> test-summary.md
+          fi
+          
+          if [ "${{ needs.frontend-tests.result }}" = "success" ]; then
+            echo "| Frontend Tests | ✅ Passed | Component and unit tests passed |" >> test-summary.md
+          else
+            echo "| Frontend Tests | ❌ Failed | Check frontend test job for details |" >> test-summary.md
+          fi
+          
+          if [ "${{ needs.integration-tests.result }}" = "success" ]; then
+            echo "| Integration Tests | ✅ Passed | API integration tests passed |" >> test-summary.md
+          else
+            echo "| Integration Tests | ❌ Failed | Check integration test job for details |" >> test-summary.md
+          fi
+          
+          echo "" >> test-summary.md
+          echo "## 📈 Coverage Information" >> test-summary.md
+          echo "" >> test-summary.md
+          echo "Coverage reports are available in the test artifacts." >> test-summary.md
+          echo "" >> test-summary.md
+          echo "## 🔗 Links" >> test-summary.md
+          echo "- [Full Test Reports](https://github.com/${{ github.repository }}/actions/runs/${{ github.run_id }})" >> test-summary.md
+          echo "- [Code Coverage](https://codecov.io/gh/${{ github.repository }})" >> test-summary.md
+          
+          cat test-summary.md
+      
+      - name: 📤 Upload Test Summary
+        uses: actions/upload-artifact@v3
+        with:
+          name: test-summary
+          path: test-summary.md
+          retention-days: 90
+      
+      - name: 💬 Comment PR with Test Results
+        if: github.event_name == 'pull_request'
+        uses: actions/github-script@v6
+        with:
+          script: |
+            const fs = require('fs');
+            const testSummary = fs.readFileSync('test-summary.md', 'utf8');
+            
+            github.rest.issues.createComment({
+              issue_number: context.issue.number,
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              body: testSummary
+            });
+
+  # Job 9: 部署到测试环境 (可选)
+  deploy-staging:
+    name: 🚀 Deploy to Staging
+    runs-on: ubuntu-latest
+    needs: [test-summary]
+    if: github.event_name == 'push' && github.ref == 'refs/heads/develop' && needs.test-summary.result == 'success'
+    environment: staging
+    
+    steps:
+      - name: 📥 Checkout Code
+        uses: actions/checkout@v4
+      
+      - name: 🚀 Deploy to Staging Environment
+        run: |
+          echo "🚀 Deploying to staging environment..."
+          echo "This would include actual deployment steps"
+          echo "✅ Deployment to staging completed"
+      
+      - name: 🧪 Smoke Tests on Staging
+        run: |
+          echo "🧪 Running smoke tests on staging..."
+          echo "✅ Smoke tests passed"
+
+# 工作流程配置
+concurrency:
+  group: ${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true

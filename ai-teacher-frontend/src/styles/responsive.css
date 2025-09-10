@@ -1,0 +1,501 @@
+/* Responsive Design System for AI Teaching Assistant */
+
+/* ===== BREAKPOINT SYSTEM ===== */
+
+/* Mobile First Approach with Educational Content Optimization */
+
+/* Extra Small (xs) - 0px and up - Mobile phones */
+/* Default styles are mobile-first */
+
+/* Small (sm) - 640px and up - Large mobile phones */
+@media (min-width: 640px) {
+  .responsive-grid-sm {
+    grid-template-columns: repeat(2, 1fr);
+  }
+  
+  .responsive-text-sm {
+    font-size: 1rem;
+  }
+  
+  .responsive-spacing-sm {
+    padding: 1.5rem;
+  }
+  
+  /* Dashboard adjustments */
+  .dashboard-stats-sm {
+    grid-template-columns: repeat(2, 1fr);
+    gap: 1rem;
+  }
+}
+
+/* Medium (md) - 768px and up - Tablets */
+@media (min-width: 768px) {
+  .responsive-grid-md {
+    grid-template-columns: repeat(3, 1fr);
+  }
+  
+  .responsive-text-md {
+    font-size: 1.125rem;
+  }
+  
+  .responsive-spacing-md {
+    padding: 2rem;
+  }
+  
+  /* Educational content layout */
+  .content-split-md {
+    display: grid;
+    grid-template-columns: 1fr 2fr;
+    gap: 2rem;
+  }
+  
+  /* Assignment interface */
+  .assignment-layout-md {
+    display: flex;
+    height: calc(100vh - 4rem);
+  }
+  
+  .assignment-sidebar-md {
+    width: 384px; /* 24rem */
+    border-right: 1px solid var(--color-secondary-200);
+  }
+  
+  .assignment-main-md {
+    flex: 1;
+    overflow: hidden;
+  }
+  
+  /* Teacher dashboard */
+  .teacher-dashboard-md {
+    grid-template-columns: repeat(2, 1fr);
+    gap: 2rem;
+  }
+  
+  /* Student dashboard */
+  .student-dashboard-md {
+    grid-template-columns: repeat(2, 1fr);
+  }
+}
+
+/* Large (lg) - 1024px and up - Small desktops */
+@media (min-width: 1024px) {
+  .responsive-grid-lg {
+    grid-template-columns: repeat(4, 1fr);
+  }
+  
+  .responsive-text-lg {
+    font-size: 1.25rem;
+  }
+  
+  .responsive-spacing-lg {
+    padding: 2.5rem;
+  }
+  
+  /* Educational content with sidebar */
+  .content-with-sidebar-lg {
+    display: grid;
+    grid-template-columns: 256px 1fr;
+    gap: 2rem;
+  }
+  
+  /* Class management */
+  .class-grid-lg {
+    grid-template-columns: repeat(3, 1fr);
+  }
+  
+  /* Assignment list */
+  .assignment-grid-lg {
+    grid-template-columns: repeat(3, 1fr);
+  }
+  
+  /* Feedback interface */
+  .feedback-layout-lg {
+    grid-template-columns: 2fr 1fr;
+    gap: 2rem;
+  }
+  
+  /* Navigation enhancement */
+  .nav-horizontal-lg {
+    flex-direction: row;
+    justify-content: space-between;
+  }
+}
+
+/* Extra Large (xl) - 1280px and up - Large desktops */
+@media (min-width: 1280px) {
+  .responsive-grid-xl {
+    grid-template-columns: repeat(6, 1fr);
+  }
+  
+  .responsive-container-xl {
+    max-width: 1280px;
+    margin: 0 auto;
+    padding: 0 2rem;
+  }
+  
+  /* Dashboard enhancements */
+  .dashboard-layout-xl {
+    grid-template-columns: repeat(4, 1fr);
+    gap: 2rem;
+  }
+  
+  /* Code editor full width */
+  .code-editor-xl {
+    width: 100%;
+    height: calc(100vh - 200px);
+  }
+  
+  /* Advanced layouts */
+  .three-column-xl {
+    grid-template-columns: 300px 1fr 300px;
+    gap: 2rem;
+  }
+}
+
+/* 2XL (2xl) - 1536px and up - Very large screens */
+@media (min-width: 1536px) {
+  .responsive-container-2xl {
+    max-width: 1536px;
+  }
+  
+  /* Ultra-wide dashboard */
+  .dashboard-ultra-wide {
+    grid-template-columns: repeat(6, 1fr);
+    gap: 2rem;
+  }
+  
+  /* Enhanced content layout */
+  .content-layout-2xl {
+    display: grid;
+    grid-template-columns: 300px 1fr 400px;
+    gap: 3rem;
+  }
+}
+
+/* ===== MOBILE-FIRST COMPONENTS ===== */
+
+/* Navigation - Mobile first */
+.mobile-nav {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  background: white;
+  border-bottom: 1px solid var(--color-secondary-200);
+  z-index: 50;
+  padding: 1rem;
+}
+
+@media (min-width: 768px) {
+  .mobile-nav {
+    position: static;
+    border: none;
+    padding: 0;
+  }
+}
+
+/* Cards - Responsive stacking */
+.card-responsive {
+  width: 100%;
+  margin-bottom: 1rem;
+}
+
+@media (min-width: 640px) {
+  .cards-container {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 1rem;
+  }
+  
+  .card-responsive {
+    margin-bottom: 0;
+  }
+}
+
+@media (min-width: 1024px) {
+  .cards-container {
+    grid-template-columns: repeat(3, 1fr);
+    gap: 1.5rem;
+  }
+}
+
+/* ===== EDUCATIONAL SPECIFIC RESPONSIVE PATTERNS ===== */
+
+/* Assignment Interface */
+.assignment-responsive {
+  flex-direction: column;
+}
+
+@media (min-width: 768px) {
+  .assignment-responsive {
+    flex-direction: row;
+  }
+  
+  .assignment-sidebar {
+    width: 320px;
+    flex-shrink: 0;
+  }
+  
+  .assignment-content {
+    flex: 1;
+    min-width: 0; /* Prevent flex item from overflowing */
+  }
+}
+
+/* Code Editor Responsive */
+.code-editor-responsive {
+  height: 300px;
+  font-size: 14px;
+}
+
+@media (min-width: 768px) {
+  .code-editor-responsive {
+    height: 400px;
+    font-size: 15px;
+  }
+}
+
+@media (min-width: 1024px) {
+  .code-editor-responsive {
+    height: calc(100vh - 200px);
+    font-size: 16px;
+  }
+}
+
+/* Dashboard Stats Responsive */
+.stats-responsive {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: 1rem;
+}
+
+@media (min-width: 640px) {
+  .stats-responsive {
+    grid-template-columns: repeat(2, 1fr);
+  }
+}
+
+@media (min-width: 1024px) {
+  .stats-responsive {
+    grid-template-columns: repeat(4, 1fr);
+  }
+}
+
+@media (min-width: 1280px) {
+  .stats-responsive {
+    grid-template-columns: repeat(6, 1fr);
+  }
+}
+
+/* Table Responsive */
+.table-responsive-wrapper {
+  overflow-x: auto;
+  -webkit-overflow-scrolling: touch;
+}
+
+.table-responsive {
+  min-width: 600px;
+}
+
+@media (min-width: 1024px) {
+  .table-responsive-wrapper {
+    overflow-x: visible;
+  }
+  
+  .table-responsive {
+    min-width: auto;
+  }
+}
+
+/* ===== TOUCH AND GESTURE OPTIMIZATION ===== */
+
+/* Touch-friendly interactive elements */
+.touch-friendly {
+  min-height: 44px;
+  min-width: 44px;
+  padding: 0.75rem;
+  touch-action: manipulation;
+}
+
+/* Prevent double-tap zoom on buttons */
+.no-double-tap-zoom {
+  touch-action: manipulation;
+}
+
+/* Swipe gestures for mobile */
+.swipeable {
+  touch-action: pan-x pan-y;
+}
+
+/* ===== TYPOGRAPHY RESPONSIVE SCALING ===== */
+
+/* Fluid typography for better readability */
+.text-responsive {
+  font-size: clamp(0.875rem, 2vw, 1rem);
+  line-height: 1.6;
+}
+
+.heading-responsive-1 {
+  font-size: clamp(1.5rem, 4vw, 2.25rem);
+  line-height: 1.2;
+}
+
+.heading-responsive-2 {
+  font-size: clamp(1.25rem, 3vw, 1.875rem);
+  line-height: 1.3;
+}
+
+.heading-responsive-3 {
+  font-size: clamp(1.125rem, 2.5vw, 1.5rem);
+  line-height: 1.4;
+}
+
+/* Code text scaling */
+.code-responsive {
+  font-size: clamp(0.75rem, 1.5vw, 0.875rem);
+  font-family: var(--font-family-mono);
+}
+
+/* ===== CONTAINER QUERIES (Future Enhancement) ===== */
+
+/* When container queries are fully supported */
+@container (min-width: 320px) {
+  .card-container {
+    padding: 1rem;
+  }
+}
+
+@container (min-width: 480px) {
+  .card-container {
+    padding: 1.5rem;
+  }
+}
+
+/* ===== PRINT RESPONSIVE ===== */
+
+@media print {
+  /* Optimize for print layout */
+  .print-responsive {
+    width: 100% !important;
+    max-width: none !important;
+    margin: 0 !important;
+    padding: 0.5rem !important;
+    break-inside: avoid;
+  }
+  
+  .print-hide-responsive {
+    display: none !important;
+  }
+  
+  /* Ensure text is readable in print */
+  .print-text-responsive {
+    font-size: 12pt !important;
+    line-height: 1.4 !important;
+    color: #000 !important;
+  }
+  
+  /* Stack content vertically for print */
+  .print-stack {
+    flex-direction: column !important;
+    grid-template-columns: 1fr !important;
+  }
+}
+
+/* ===== LANDSCAPE/PORTRAIT ORIENTATION ===== */
+
+@media (orientation: landscape) and (max-width: 1024px) {
+  /* Tablet landscape optimizations */
+  .landscape-optimize {
+    height: 100vh;
+    overflow: hidden;
+  }
+  
+  .landscape-nav {
+    height: 60px;
+  }
+  
+  .landscape-content {
+    height: calc(100vh - 60px);
+    overflow-y: auto;
+  }
+}
+
+@media (orientation: portrait) and (max-width: 768px) {
+  /* Mobile portrait optimizations */
+  .portrait-optimize {
+    padding-bottom: env(safe-area-inset-bottom);
+  }
+  
+  .portrait-full-height {
+    min-height: 100vh;
+    min-height: 100dvh; /* Dynamic viewport height */
+  }
+}
+
+/* ===== REDUCED DATA USAGE ===== */
+
+@media (prefers-reduced-data: reduce) {
+  /* Optimize for slow connections */
+  .reduced-data {
+    background-image: none !important;
+    box-shadow: none !important;
+  }
+  
+  /* Disable non-essential animations */
+  .reduced-data * {
+    animation-duration: 0s !important;
+    transition-duration: 0s !important;
+  }
+}
+
+/* ===== RESPONSIVE UTILITIES ===== */
+
+/* Responsive visibility classes */
+.show-on-mobile { display: block; }
+.show-on-tablet { display: none; }
+.show-on-desktop { display: none; }
+
+@media (min-width: 768px) {
+  .show-on-mobile { display: none; }
+  .show-on-tablet { display: block; }
+  .show-on-desktop { display: none; }
+}
+
+@media (min-width: 1024px) {
+  .show-on-mobile { display: none; }
+  .show-on-tablet { display: none; }
+  .show-on-desktop { display: block; }
+}
+
+/* Responsive spacing utilities */
+.responsive-margin {
+  margin: 0.5rem;
+}
+
+@media (min-width: 768px) {
+  .responsive-margin {
+    margin: 1rem;
+  }
+}
+
+@media (min-width: 1024px) {
+  .responsive-margin {
+    margin: 1.5rem;
+  }
+}
+
+.responsive-padding {
+  padding: 0.5rem;
+}
+
+@media (min-width: 768px) {
+  .responsive-padding {
+    padding: 1rem;
+  }
+}
+
+@media (min-width: 1024px) {
+  .responsive-padding {
+    padding: 1.5rem;
+  }
+}

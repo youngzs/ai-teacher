@@ -1,0 +1,74 @@
+# AI Teaching Assistant System - Editor Configuration
+# EditorConfig helps maintain consistent coding styles
+
+root = true
+
+# 所有文件的默认设置
+[*]
+indent_style = space
+indent_size = 4
+end_of_line = lf
+charset = utf-8
+trim_trailing_whitespace = true
+insert_final_newline = true
+max_line_length = 88
+
+# Python文件
+[*.py]
+indent_size = 4
+max_line_length = 88
+
+# JavaScript/TypeScript文件
+[*.{js,jsx,ts,tsx}]
+indent_size = 2
+max_line_length = 100
+
+# JSON文件
+[*.json]
+indent_size = 2
+
+# YAML文件
+[*.{yml,yaml}]
+indent_size = 2
+
+# HTML文件
+[*.html]
+indent_size = 2
+
+# CSS/SCSS文件
+[*.{css,scss}]
+indent_size = 2
+
+# Markdown文件
+[*.md]
+trim_trailing_whitespace = false
+max_line_length = 120
+
+# Shell脚本
+[*.{sh,bash}]
+indent_size = 4
+
+# Dockerfile
+[Dockerfile*]
+indent_size = 4
+
+# SQL文件
+[*.sql]
+indent_size = 2
+
+# XML文件
+[*.xml]
+indent_size = 2
+
+# Configuration files
+[*.{ini,cfg,conf,toml}]
+indent_size = 4
+
+# Makefile
+[{Makefile,makefile,*.mk}]
+indent_style = tab
+
+# 忽略生成的文件
+[{package-lock.json,yarn.lock}]
+insert_final_newline = unset
+trim_trailing_whitespace = unset

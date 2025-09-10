@@ -1,0 +1,64 @@
+{
+    "recommendations": [
+        // Python开发
+        "ms-python.python",
+        "ms-python.black-formatter",
+        "ms-python.flake8",
+        "ms-python.mypy-type-checker",
+        "ms-python.isort",
+        
+        // 前端开发
+        "bradlc.vscode-tailwindcss",
+        "esbenp.prettier-vscode",
+        "dbaeumer.vscode-eslint",
+        "ms-vscode.vscode-typescript-next",
+        
+        // Docker和容器
+        "ms-azuretools.vscode-docker",
+        "ms-vscode-remote.remote-containers",
+        
+        // 数据库
+        "ms-mssql.mssql",
+        "cweijan.vscode-postgresql-client2",
+        
+        // Git和版本控制
+        "eamodio.gitlens",
+        "github.vscode-pull-request-github",
+        "github.copilot",
+        
+        // 代码质量
+        "ms-vscode.test-adapter-converter",
+        "hbenl.vscode-test-explorer",
+        "ryanluker.vscode-coverage-gutters",
+        "sonarsource.sonarlint-vscode",
+        
+        // 文档和标记
+        "yzhang.markdown-all-in-one",
+        "davidanson.vscode-markdownlint",
+        "redhat.vscode-yaml",
+        "ms-vscode.makefile-tools",
+        
+        // 工具和实用程序
+        "ms-vscode.vscode-json",
+        "editorconfig.editorconfig",
+        "gruntfuggly.todo-tree",
+        "wayou.vscode-todo-highlight",
+        "alefragnani.bookmarks",
+        
+        // 主题和UI
+        "pkief.material-icon-theme",
+        "github.github-vscode-theme",
+        "zhuangtongfa.material-theme",
+        
+        // API开发
+        "humao.rest-client",
+        "42crunch.vscode-openapi",
+        
+        // 日志和监控
+        "emilast.logfilehighlighter",
+        "ms-vscode.vscode-logoutput"
+    ],
+    "unwantedRecommendations": [
+        "ms-python.pylint"
+    ]
+}

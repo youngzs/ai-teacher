@@ -1,0 +1,205 @@
+# AI Teaching Assistant System - Dependency Update Pipeline
+# 依赖更新流水线
+
+name: Dependency Updates
+
+on:
+  schedule:
+    # 每周一检查依赖更新
+    - cron: '0 2 * * 1'
+  workflow_dispatch:
+
+jobs:
+  # Python依赖更新
+  update-python-deps:
+    runs-on: ubuntu-latest
+    name: Update Python Dependencies
+    
+    steps:
+    - name: Checkout code
+      uses: actions/checkout@v4
+      with:
+        token: ${{ secrets.GITHUB_TOKEN }}
+        
+    - name: Set up Python
+      uses: actions/setup-python@v4
+      with:
+        python-version: '3.11'
+        
+    - name: Install pip-tools
+      run: |
+        pip install pip-tools
+        
+    - name: Update requirements
+      run: |
+        pip-compile --upgrade requirements.in
+        pip-compile --upgrade requirements-dev.in
+        
+    - name: Check for changes
+      id: changes
+      run: |
+        if git diff --quiet; then
+          echo "changed=false" >> $GITHUB_OUTPUT
+        else
+          echo "changed=true" >> $GITHUB_OUTPUT
+        fi
+        
+    - name: Create Pull Request
+      if: steps.changes.outputs.changed == 'true'
+      uses: peter-evans/create-pull-request@v5
+      with:
+        token: ${{ secrets.GITHUB_TOKEN }}
+        commit-message: "chore: update Python dependencies"
+        title: "🔄 Update Python Dependencies"
+        body: |
+          Automated update of Python dependencies.
+          
+          ## Changes
+          - Updated requirements.txt
+          - Updated requirements-dev.txt
+          
+          Please review the changes and ensure all tests pass.
+        branch: dependency-updates/python
+        delete-branch: true
+
+  # Node.js依赖更新
+  update-node-deps:
+    runs-on: ubuntu-latest
+    name: Update Node.js Dependencies
+    
+    defaults:
+      run:
+        working-directory: ./ai-teacher-frontend
+    
+    steps:
+    - name: Checkout code
+      uses: actions/checkout@v4
+      with:
+        token: ${{ secrets.GITHUB_TOKEN }}
+        
+    - name: Set up Node.js
+      uses: actions/setup-node@v4
+      with:
+        node-version: '18'
+        
+    - name: Update dependencies
+      run: |
+        npm update
+        npm audit fix --force || true
+        
+    - name: Check for changes
+      id: changes
+      run: |
+        if git diff --quiet; then
+          echo "changed=false" >> $GITHUB_OUTPUT
+        else
+          echo "changed=true" >> $GITHUB_OUTPUT
+        fi
+        
+    - name: Create Pull Request
+      if: steps.changes.outputs.changed == 'true'
+      uses: peter-evans/create-pull-request@v5
+      with:
+        token: ${{ secrets.GITHUB_TOKEN }}
+        commit-message: "chore: update Node.js dependencies"
+        title: "🔄 Update Node.js Dependencies"
+        body: |
+          Automated update of Node.js dependencies.
+          
+          ## Changes
+          - Updated package.json
+          - Updated package-lock.json
+          - Applied security fixes
+          
+          Please review the changes and ensure all tests pass.
+        branch: dependency-updates/nodejs
+        delete-branch: true
+
+  # 安全漏洞检查
+  security-audit:
+    runs-on: ubuntu-latest
+    name: Security Audit
+    
+    steps:
+    - name: Checkout code
+      uses: actions/checkout@v4
+      
+    - name: Set up Python
+      uses: actions/setup-python@v4
+      with:
+        python-version: '3.11'
+        
+    - name: Install safety
+      run: pip install safety
+      
+    - name: Run Python security audit
+      run: |
+        safety check --json --output python-security.json || true
+        safety check
+        
+    - name: Set up Node.js
+      uses: actions/setup-node@v4
+      with:
+        node-version: '18'
+        
+    - name: Run Node.js security audit
+      working-directory: ./ai-teacher-frontend
+      run: |
+        npm audit --audit-level high --json > nodejs-security.json || true
+        npm audit --audit-level high
+        
+    - name: Upload security reports
+      uses: actions/upload-artifact@v3
+      with:
+        name: security-audit-reports
+        path: |
+          python-security.json
+          ai-teacher-frontend/nodejs-security.json
+
+  # 依赖许可证检查
+  license-check:
+    runs-on: ubuntu-latest
+    name: License Compliance Check
+    
+    steps:
+    - name: Checkout code
+      uses: actions/checkout@v4
+      
+    - name: Set up Python
+      uses: actions/setup-python@v4
+      with:
+        python-version: '3.11'
+        
+    - name: Install pip-licenses
+      run: pip install pip-licenses
+      
+    - name: Install project dependencies
+      run: pip install -r requirements.txt
+      
+    - name: Generate Python license report
+      run: |
+        pip-licenses --format json --output python-licenses.json
+        pip-licenses --format markdown --output python-licenses.md
+        
+    - name: Set up Node.js
+      uses: actions/setup-node@v4
+      with:
+        node-version: '18'
+        
+    - name: Install license-checker
+      run: npm install -g license-checker
+      
+    - name: Generate Node.js license report
+      working-directory: ./ai-teacher-frontend
+      run: |
+        npm ci
+        license-checker --json --out nodejs-licenses.json
+        license-checker --markdown --out nodejs-licenses.md
+        
+    - name: Upload license reports
+      uses: actions/upload-artifact@v3
+      with:
+        name: license-reports
+        path: |
+          python-licenses.*
+          ai-teacher-frontend/nodejs-licenses.*

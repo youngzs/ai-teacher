@@ -1,0 +1,396 @@
+/* Theme System for AI Teaching Assistant System */
+
+/* Light Theme (Default) */
+:root[data-theme="light"], :root {
+  /* Background Colors */
+  --theme-bg-primary: #ffffff;
+  --theme-bg-secondary: #f8fafc;
+  --theme-bg-tertiary: #f1f5f9;
+  --theme-bg-accent: #eff6ff;
+  --theme-bg-muted: #e2e8f0;
+  
+  /* Text Colors */
+  --theme-text-primary: #0f172a;
+  --theme-text-secondary: #475569;
+  --theme-text-tertiary: #64748b;
+  --theme-text-accent: #2563eb;
+  --theme-text-muted: #94a3b8;
+  --theme-text-inverse: #ffffff;
+  
+  /* Border Colors */
+  --theme-border-primary: #e2e8f0;
+  --theme-border-secondary: #cbd5e1;
+  --theme-border-accent: #bfdbfe;
+  --theme-border-focus: #2563eb;
+  
+  /* Interactive Colors */
+  --theme-interactive-primary: #2563eb;
+  --theme-interactive-primary-hover: #1d4ed8;
+  --theme-interactive-primary-active: #1e40af;
+  --theme-interactive-secondary: #64748b;
+  --theme-interactive-secondary-hover: #475569;
+  
+  /* Status Colors */
+  --theme-status-success: #16a34a;
+  --theme-status-success-bg: #f0fdf4;
+  --theme-status-warning: #d97706;
+  --theme-status-warning-bg: #fffbeb;
+  --theme-status-error: #dc2626;
+  --theme-status-error-bg: #fef2f2;
+  --theme-status-info: #0284c7;
+  --theme-status-info-bg: #f0f9ff;
+  
+  /* Educational Colors */
+  --theme-educational-primary: #2563eb;
+  --theme-educational-secondary: #7c3aed;
+  --theme-educational-success: #16a34a;
+  --theme-educational-highlight: #fbbf24;
+  
+  /* AI Feature Colors */
+  --theme-ai-primary: #7c3aed;
+  --theme-ai-secondary: #a855f7;
+  --theme-ai-background: #faf5ff;
+  --theme-ai-border: #e9d5ff;
+  
+  /* Shadow Colors */
+  --theme-shadow-sm: 0 1px 2px 0 rgb(0 0 0 / 0.05);
+  --theme-shadow-base: 0 1px 3px 0 rgb(0 0 0 / 0.1), 0 1px 2px -1px rgb(0 0 0 / 0.1);
+  --theme-shadow-md: 0 4px 6px -1px rgb(0 0 0 / 0.1), 0 2px 4px -2px rgb(0 0 0 / 0.1);
+  --theme-shadow-lg: 0 10px 15px -3px rgb(0 0 0 / 0.1), 0 4px 6px -4px rgb(0 0 0 / 0.1);
+  
+  /* Code Colors */
+  --theme-code-bg: #1e293b;
+  --theme-code-text: #4ade80;
+  --theme-code-keyword: #60a5fa;
+  --theme-code-string: #fbbf24;
+  --theme-code-comment: #94a3b8;
+  --theme-code-function: #c084fc;
+  --theme-code-variable: #86efac;
+  --theme-code-error: #f87171;
+}
+
+/* Dark Theme */
+:root[data-theme="dark"] {
+  /* Background Colors */
+  --theme-bg-primary: #0f172a;
+  --theme-bg-secondary: #1e293b;
+  --theme-bg-tertiary: #334155;
+  --theme-bg-accent: #1e40af;
+  --theme-bg-muted: #475569;
+  
+  /* Text Colors */
+  --theme-text-primary: #f1f5f9;
+  --theme-text-secondary: #cbd5e1;
+  --theme-text-tertiary: #94a3b8;
+  --theme-text-accent: #60a5fa;
+  --theme-text-muted: #64748b;
+  --theme-text-inverse: #0f172a;
+  
+  /* Border Colors */
+  --theme-border-primary: #334155;
+  --theme-border-secondary: #475569;
+  --theme-border-accent: #1e40af;
+  --theme-border-focus: #60a5fa;
+  
+  /* Interactive Colors */
+  --theme-interactive-primary: #3b82f6;
+  --theme-interactive-primary-hover: #60a5fa;
+  --theme-interactive-primary-active: #2563eb;
+  --theme-interactive-secondary: #64748b;
+  --theme-interactive-secondary-hover: #94a3b8;
+  
+  /* Status Colors */
+  --theme-status-success: #22c55e;
+  --theme-status-success-bg: #14532d;
+  --theme-status-warning: #f59e0b;
+  --theme-status-warning-bg: #78350f;
+  --theme-status-error: #ef4444;
+  --theme-status-error-bg: #7f1d1d;
+  --theme-status-info: #0ea5e9;
+  --theme-status-info-bg: #0c4a6e;
+  
+  /* Educational Colors */
+  --theme-educational-primary: #3b82f6;
+  --theme-educational-secondary: #8b5cf6;
+  --theme-educational-success: #22c55e;
+  --theme-educational-highlight: #f59e0b;
+  
+  /* AI Feature Colors */
+  --theme-ai-primary: #8b5cf6;
+  --theme-ai-secondary: #a78bfa;
+  --theme-ai-background: #2e1065;
+  --theme-ai-border: #5b21b6;
+  
+  /* Shadow Colors */
+  --theme-shadow-sm: 0 1px 2px 0 rgb(0 0 0 / 0.2);
+  --theme-shadow-base: 0 1px 3px 0 rgb(0 0 0 / 0.3), 0 1px 2px -1px rgb(0 0 0 / 0.3);
+  --theme-shadow-md: 0 4px 6px -1px rgb(0 0 0 / 0.3), 0 2px 4px -2px rgb(0 0 0 / 0.3);
+  --theme-shadow-lg: 0 10px 15px -3px rgb(0 0 0 / 0.3), 0 4px 6px -4px rgb(0 0 0 / 0.3);
+  
+  /* Code Colors */
+  --theme-code-bg: #020617;
+  --theme-code-text: #4ade80;
+  --theme-code-keyword: #60a5fa;
+  --theme-code-string: #fbbf24;
+  --theme-code-comment: #64748b;
+  --theme-code-function: #c084fc;
+  --theme-code-variable: #86efac;
+  --theme-code-error: #f87171;
+}
+
+/* High Contrast Theme */
+:root[data-theme="high-contrast"] {
+  /* Background Colors */
+  --theme-bg-primary: #ffffff;
+  --theme-bg-secondary: #f0f0f0;
+  --theme-bg-tertiary: #e0e0e0;
+  --theme-bg-accent: #000080;
+  --theme-bg-muted: #d0d0d0;
+  
+  /* Text Colors */
+  --theme-text-primary: #000000;
+  --theme-text-secondary: #000000;
+  --theme-text-tertiary: #000000;
+  --theme-text-accent: #000080;
+  --theme-text-muted: #404040;
+  --theme-text-inverse: #ffffff;
+  
+  /* Border Colors */
+  --theme-border-primary: #000000;
+  --theme-border-secondary: #404040;
+  --theme-border-accent: #000080;
+  --theme-border-focus: #ff0000;
+  
+  /* Interactive Colors */
+  --theme-interactive-primary: #000080;
+  --theme-interactive-primary-hover: #000060;
+  --theme-interactive-primary-active: #000040;
+  --theme-interactive-secondary: #404040;
+  --theme-interactive-secondary-hover: #202020;
+  
+  /* Status Colors */
+  --theme-status-success: #008000;
+  --theme-status-success-bg: #e0ffe0;
+  --theme-status-warning: #ff8000;
+  --theme-status-warning-bg: #fff0e0;
+  --theme-status-error: #ff0000;
+  --theme-status-error-bg: #ffe0e0;
+  --theme-status-info: #0080ff;
+  --theme-status-info-bg: #e0f0ff;
+  
+  /* Educational Colors */
+  --theme-educational-primary: #000080;
+  --theme-educational-secondary: #800080;
+  --theme-educational-success: #008000;
+  --theme-educational-highlight: #ff8000;
+  
+  /* AI Feature Colors */
+  --theme-ai-primary: #800080;
+  --theme-ai-secondary: #600080;
+  --theme-ai-background: #f0e0ff;
+  --theme-ai-border: #800080;
+  
+  /* Shadow Colors - Stronger shadows for contrast */
+  --theme-shadow-sm: 0 2px 4px 0 rgb(0 0 0 / 0.3);
+  --theme-shadow-base: 0 2px 6px 0 rgb(0 0 0 / 0.3), 0 2px 4px -1px rgb(0 0 0 / 0.3);
+  --theme-shadow-md: 0 6px 12px -1px rgb(0 0 0 / 0.3), 0 4px 8px -2px rgb(0 0 0 / 0.3);
+  --theme-shadow-lg: 0 12px 24px -3px rgb(0 0 0 / 0.3), 0 6px 12px -4px rgb(0 0 0 / 0.3);
+}
+
+/* ===== COMPONENT THEME STYLES ===== */
+
+/* Base components using theme variables */
+.theme-card {
+  background-color: var(--theme-bg-primary);
+  border-color: var(--theme-border-primary);
+  color: var(--theme-text-primary);
+  box-shadow: var(--theme-shadow-sm);
+}
+
+.theme-card:hover {
+  box-shadow: var(--theme-shadow-md);
+}
+
+.theme-button-primary {
+  background-color: var(--theme-interactive-primary);
+  color: var(--theme-text-inverse);
+  border-color: var(--theme-interactive-primary);
+}
+
+.theme-button-primary:hover {
+  background-color: var(--theme-interactive-primary-hover);
+  border-color: var(--theme-interactive-primary-hover);
+}
+
+.theme-button-primary:active {
+  background-color: var(--theme-interactive-primary-active);
+  border-color: var(--theme-interactive-primary-active);
+}
+
+.theme-input {
+  background-color: var(--theme-bg-primary);
+  border-color: var(--theme-border-primary);
+  color: var(--theme-text-primary);
+}
+
+.theme-input:focus {
+  border-color: var(--theme-border-focus);
+  box-shadow: 0 0 0 3px color-mix(in srgb, var(--theme-border-focus) 20%, transparent);
+}
+
+.theme-text-primary {
+  color: var(--theme-text-primary);
+}
+
+.theme-text-secondary {
+  color: var(--theme-text-secondary);
+}
+
+.theme-text-accent {
+  color: var(--theme-text-accent);
+}
+
+/* ===== EDUCATIONAL THEME COMPONENTS ===== */
+
+.theme-assignment-card {
+  background-color: var(--theme-bg-primary);
+  border-color: var(--theme-border-primary);
+  color: var(--theme-text-primary);
+}
+
+.theme-assignment-card:hover {
+  border-color: var(--theme-educational-primary);
+  box-shadow: var(--theme-shadow-md);
+}
+
+.theme-code-block {
+  background-color: var(--theme-code-bg);
+  color: var(--theme-code-text);
+  border-color: var(--theme-border-secondary);
+}
+
+.theme-ai-feature {
+  background-color: var(--theme-ai-background);
+  border-color: var(--theme-ai-border);
+  color: var(--theme-text-primary);
+}
+
+.theme-success-state {
+  background-color: var(--theme-status-success-bg);
+  border-color: var(--theme-status-success);
+  color: var(--theme-status-success);
+}
+
+.theme-warning-state {
+  background-color: var(--theme-status-warning-bg);
+  border-color: var(--theme-status-warning);
+  color: var(--theme-status-warning);
+}
+
+.theme-error-state {
+  background-color: var(--theme-status-error-bg);
+  border-color: var(--theme-status-error);
+  color: var(--theme-status-error);
+}
+
+/* ===== THEME TRANSITIONS ===== */
+
+.theme-transition {
+  transition: 
+    background-color 0.2s ease-in-out,
+    border-color 0.2s ease-in-out,
+    color 0.2s ease-in-out,
+    box-shadow 0.2s ease-in-out;
+}
+
+/* ===== RESPONSIVE THEME ADAPTATIONS ===== */
+
+@media (max-width: 768px) {
+  :root {
+    /* Adjust shadows for mobile performance */
+    --theme-shadow-sm: 0 1px 2px 0 rgb(0 0 0 / 0.03);
+    --theme-shadow-base: 0 1px 3px 0 rgb(0 0 0 / 0.08);
+    --theme-shadow-md: 0 2px 4px 0 rgb(0 0 0 / 0.08);
+    --theme-shadow-lg: 0 4px 8px 0 rgb(0 0 0 / 0.08);
+  }
+}
+
+/* ===== PRINT THEME ===== */
+
+@media print {
+  :root {
+    /* Print-optimized theme */
+    --theme-bg-primary: #ffffff;
+    --theme-bg-secondary: #ffffff;
+    --theme-text-primary: #000000;
+    --theme-text-secondary: #000000;
+    --theme-border-primary: #000000;
+    --theme-shadow-sm: none;
+    --theme-shadow-base: none;
+    --theme-shadow-md: none;
+    --theme-shadow-lg: none;
+  }
+  
+  .theme-card {
+    border: 1px solid #000000;
+    box-shadow: none;
+  }
+}
+
+/* ===== ACCESSIBILITY THEME OVERRIDES ===== */
+
+@media (prefers-reduced-motion: reduce) {
+  .theme-transition {
+    transition: none;
+  }
+}
+
+@media (prefers-contrast: high) {
+  :root {
+    /* Enhanced contrast */
+    --theme-border-primary: #000000;
+    --theme-border-secondary: #404040;
+    --theme-interactive-primary: #0000ff;
+    --theme-text-primary: #000000;
+  }
+}
+
+/* ===== THEME UTILITIES ===== */
+
+.theme-bg-primary { background-color: var(--theme-bg-primary); }
+.theme-bg-secondary { background-color: var(--theme-bg-secondary); }
+.theme-bg-tertiary { background-color: var(--theme-bg-tertiary); }
+.theme-bg-accent { background-color: var(--theme-bg-accent); }
+
+.theme-border-primary { border-color: var(--theme-border-primary); }
+.theme-border-secondary { border-color: var(--theme-border-secondary); }
+.theme-border-accent { border-color: var(--theme-border-accent); }
+
+.theme-shadow-sm { box-shadow: var(--theme-shadow-sm); }
+.theme-shadow-base { box-shadow: var(--theme-shadow-base); }
+.theme-shadow-md { box-shadow: var(--theme-shadow-md); }
+.theme-shadow-lg { box-shadow: var(--theme-shadow-lg); }
+
+/* ===== THEME TOGGLE ANIMATION ===== */
+
+.theme-toggle-enter {
+  opacity: 0;
+  transform: scale(0.8);
+}
+
+.theme-toggle-enter-active {
+  opacity: 1;
+  transform: scale(1);
+  transition: opacity 200ms ease-out, transform 200ms ease-out;
+}
+
+.theme-toggle-exit {
+  opacity: 1;
+  transform: scale(1);
+}
+
+.theme-toggle-exit-active {
+  opacity: 0;
+  transform: scale(0.8);
+  transition: opacity 200ms ease-out, transform 200ms ease-out;
+}

@@ -1,0 +1,217 @@
+# AI Teaching Assistant System - Docker Compose Configuration
+# 完整的开发环境服务编排
+
+version: '3.8'
+
+services:
+  # PostgreSQL数据库
+  database:
+    image: postgres:15-alpine
+    container_name: ai-teacher-db
+    environment:
+      POSTGRES_DB: ai_teacher_dev
+      POSTGRES_USER: ai_teacher
+      POSTGRES_PASSWORD: dev_password_123
+      PGDATA: /var/lib/postgresql/data/pgdata
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+      - ./scripts/init-db.sql:/docker-entrypoint-initdb.d/init-db.sql:ro
+    ports:
+      - "5432:5432"
+    networks:
+      - ai-teacher-network
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U ai_teacher -d ai_teacher_dev"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+    restart: unless-stopped
+
+  # Redis缓存
+  redis:
+    image: redis:7-alpine
+    container_name: ai-teacher-redis
+    command: redis-server --requirepass dev_redis_123 --maxmemory 256mb --maxmemory-policy allkeys-lru
+    volumes:
+      - redis_data:/data
+      - ./scripts/redis.conf:/etc/redis/redis.conf:ro
+    ports:
+      - "6379:6379"
+    networks:
+      - ai-teacher-network
+    healthcheck:
+      test: ["CMD", "redis-cli", "--raw", "incr", "ping"]
+      interval: 10s
+      timeout: 3s
+      retries: 5
+    restart: unless-stopped
+
+  # 后端API服务
+  backend:
+    build:
+      context: .
+      dockerfile: Dockerfile
+      target: development
+    container_name: ai-teacher-backend
+    environment:
+      - DATABASE_URL=postgresql+asyncpg://ai_teacher:dev_password_123@database:5432/ai_teacher_dev
+      - REDIS_URL=redis://:dev_redis_123@redis:6379/0
+      - ENVIRONMENT=development
+      - DEBUG=true
+      - SECRET_KEY=dev-secret-key-change-in-production-123456789
+    volumes:
+      - .:/app
+      - backend_logs:/app/logs
+      - uploads_data:/app/uploads
+    ports:
+      - "8000:8000"
+    networks:
+      - ai-teacher-network
+    depends_on:
+      database:
+        condition: service_healthy
+      redis:
+        condition: service_healthy
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:8000/health"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+      start_period: 60s
+    restart: unless-stopped
+    develop:
+      watch:
+        - action: sync
+          path: ./app
+          target: /app/app
+        - action: rebuild
+          path: requirements.txt
+
+  # 前端应用
+  frontend:
+    build:
+      context: ./ai-teacher-frontend
+      dockerfile: Dockerfile
+      target: development
+    container_name: ai-teacher-frontend
+    environment:
+      - VITE_API_BASE_URL=http://localhost:8000
+      - VITE_WS_URL=ws://localhost:8000/ws
+      - NODE_ENV=development
+    volumes:
+      - ./ai-teacher-frontend:/app
+      - /app/node_modules
+    ports:
+      - "3000:5173"
+    networks:
+      - ai-teacher-network
+    depends_on:
+      - backend
+    restart: unless-stopped
+    develop:
+      watch:
+        - action: sync
+          path: ./ai-teacher-frontend/src
+          target: /app/src
+
+  # 数据库管理工具 (可选)
+  pgadmin:
+    image: dpage/pgadmin4:latest
+    container_name: ai-teacher-pgadmin
+    environment:
+      PGADMIN_DEFAULT_EMAIL: admin@aiteacher.local
+      PGADMIN_DEFAULT_PASSWORD: admin123
+      PGADMIN_CONFIG_SERVER_MODE: "False"
+    volumes:
+      - pgadmin_data:/var/lib/pgadmin
+    ports:
+      - "5050:80"
+    networks:
+      - ai-teacher-network
+    depends_on:
+      - database
+    profiles:
+      - tools
+    restart: unless-stopped
+
+  # Redis管理工具 (可选)
+  redis-commander:
+    image: rediscommander/redis-commander:latest
+    container_name: ai-teacher-redis-commander
+    environment:
+      REDIS_HOSTS: "local:redis:6379:0:dev_redis_123"
+      HTTP_USER: admin
+      HTTP_PASSWORD: admin123
+    ports:
+      - "8081:8081"
+    networks:
+      - ai-teacher-network
+    depends_on:
+      - redis
+    profiles:
+      - tools
+    restart: unless-stopped
+
+  # Prometheus监控 (可选)
+  prometheus:
+    image: prom/prometheus:latest
+    container_name: ai-teacher-prometheus
+    command:
+      - '--config.file=/etc/prometheus/prometheus.yml'
+      - '--storage.tsdb.path=/prometheus'
+      - '--web.console.libraries=/etc/prometheus/console_libraries'
+      - '--web.console.templates=/etc/prometheus/consoles'
+      - '--web.enable-lifecycle'
+    volumes:
+      - ./monitoring/prometheus.yml:/etc/prometheus/prometheus.yml:ro
+      - prometheus_data:/prometheus
+    ports:
+      - "9090:9090"
+    networks:
+      - ai-teacher-network
+    profiles:
+      - monitoring
+    restart: unless-stopped
+
+  # Grafana监控面板 (可选)
+  grafana:
+    image: grafana/grafana:latest
+    container_name: ai-teacher-grafana
+    environment:
+      GF_SECURITY_ADMIN_PASSWORD: admin123
+      GF_USERS_ALLOW_SIGN_UP: "false"
+    volumes:
+      - grafana_data:/var/lib/grafana
+      - ./monitoring/grafana/provisioning:/etc/grafana/provisioning:ro
+    ports:
+      - "3001:3000"
+    networks:
+      - ai-teacher-network
+    depends_on:
+      - prometheus
+    profiles:
+      - monitoring
+    restart: unless-stopped
+
+volumes:
+  postgres_data:
+    driver: local
+  redis_data:
+    driver: local
+  backend_logs:
+    driver: local
+  uploads_data:
+    driver: local
+  pgadmin_data:
+    driver: local
+  prometheus_data:
+    driver: local
+  grafana_data:
+    driver: local
+
+networks:
+  ai-teacher-network:
+    driver: bridge
+    ipam:
+      config:
+        - subnet: 172.20.0.0/16
