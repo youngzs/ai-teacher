@@ -16,7 +16,7 @@ from abc import ABC, abstractmethod
 
 from ..models.teaching_models import SubmissionData, TeachingFeedback, StudentProfile
 from ..agents.teaching_agents import MultiAgentTeachingSystem
-from ..utils.logger import get_logger, log_agent_activity, log_performance_metric, LogExecutionTime
+from ..utils.logger import get_logger, log_agent_activity, log_performance_metric
 from ..config.agents_config import SYSTEM_CONFIG
 
 logger = get_logger(__name__)
@@ -104,30 +104,30 @@ class AssignmentAnalysisWorkflow(BaseWorkflow):
         self._start_workflow()
         
         try:
-            with LogExecutionTime(f"assignment_analysis_{submission_data.student_id}"):
-                # 使用教学系统处理提交
-                feedback = await self.teaching_system.process_submission(submission_data)
-                
-                # 记录Agent活动
-                log_agent_activity("AssignmentAnalysisWorkflow", "completed_analysis", {
+            start_time = datetime.now()
+            # 使用教学系统处理提交
+            feedback = await self.teaching_system.process_submission(submission_data)
+            
+            # 记录Agent活动
+            log_agent_activity("AssignmentAnalysisWorkflow", "completed_analysis", {
                     "student_id": submission_data.student_id,
                     "assignment_id": submission_data.assignment_id,
                     "overall_score": feedback.overall_score
-                })
-                
-                # 计算质量指标
-                quality_metrics = self._calculate_quality_metrics(feedback)
-                
-                self._complete_workflow(success=True)
-                
-                return WorkflowResult(
+            })
+            
+            # 计算质量指标
+            quality_metrics = self._calculate_quality_metrics(feedback)
+            
+            self._complete_workflow(success=True)
+            
+            return WorkflowResult(
                     workflow_id=self.workflow_id,
                     workflow_type=self.workflow_type,
                     status=self.status,
                     feedback=feedback,
                     execution_time=(self.end_time - self.start_time).total_seconds(),
                     quality_metrics=quality_metrics
-                )
+            )
                 
         except Exception as e:
             logger.error(f"Assignment analysis workflow failed: {e}")
@@ -200,30 +200,30 @@ class DebuggingGuidanceWorkflow(BaseWorkflow):
         self._start_workflow()
         
         try:
-            with LogExecutionTime(f"debugging_guidance_{submission_data.student_id}"):
-                # 使用专门的调试会话处理
-                feedback = await self.teaching_system.process_debugging_session(submission_data)
-                
-                # 记录调试指导活动
-                log_agent_activity("DebuggingGuidanceWorkflow", "completed_debugging_guidance", {
+            start_time = datetime.now()
+            # 使用专门的调试会话处理
+            feedback = await self.teaching_system.process_debugging_session(submission_data)
+            
+            # 记录调试指导活动
+            log_agent_activity("DebuggingGuidanceWorkflow", "completed_debugging_guidance", {
                     "student_id": submission_data.student_id,
                     "error_types": self._extract_error_types(feedback),
                     "guidance_quality": feedback.quality_score
-                })
-                
-                # 计算调试指导特有的质量指标
-                quality_metrics = self._calculate_debugging_quality_metrics(feedback)
+            })
+            
+            # 计算调试指导特有的质量指标
+            quality_metrics = self._calculate_debugging_quality_metrics(feedback)
                 
                 self._complete_workflow(success=True)
-                
-                return WorkflowResult(
+            
+            return WorkflowResult(
                     workflow_id=self.workflow_id,
                     workflow_type=self.workflow_type,
                     status=self.status,
                     feedback=feedback,
                     execution_time=(self.end_time - self.start_time).total_seconds(),
                     quality_metrics=quality_metrics
-                )
+            )
                 
         except Exception as e:
             logger.error(f"Debugging guidance workflow failed: {e}")
@@ -307,32 +307,32 @@ class PersonalizedLearningWorkflow(BaseWorkflow):
         self._start_workflow()
         
         try:
-            with LogExecutionTime(f"personalized_learning_{submission_data.student_id}"):
+            start_time = datetime.now()
                 # 使用个性化学习处理
                 feedback = await self.teaching_system.process_personalized_learning(
                     submission_data, learning_history
-                )
-                
-                # 记录个性化学习活动
-                log_agent_activity("PersonalizedLearningWorkflow", "completed_personalization", {
+            )
+            
+            # 记录个性化学习活动
+            log_agent_activity("PersonalizedLearningWorkflow", "completed_personalization", {
                     "student_id": submission_data.student_id,
                     "history_length": len(learning_history),
                     "personalization_score": self._calculate_personalization_score(feedback)
-                })
-                
-                # 计算个性化质量指标
-                quality_metrics = self._calculate_personalization_quality_metrics(feedback, learning_history)
+            })
+            
+            # 计算个性化质量指标
+            quality_metrics = self._calculate_personalization_quality_metrics(feedback, learning_history)
                 
                 self._complete_workflow(success=True)
-                
-                return WorkflowResult(
+            
+            return WorkflowResult(
                     workflow_id=self.workflow_id,
                     workflow_type=self.workflow_type,
                     status=self.status,
                     feedback=feedback,
                     execution_time=(self.end_time - self.start_time).total_seconds(),
                     quality_metrics=quality_metrics
-                )
+            )
                 
         except Exception as e:
             logger.error(f"Personalized learning workflow failed: {e}")

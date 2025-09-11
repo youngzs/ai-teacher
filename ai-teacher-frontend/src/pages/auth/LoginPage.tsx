@@ -1,13 +1,13 @@
 import { useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
-import { useAuthStore } from '../../store/auth';
+import { useAuthStore } from '../../store/authStore';
 import { Button, Input } from '../../components/ui';
 import { Mail, Lock, Eye, EyeOff } from 'lucide-react';
 
-export const LoginPage: React.FC = () => {
+const LoginPage: React.FC = () => {
   const navigate = useNavigate();
   const { login, isLoading, error, clearError } = useAuthStore();
-  
+
   const [formData, setFormData] = useState({
     email: '',
     password: ''
@@ -18,7 +18,7 @@ export const LoginPage: React.FC = () => {
   const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const { name, value } = e.target;
     setFormData(prev => ({ ...prev, [name]: value }));
-    
+
     // Clear validation errors when user starts typing
     if (validationErrors[name]) {
       setValidationErrors(prev => ({ ...prev, [name]: '' }));
@@ -207,3 +207,5 @@ export const LoginPage: React.FC = () => {
     </div>
   );
 };
+
+export default LoginPage;

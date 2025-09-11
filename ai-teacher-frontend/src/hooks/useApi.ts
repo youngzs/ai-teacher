@@ -1,4 +1,4 @@
-import { useState, useCallback } from 'react';
+import { useState, useCallback, useEffect } from 'react';
 import type { ApiResponse } from '../types';
 
 interface UseApiState<T> {
@@ -78,7 +78,7 @@ export function useApiQuery<T>(
 ): UseApiReturn<T> {
   const api = useApi(apiFunction);
 
-  React.useEffect(() => {
+  useEffect(() => {
     api.execute(...args);
   }, dependencies);
 

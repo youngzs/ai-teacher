@@ -1,3 +1,4 @@
+import axios, { AxiosInstance, AxiosResponse, AxiosError } from 'axios';
 import type { 
   User, 
   Course, 
@@ -15,95 +16,152 @@ import { getErrorMessage } from '../utils';
 // API Configuration
 const API_CONFIG = {
   baseURL: import.meta.env.VITE_API_BASE_URL || 'http://localhost:8000',
+  aiBaseURL: import.meta.env.VITE_AI_API_BASE_URL || 'http://localhost:8001',
   timeout: 10000,
   headers: {
     'Content-Type': 'application/json',
   },
 };
 
-// HTTP Client
+// HTTP Client using Axios
 class ApiClient {
-  private baseURL: string;
-  private defaultHeaders: Record<string, string>;
+  private client: AxiosInstance;
+  private aiClient: AxiosInstance;
 
   constructor(config: typeof API_CONFIG) {
-    this.baseURL = config.baseURL;
-    this.defaultHeaders = config.headers;
+    // Main API client
+    this.client = axios.create({
+      baseURL: `${config.baseURL}/api/v1`,
+      timeout: config.timeout,
+      headers: config.headers,
+    });
+
+    // AI API client
+    this.aiClient = axios.create({
+      baseURL: `${config.aiBaseURL}/api/v1`,
+      timeout: 30000, // AI operations may take longer
+      headers: config.headers,
+    });
+
+    this.setupInterceptors(this.client);
+    this.setupInterceptors(this.aiClient);
   }
 
-  private async request<T>(
-    endpoint: string,
-    options: RequestInit = {}
-  ): Promise<ApiResponse<T>> {
-    const url = `${this.baseURL}/api/v1${endpoint}`;
-    const token = localStorage.getItem('auth-token');
-
-    const config: RequestInit = {
-      ...options,
-      headers: {
-        ...this.defaultHeaders,
-        ...options.headers,
-        ...(token && { Authorization: `Bearer ${token}` }),
+  private setupInterceptors(client: AxiosInstance) {
+    // Request interceptor - add auth token
+    client.interceptors.request.use(
+      (config) => {
+        const token = localStorage.getItem('auth-token');
+        if (token) {
+          config.headers.Authorization = `Bearer ${token}`;
+        }
+        return config;
       },
-    };
+      (error) => Promise.reject(error)
+    );
 
-    try {
-      const response = await fetch(url, config);
-      const data = await response.json();
-
-      if (!response.ok) {
-        throw new Error(data.message || `HTTP Error: ${response.status}`);
+    // Response interceptor - handle common errors
+    client.interceptors.response.use(
+      (response: AxiosResponse) => response,
+      (error: AxiosError) => {
+        if (error.response?.status === 401) {
+          // Unauthorized - clear token and redirect to login
+          localStorage.removeItem('auth-token');
+          window.location.href = '/login';
+        }
+        return Promise.reject(error);
       }
+    );
+  }
 
-      return {
-        success: true,
-        data: data.data || data,
-        message: data.message,
-      };
-    } catch (error) {
+  private handleResponse<T>(response: AxiosResponse): ApiResponse<T> {
+    return {
+      success: true,
+      data: response.data.data || response.data,
+      message: response.data.message,
+    };
+  }
+
+  private handleError(error: any): ApiResponse<never> {
+    if (axios.isAxiosError(error)) {
+      const message = error.response?.data?.message || error.message;
       return {
         success: false,
-        message: getErrorMessage(error),
-        errors: [getErrorMessage(error)],
+        message,
+        errors: [message],
       };
+    }
+    
+    const message = getErrorMessage(error);
+    return {
+      success: false,
+      message,
+      errors: [message],
+    };
+  }
+
+  async get<T>(endpoint: string, useAI = false): Promise<ApiResponse<T>> {
+    try {
+      const client = useAI ? this.aiClient : this.client;
+      const response = await client.get(endpoint);
+      return this.handleResponse<T>(response);
+    } catch (error) {
+      return this.handleError(error);
     }
   }
 
-  async get<T>(endpoint: string): Promise<ApiResponse<T>> {
-    return this.request<T>(endpoint, { method: 'GET' });
+  async post<T>(endpoint: string, data?: any, useAI = false): Promise<ApiResponse<T>> {
+    try {
+      const client = useAI ? this.aiClient : this.client;
+      const response = await client.post(endpoint, data);
+      return this.handleResponse<T>(response);
+    } catch (error) {
+      return this.handleError(error);
+    }
   }
 
-  async post<T>(endpoint: string, data?: any): Promise<ApiResponse<T>> {
-    return this.request<T>(endpoint, {
-      method: 'POST',
-      body: JSON.stringify(data),
-    });
+  async put<T>(endpoint: string, data?: any, useAI = false): Promise<ApiResponse<T>> {
+    try {
+      const client = useAI ? this.aiClient : this.client;
+      const response = await client.put(endpoint, data);
+      return this.handleResponse<T>(response);
+    } catch (error) {
+      return this.handleError(error);
+    }
   }
 
-  async put<T>(endpoint: string, data?: any): Promise<ApiResponse<T>> {
-    return this.request<T>(endpoint, {
-      method: 'PUT',
-      body: JSON.stringify(data),
-    });
+  async patch<T>(endpoint: string, data?: any, useAI = false): Promise<ApiResponse<T>> {
+    try {
+      const client = useAI ? this.aiClient : this.client;
+      const response = await client.patch(endpoint, data);
+      return this.handleResponse<T>(response);
+    } catch (error) {
+      return this.handleError(error);
+    }
   }
 
-  async patch<T>(endpoint: string, data?: any): Promise<ApiResponse<T>> {
-    return this.request<T>(endpoint, {
-      method: 'PATCH',
-      body: JSON.stringify(data),
-    });
+  async delete<T>(endpoint: string, useAI = false): Promise<ApiResponse<T>> {
+    try {
+      const client = useAI ? this.aiClient : this.client;
+      const response = await client.delete(endpoint);
+      return this.handleResponse<T>(response);
+    } catch (error) {
+      return this.handleError(error);
+    }
   }
 
-  async delete<T>(endpoint: string): Promise<ApiResponse<T>> {
-    return this.request<T>(endpoint, { method: 'DELETE' });
-  }
-
-  async upload<T>(endpoint: string, formData: FormData): Promise<ApiResponse<T>> {
-    return this.request<T>(endpoint, {
-      method: 'POST',
-      body: formData,
-      headers: {}, // Let browser set Content-Type for FormData
-    });
+  async upload<T>(endpoint: string, formData: FormData, useAI = false): Promise<ApiResponse<T>> {
+    try {
+      const client = useAI ? this.aiClient : this.client;
+      const response = await client.post(endpoint, formData, {
+        headers: {
+          'Content-Type': 'multipart/form-data',
+        },
+      });
+      return this.handleResponse<T>(response);
+    } catch (error) {
+      return this.handleError(error);
+    }
   }
 }
 
@@ -240,6 +298,15 @@ export const submissionAPI = {
       testResults?: any[];
     }>('/submissions/run', { code, language, testCases }),
     
+  // AI-powered code analysis and feedback
+  analyzeCode: (code: string, language: string, assignmentId?: string) =>
+    apiClient.post<{
+      feedback: any;
+      suggestions: string[];
+      errors: any[];
+      score: number;
+    }>('/ai/analyze-code', { code, language, assignmentId }, true),
+    
   uploadFile: (assignmentId: string, file: File) => {
     const formData = new FormData();
     formData.append('file', file);
@@ -283,6 +350,43 @@ export const analyticsAPI = {
     apiClient.get<any>(`/analytics/assignments/${assignmentId}`),
 };
 
+// System Health API
+export const systemAPI = {
+  healthCheck: () => 
+    apiClient.get<{ status: string; timestamp: string; version: string }>('/health'),
+    
+  aiHealthCheck: () => 
+    apiClient.get<{ status: string; timestamp: string; version: string }>('/health', true),
+};
+
+// AI Services API
+export const aiAPI = {
+  analyzeCode: (code: string, language: string, assignmentContext?: any) =>
+    apiClient.post<{
+      feedback: any;
+      suggestions: string[];
+      errors: any[];
+      score: number;
+      improvements: string[];
+    }>('/ai/analyze', { code, language, assignmentContext }, true),
+    
+  generateFeedback: (submissionId: string, analysisData: any) =>
+    apiClient.post<{
+      feedback: string;
+      strengths: string[];
+      improvements: string[];
+      nextSteps: string[];
+    }>('/ai/feedback', { submissionId, analysisData }, true),
+    
+  gradeSubmission: (submissionId: string, rubric?: any) =>
+    apiClient.post<{
+      score: number;
+      breakdown: Record<string, number>;
+      feedback: string;
+      suggestions: string[];
+    }>('/ai/grade', { submissionId, rubric }, true),
+};
+
 // Export default API object
 export const api = {
   auth: authAPI,
@@ -292,4 +396,6 @@ export const api = {
   submission: submissionAPI,
   feedback: feedbackAPI,
   analytics: analyticsAPI,
+  system: systemAPI,
+  ai: aiAPI,
 };

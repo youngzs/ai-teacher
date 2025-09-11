@@ -3,15 +3,15 @@
  * 提供自定义渲染函数和测试辅助工具
  */
 
-import React, { ReactElement, ReactNode } from 'react';
-import { render, RenderOptions, RenderResult } from '@testing-library/react';
+import React, { type ReactElement, type ReactNode } from 'react';
+import { render, type RenderOptions, type RenderResult } from '@testing-library/react';
 import { BrowserRouter } from 'react-router-dom';
 import userEvent from '@testing-library/user-event';
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
 
 // Zustand store的mock
-import { authStore } from '@/store/auth';
-import { uiStore } from '@/store/ui';
+import { useAuthStore } from '../store/authStore';
+import { useAppStore } from '../store/appStore';
 
 // 创建测试用的QueryClient
 const createTestQueryClient = () => new QueryClient({
@@ -33,16 +33,11 @@ interface AllTheProvidersProps {
   initialRoute?: string;
 }
 
-const AllTheProviders: React.FC<AllTheProvidersProps> = ({ 
-  children, 
+const AllTheProviders: React.FC<AllTheProvidersProps> = ({
+  children,
   queryClient = createTestQueryClient(),
   initialRoute = '/'
 }) => {
-  // 设置初始路由
-  if (initialRoute !== '/') {
-    window.history.pushState({}, 'Test page', initialRoute);
-  }
-
   return (
     <BrowserRouter>
       <QueryClientProvider client={queryClient}>
@@ -52,52 +47,42 @@ const AllTheProviders: React.FC<AllTheProvidersProps> = ({
   );
 };
 
-// 自定义渲染函数
+// 自定义渲染选项
 interface CustomRenderOptions extends Omit<RenderOptions, 'wrapper'> {
   queryClient?: QueryClient;
   initialRoute?: string;
-  wrapper?: React.ComponentType<any>;
 }
 
+// 自定义渲染函数
 const customRender = (
   ui: ReactElement,
   options: CustomRenderOptions = {}
 ): RenderResult => {
-  const { queryClient, initialRoute, wrapper, ...renderOptions } = options;
+  const { queryClient = createTestQueryClient(), initialRoute = '/', ...renderOptions } = options;
 
-  const Wrapper = wrapper || AllTheProviders;
-  
+  const Wrapper: React.FC<{ children: ReactNode }> = ({ children }) => (
+    <AllTheProviders queryClient={queryClient} initialRoute={initialRoute}>
+      {children}
+    </AllTheProviders>
+  );
+
   return render(ui, {
-    wrapper: (props) => (
-      <Wrapper {...props} queryClient={queryClient} initialRoute={initialRoute} />
-    ),
+    wrapper: Wrapper,
     ...renderOptions,
   });
 };
 
-// 认证相关的渲染函数
-export const renderWithAuth = (
-  ui: ReactElement,
-  options: CustomRenderOptions & { user?: any } = {}
-) => {
-  const { user = null, ...restOptions } = options;
-  
-  // 设置认证状态
-  if (user) {
-    authStore.getState().setUser(user);
-    authStore.getState().setAuthenticated(true);
-  } else {
-    authStore.getState().logout();
-  }
-  
-  return customRender(ui, restOptions);
-};
+// 重新导出所有测试库函数
+export * from '@testing-library/react';
+
+// 导出自定义渲染函数
+export { customRender as render };
 
 // 用户事件工具
 export const createUser = () => userEvent.setup();
 
 // Mock API响应工具
-export const createMockApiResponse = <T>(data: T, delay = 0) => {
+export const createMockApiResponse = <T,>(data: T, delay = 0) => {
   return new Promise<T>((resolve) => {
     setTimeout(() => resolve(data), delay);
   });
@@ -116,12 +101,12 @@ export const createMockApiError = (message: string, status = 500, delay = 0) => 
 // 表单测试辅助函数
 export const fillForm = async (fields: Record<string, string>) => {
   const user = createUser();
-  
+
   for (const [fieldName, value] of Object.entries(fields)) {
     const field = screen.getByLabelText(new RegExp(fieldName, 'i')) ||
                    screen.getByPlaceholderText(new RegExp(fieldName, 'i')) ||
                    screen.getByDisplayValue('');
-    
+
     if (field) {
       await user.clear(field);
       await user.type(field, value);
@@ -132,18 +117,19 @@ export const fillForm = async (fields: Record<string, string>) => {
 // 等待异步操作完成
 export const waitForLoadingToFinish = async () => {
   await waitForElementToBeRemoved(
-    () => screen.queryByLabelText(/loading/i) || screen.queryByText(/loading/i)
+    () => screen.queryByText(/loading/i)
   );
 };
 
-// Store状态重置
+// 重置stores
 export const resetStores = () => {
   authStore.getState().logout();
-  uiStore.getState().reset?.();
+  useAppStore.getState().reset();
 };
 
-// 模拟路由导航
+// Mock react-router-dom
 export const mockNavigate = vi.fn();
+
 vi.mock('react-router-dom', async () => {
   const actual = await vi.importActual('react-router-dom');
   return {
@@ -152,7 +138,7 @@ vi.mock('react-router-dom', async () => {
   };
 });
 
-// 模拟window.alert, confirm, prompt
+// Mock window methods
 export const mockWindowMethods = () => {
   const originalAlert = window.alert;
   const originalConfirm = window.confirm;
@@ -168,9 +154,6 @@ export const mockWindowMethods = () => {
       window.confirm = originalConfirm;
       window.prompt = originalPrompt;
     },
-    mockAlert: window.alert as vi.Mock,
-    mockConfirm: window.confirm as vi.Mock,
-    mockPrompt: window.prompt as vi.Mock,
   };
 };
 
@@ -201,7 +184,7 @@ export const expectToBeEnabled = (element: HTMLElement) => {
   expect(element).toBeEnabled();
 };
 
-// 组件交互辅助
+// 用户交互辅助函数
 export const clickElement = async (element: HTMLElement) => {
   const user = createUser();
   await user.click(element);
@@ -217,9 +200,5 @@ export const selectOption = async (element: HTMLElement, option: string) => {
   await user.selectOptions(element, option);
 };
 
-// 导出所有testing-library的utilities以及自定义的render函数
-export * from '@testing-library/react';
-export { customRender as render };
-
-// 导出常用的testing library functions
+// 重新导出常用函数
 export { screen, waitFor, waitForElementToBeRemoved } from '@testing-library/react';

@@ -79,13 +79,6 @@ services:
       retries: 3
       start_period: 60s
     restart: unless-stopped
-    develop:
-      watch:
-        - action: sync
-          path: ./app
-          target: /app/app
-        - action: rebuild
-          path: requirements.txt
 
   # 前端应用
   frontend:
@@ -108,11 +101,6 @@ services:
     depends_on:
       - backend
     restart: unless-stopped
-    develop:
-      watch:
-        - action: sync
-          path: ./ai-teacher-frontend/src
-          target: /app/src
 
   # 数据库管理工具 (可选)
   pgadmin:

@@ -20,7 +20,7 @@ import os
 sys.path.append(os.path.join(os.path.dirname(__file__), '..', '..'))
 
 from src.agents.teaching_agents import MultiAgentTeachingSystem
-from src.workflows.teaching_workflows import WorkflowManager, WorkflowType
+from src.workflows.teaching_workflows_simple import WorkflowManager, WorkflowType
 from src.models.teaching_models import (
     SubmissionData, StudentProfile, TeachingFeedback,
     ProgrammingLanguage, DifficultyLevel, create_sample_submission

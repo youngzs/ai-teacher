@@ -9,7 +9,7 @@ Date: 2025-09-10
 from sqlalchemy import Column, String, DateTime, Float, Integer, Text, Boolean, JSON, ForeignKey, Index
 from sqlalchemy.dialects.postgresql import UUID, JSONB
 from sqlalchemy.orm import relationship
-from sqlalchemy.sql import func
+from sqlalchemy.sql import func, text
 from datetime import datetime
 import uuid
 
@@ -20,7 +20,7 @@ class User(Base):
     """用户表模型"""
     __tablename__ = "users"
     
-    id = Column(String, primary_key=True, default=lambda: str(uuid.uuid4()))
+    id = Column(UUID(as_uuid=True), primary_key=True, default=uuid.uuid4)
     username = Column(String(50), unique=True, nullable=False, index=True)
     email = Column(String(255), unique=True, nullable=False, index=True)
     hashed_password = Column(String(255), nullable=False)
@@ -53,10 +53,10 @@ class Class(Base):
     """班级表模型"""
     __tablename__ = "classes"
     
-    id = Column(String, primary_key=True, default=lambda: str(uuid.uuid4()))
+    id = Column(UUID(as_uuid=True), primary_key=True, default=uuid.uuid4)
     name = Column(String(100), nullable=False)
     description = Column(Text)
-    teacher_id = Column(String, ForeignKey("users.id"), nullable=False)
+    teacher_id = Column(UUID(as_uuid=True), ForeignKey("users.id"), nullable=False)
     course_code = Column(String(20), nullable=True)  # 课程代码
     semester = Column(String(20), nullable=True)     # 学期
     academic_year = Column(String(10), nullable=True)  # 学年
@@ -79,9 +79,9 @@ class ClassMembership(Base):
     """班级成员关系表"""
     __tablename__ = "class_memberships"
     
-    id = Column(String, primary_key=True, default=lambda: str(uuid.uuid4()))
-    class_id = Column(String, ForeignKey("classes.id"), nullable=False)
-    student_id = Column(String, ForeignKey("users.id"), nullable=False)
+    id = Column(UUID(as_uuid=True), primary_key=True, default=uuid.uuid4)
+    class_id = Column(UUID(as_uuid=True), ForeignKey("classes.id"), nullable=False)
+    student_id = Column(UUID(as_uuid=True), ForeignKey("users.id"), nullable=False)
     
     # 成员信息
     role = Column(String(20), default="student")  # student, assistant
@@ -102,10 +102,10 @@ class Assignment(Base):
     """作业表模型"""
     __tablename__ = "assignments"
     
-    id = Column(String, primary_key=True, default=lambda: str(uuid.uuid4()))
+    id = Column(UUID(as_uuid=True), primary_key=True, default=uuid.uuid4)
     title = Column(String(200), nullable=False)
     description = Column(Text, nullable=False)
-    class_id = Column(String, ForeignKey("classes.id"), nullable=False)
+    class_id = Column(UUID(as_uuid=True), ForeignKey("classes.id"), nullable=False)
     
     # 作业配置
     language = Column(String(20), nullable=False)  # 编程语言
@@ -134,9 +134,9 @@ class Submission(Base):
     """代码提交表模型"""
     __tablename__ = "submissions"
     
-    id = Column(String, primary_key=True, default=lambda: str(uuid.uuid4()))
-    student_id = Column(String, ForeignKey("users.id"), nullable=False)
-    assignment_id = Column(String, ForeignKey("assignments.id"), nullable=True)  # 可为空，支持自由提交
+    id = Column(UUID(as_uuid=True), primary_key=True, default=uuid.uuid4)
+    student_id = Column(UUID(as_uuid=True), ForeignKey("users.id"), nullable=False)
+    assignment_id = Column(UUID(as_uuid=True), ForeignKey("assignments.id"), nullable=True)  # 可为空，支持自由提交
     
     # 提交内容
     assignment_description = Column(Text, nullable=False)  # 作业描述
@@ -170,8 +170,8 @@ class AIFeedback(Base):
     """AI反馈表模型"""
     __tablename__ = "ai_feedback"
     
-    id = Column(String, primary_key=True, default=lambda: str(uuid.uuid4()))
-    submission_id = Column(String, ForeignKey("submissions.id"), nullable=False)
+    id = Column(UUID(as_uuid=True), primary_key=True, default=uuid.uuid4)
+    submission_id = Column(UUID(as_uuid=True), ForeignKey("submissions.id"), nullable=False)
     
     # AI分析结果
     overall_score = Column(Float, nullable=False, default=0.0)  # 总体评分 (0-100)
@@ -204,8 +204,8 @@ class StudentProfile(Base):
     """学生画像表模型"""
     __tablename__ = "student_profiles"
     
-    id = Column(String, primary_key=True, default=lambda: str(uuid.uuid4()))
-    student_id = Column(String, ForeignKey("users.id"), nullable=False, unique=True)
+    id = Column(UUID(as_uuid=True), primary_key=True, default=uuid.uuid4)
+    student_id = Column(UUID(as_uuid=True), ForeignKey("users.id"), nullable=False, unique=True)
     
     # 能力评估
     competency_level = Column(String(20), nullable=False, default="novice")  # 技能水平
@@ -238,8 +238,8 @@ class TeachingSession(Base):
     """教学会话表模型"""
     __tablename__ = "teaching_sessions"
     
-    id = Column(String, primary_key=True, default=lambda: str(uuid.uuid4()))
-    student_id = Column(String, ForeignKey("users.id"), nullable=False)
+    id = Column(UUID(as_uuid=True), primary_key=True, default=uuid.uuid4)
+    student_id = Column(UUID(as_uuid=True), ForeignKey("users.id"), nullable=False)
     session_type = Column(String(30), nullable=False)  # assignment, debugging, personalized
     
     # 会话数据
@@ -271,14 +271,14 @@ class SystemMetrics(Base):
     """系统指标表模型"""
     __tablename__ = "system_metrics"
     
-    id = Column(String, primary_key=True, default=lambda: str(uuid.uuid4()))
+    id = Column(UUID(as_uuid=True), primary_key=True, default=uuid.uuid4)
     metric_type = Column(String(50), nullable=False)  # performance, usage, error, quality
     metric_name = Column(String(100), nullable=False)
     
     # 指标数据
     value = Column(Float, nullable=False)
     unit = Column(String(20), nullable=True)
-    metadata = Column(JSONB, default={})  # 额外的元数据
+    extra_data = Column(JSONB, default={})  # 额外的元数据
     
     # 时间戳
     timestamp = Column(DateTime(timezone=True), server_default=func.now(), nullable=False)
@@ -294,8 +294,8 @@ class APIKey(Base):
     """API密钥表模型"""
     __tablename__ = "api_keys"
     
-    id = Column(String, primary_key=True, default=lambda: str(uuid.uuid4()))
-    user_id = Column(String, ForeignKey("users.id"), nullable=False)
+    id = Column(UUID(as_uuid=True), primary_key=True, default=uuid.uuid4)
+    user_id = Column(UUID(as_uuid=True), ForeignKey("users.id"), nullable=False)
     
     # 密钥信息
     name = Column(String(100), nullable=False)  # 密钥名称
@@ -326,13 +326,13 @@ class AuditLog(Base):
     """审计日志表模型"""
     __tablename__ = "audit_logs"
     
-    id = Column(String, primary_key=True, default=lambda: str(uuid.uuid4()))
-    user_id = Column(String, ForeignKey("users.id"), nullable=True)  # 可为空，支持系统操作
+    id = Column(UUID(as_uuid=True), primary_key=True, default=uuid.uuid4)
+    user_id = Column(UUID(as_uuid=True), ForeignKey("users.id"), nullable=True)  # 可为空，支持系统操作
     
     # 操作信息
     action = Column(String(100), nullable=False)  # 操作类型
     resource_type = Column(String(50), nullable=False)  # 资源类型
-    resource_id = Column(String, nullable=True)  # 资源ID
+    resource_id = Column(UUID(as_uuid=True), nullable=True)  # 资源ID
     
     # 详细信息
     details = Column(JSONB, default={})  # 操作详情

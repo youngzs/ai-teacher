@@ -6,7 +6,7 @@ import Sidebar from './Sidebar';
 import { Breadcrumb } from '../ui';
 import { useBreadcrumbs } from '../../hooks/useBreadcrumbs';
 
-export const RootLayout: React.FC = () => {
+const RootLayout: React.FC = () => {
   const { isAuthenticated } = useAuthStore();
   const breadcrumbs = useBreadcrumbs();
 
@@ -22,10 +22,10 @@ export const RootLayout: React.FC = () => {
   return (
     <div className="min-h-screen bg-gray-50">
       <Header />
-      
+
       <div className="flex">
         <Sidebar />
-        
+
         <main className="flex-1 lg:ml-64">
           <div className="py-6">
             <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
@@ -34,7 +34,7 @@ export const RootLayout: React.FC = () => {
                   <Breadcrumb items={breadcrumbs} />
                 </div>
               )}
-              
+
               <Outlet />
             </div>
           </div>

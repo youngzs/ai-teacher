@@ -1,10 +1,10 @@
 import React, { useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
-import { 
-  Card, 
-  CardHeader, 
-  CardTitle, 
-  CardDescription, 
+import {
+  Card,
+  CardHeader,
+  CardTitle,
+  CardDescription,
   CardContent,
   Modal,
   Button,
@@ -33,7 +33,7 @@ import {
   Settings,
   MoreVertical
 } from 'lucide-react';
-import { useAppStore } from '../../store/app';
+import { useAppStore } from '../../store/appStore';
 
 interface Assignment {
   id: string;
@@ -169,10 +169,10 @@ export const AssignmentManagement: React.FC = () => {
     const matchesSearch = assignment.title.toLowerCase().includes(searchTerm.toLowerCase()) ||
                          assignment.description.toLowerCase().includes(searchTerm.toLowerCase()) ||
                          assignment.tags.some(tag => tag.toLowerCase().includes(searchTerm.toLowerCase()));
-    
+
     const matchesStatus = filterStatus === 'all' || assignment.status === filterStatus;
     const matchesCourse = filterCourse === 'all' || assignment.courseId === filterCourse;
-    
+
     return matchesSearch && matchesStatus && matchesCourse;
   });
 
@@ -204,8 +204,8 @@ export const AssignmentManagement: React.FC = () => {
   };
 
   const handleSelectAssignment = (assignmentId: string) => {
-    setSelectedAssignments(prev => 
-      prev.includes(assignmentId) 
+    setSelectedAssignments(prev =>
+      prev.includes(assignmentId)
         ? prev.filter(id => id !== assignmentId)
         : [...prev, assignmentId]
     );
@@ -213,8 +213,8 @@ export const AssignmentManagement: React.FC = () => {
 
   const handleSelectAll = () => {
     setSelectedAssignments(
-      selectedAssignments.length === filteredAssignments.length 
-        ? [] 
+      selectedAssignments.length === filteredAssignments.length
+        ? []
         : filteredAssignments.map(a => a.id)
     );
   };
@@ -246,7 +246,7 @@ export const AssignmentManagement: React.FC = () => {
           <h1 className="text-3xl font-bold text-secondary-900">Assignment Management</h1>
           <p className="text-secondary-600 mt-1">Create, manage, and track programming assignments</p>
         </div>
-        <Button 
+        <Button
           onClick={() => setShowCreateModal(true)}
           className="bg-primary-600 hover:bg-primary-700"
         >
@@ -359,16 +359,16 @@ export const AssignmentManagement: React.FC = () => {
               <div className="flex border rounded-lg">
                 <button
                   onClick={() => setViewMode('grid')}
-                  className={`px-3 py-2 text-sm ${viewMode === 'grid' 
-                    ? 'bg-primary-100 text-primary-600' 
+                  className={`px-3 py-2 text-sm ${viewMode === 'grid'
+                    ? 'bg-primary-100 text-primary-600'
                     : 'text-secondary-600 hover:bg-gray-100'}`}
                 >
                   Grid
                 </button>
                 <button
                   onClick={() => setViewMode('list')}
-                  className={`px-3 py-2 text-sm ${viewMode === 'list' 
-                    ? 'bg-primary-100 text-primary-600' 
+                  className={`px-3 py-2 text-sm ${viewMode === 'list'
+                    ? 'bg-primary-100 text-primary-600'
                     : 'text-secondary-600 hover:bg-gray-100'}`}
                 >
                   List
@@ -432,7 +432,7 @@ export const AssignmentManagement: React.FC = () => {
               {filteredAssignments.map((assignment) => {
                 const stats = getSubmissionStats(assignment);
                 const isOverdue = new Date(assignment.dueDate) < new Date() && assignment.status === 'published';
-                
+
                 return (
                   <Card key={assignment.id} className="hover:shadow-lg transition-shadow">
                     <CardContent className="p-6">
@@ -524,7 +524,7 @@ export const AssignmentManagement: React.FC = () => {
                               <span className="text-xs">{assignment.testCases} tests</span>
                             </div>
                           </div>
-                          
+
                           <div className="flex space-x-1">
                             <Link
                               to={`/assignments/${assignment.id}`}
@@ -571,7 +571,7 @@ export const AssignmentManagement: React.FC = () => {
                 <tbody>
                   {filteredAssignments.map((assignment) => {
                     const isOverdue = new Date(assignment.dueDate) < new Date() && assignment.status === 'published';
-                    
+
                     return (
                       <tr key={assignment.id} className="border-b border-secondary-100 hover:bg-gray-50">
                         <td className="py-4 px-2">
@@ -682,7 +682,7 @@ export const AssignmentManagement: React.FC = () => {
         <Modal open={showCreateModal} onClose={() => setShowCreateModal(false)}>
           <div className="bg-white rounded-lg p-6 w-full max-w-2xl mx-4 max-h-[90vh] overflow-y-auto">
             <h2 className="text-xl font-bold text-secondary-900 mb-6">Create New Assignment</h2>
-            
+
             <div className="space-y-6">
               <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                 <div>
@@ -708,8 +708,8 @@ export const AssignmentManagement: React.FC = () => {
                 <label className="block text-sm font-medium text-secondary-700 mb-1">
                   Description
                 </label>
-                <textarea 
-                  className="input w-full h-24 resize-none" 
+                <textarea
+                  className="input w-full h-24 resize-none"
                   placeholder="Enter assignment description..."
                 />
               </div>

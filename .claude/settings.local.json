@@ -12,7 +12,21 @@
       "Bash(npm run build:*)",
       "Bash(npm run dev:*)",
       "Bash(chmod:*)",
-      "Bash(cat:*)"
+      "Bash(cat:*)",
+      "Bash(podman:*)",
+      "Bash(sudo apt:*)",
+      "Bash(sudo apt install:*)",
+      "Bash(pip3 install:*)",
+      "Bash(cp:*)",
+      "Bash(docker-compose up:*)",
+      "Bash(docker-compose:*)",
+      "Bash(source:*)",
+      "Bash(pip install:*)",
+      "Bash(curl:*)",
+      "Bash(lsof:*)",
+      "Bash(kill:*)",
+      "Bash(xargs -r kill -9)",
+      "Bash(PGPASSWORD=dev_password_123 psql -h localhost -U ai_teacher -d ai_teacher_dev -c \"\nDROP SCHEMA IF EXISTS public CASCADE;\nCREATE SCHEMA public;\nGRANT ALL ON SCHEMA public TO ai_teacher;\nGRANT ALL ON SCHEMA public TO public;\n\")"
     ],
     "deny": [],
     "ask": []

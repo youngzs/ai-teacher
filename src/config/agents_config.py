@@ -14,7 +14,7 @@ from enum import Enum
 class AgentRole(Enum):
     """Agent角色定义"""
     CODE_ANALYZER = "CodeAnalyzer"
-    PEDAGOGY_EXPERT = "PedagogyExpert"  
+    PEDAGOGY_EXPERT = "PedagogyExpert"
     STUDENT_PROFILER = "StudentProfiler"
     FEEDBACK_GENERATOR = "FeedbackGenerator"
     QUALITY_CONTROLLER = "QualityController"
@@ -41,15 +41,15 @@ class LLMConfig:
 
 class AgentConfigurations:
     """AI教学助手系统Agent配置类"""
-    
+
     # 基础LLM配置
     BASE_LLM_CONFIG = {
-        "model": "gpt-4",
-        "api_key": os.getenv("OPENAI_API_KEY", "your-api-key"),
-        "base_url": os.getenv("OPENAI_BASE_URL", "https://api.openai.com/v1"),
+        "model": "THUDM/GLM-4.1V-9B-Thinking",
+        "api_key": os.getenv("OPENAI_API_KEY", "sk-mfgxekbcuycnjvqqhwjhwssddsvqvlsqggumwzaksahbntcz"),
+        "base_url": os.getenv("OPENAI_BASE_URL", "https://api.siliconflow.cn/v1"),
         "timeout": 300,
     }
-    
+
     # 代码分析专家配置
     CODE_ANALYZER_CONFIG = {
         "name": "CodeAnalyzer",
@@ -70,7 +70,7 @@ class AgentConfigurations:
 输出格式（JSON）：
 {
   "syntax_score": 0-100,
-  "logic_score": 0-100, 
+  "logic_score": 0-100,
   "quality_score": 0-100,
   "performance_score": 0-100,
   "critical_errors": [
@@ -85,7 +85,7 @@ class AgentConfigurations:
         "llm_config": {**BASE_LLM_CONFIG, "temperature": 0.1},
         "max_consecutive_auto_reply": 3
     }
-    
+
     # 教学策略专家配置
     PEDAGOGY_EXPERT_CONFIG = {
         "name": "PedagogyExpert",
@@ -100,7 +100,7 @@ class AgentConfigurations:
 教学策略类型：
 - ENCOURAGE：鼓励启发型，适用于初学者和信心不足的学生
 - HINT：提示引导型，通过苏格拉底式提问引导思考
-- REFINE：完善优化型，聚焦代码质量和最佳实践  
+- REFINE：完善优化型，聚焦代码质量和最佳实践
 - CHALLENGE：挑战拓展型，提供进阶问题和创新思考
 - EXPLAIN：概念解释型，深入解释基础概念和原理
 
@@ -117,7 +117,7 @@ class AgentConfigurations:
   "teaching_approach": "具体教学方法",
   "feedback_layers": [
     {"layer": "情感层", "content": "情感支持内容"},
-    {"layer": "认知层", "content": "认知引导内容"}, 
+    {"layer": "认知层", "content": "认知引导内容"},
     {"layer": "技能层", "content": "技能指导内容"},
     {"layer": "元认知层", "content": "学习方法指导"}
   ],
@@ -128,10 +128,10 @@ class AgentConfigurations:
         "llm_config": {**BASE_LLM_CONFIG, "temperature": 0.3},
         "max_consecutive_auto_reply": 2
     }
-    
+
     # 学生画像分析师配置
     STUDENT_PROFILER_CONFIG = {
-        "name": "StudentProfiler", 
+        "name": "StudentProfiler",
         "system_message": """你是AI教学助手系统的学生画像分析师。深度分析学生的学习特征和需求。
 
 分析维度：
@@ -161,7 +161,7 @@ class AgentConfigurations:
 输出格式（JSON）：
 {
   "student_profile": {
-    "competency_level": "novice/advanced_beginner/competent/proficient", 
+    "competency_level": "novice/advanced_beginner/competent/proficient",
     "skill_scores": {"syntax": 0-100, "algorithm": 0-100, "debugging": 0-100, "style": 0-100},
     "learning_style": {"primary": "visual/auditory/reading/kinesthetic", "secondary": "类型"},
     "error_patterns": {"most_common": ["错误类型列表"], "improvement_rate": "快/中/慢"},
@@ -178,8 +178,8 @@ class AgentConfigurations:
         "llm_config": {**BASE_LLM_CONFIG, "temperature": 0.2},
         "max_consecutive_auto_reply": 2
     }
-    
-    # 反馈生成器配置  
+
+    # 反馈生成器配置
     FEEDBACK_GENERATOR_CONFIG = {
         "name": "FeedbackGenerator",
         "system_message": """你是AI教学助手系统的反馈内容生成器。将分析结果转化为具体的教学反馈。
@@ -188,7 +188,7 @@ class AgentConfigurations:
 1. Recognition：开场认可，肯定学生努力和代码亮点
 2. Reflection：问题反思，引导学生思考问题所在
 3. Reconstruction：重构指导，提供具体的改进建议和步骤
-4. Resources：资源推荐，提供学习材料和工具支持  
+4. Resources：资源推荐，提供学习材料和工具支持
 5. Reinforcement：鼓励强化，激发持续学习动机
 
 个性化适配原则：
@@ -198,7 +198,7 @@ class AgentConfigurations:
 
 语言风格要求：
 - 积极正面，避免负面表述
-- 具体明确，避免模糊概念  
+- 具体明确，避免模糊概念
 - 循序渐进，符合认知规律
 - 个性化表达，体现对学生的了解
 
@@ -217,7 +217,7 @@ class AgentConfigurations:
   },
   "personalization": {
     "style_adaptation": "适配的风格",
-    "difficulty_level": "适合的难度级别", 
+    "difficulty_level": "适合的难度级别",
     "estimated_time": "预估学习时间"
   }
 }
@@ -226,7 +226,7 @@ class AgentConfigurations:
         "llm_config": {**BASE_LLM_CONFIG, "temperature": 0.4},
         "max_consecutive_auto_reply": 1
     }
-    
+
     # 质量控制器配置
     QUALITY_CONTROLLER_CONFIG = {
         "name": "QualityController",
@@ -250,7 +250,7 @@ class AgentConfigurations:
 
 4. 内容完整性 (20%)：
    - 问题覆盖度：是否涵盖主要问题
-   - 方案完整性：解决方案是否完整  
+   - 方案完整性：解决方案是否完整
    - 资源充足性：推荐资源是否适当
 
 评分标准：
@@ -265,7 +265,7 @@ class AgentConfigurations:
     "overall_score": 0-100,
     "dimension_scores": {
       "technical_accuracy": 0-100,
-      "teaching_effectiveness": 0-100, 
+      "teaching_effectiveness": 0-100,
       "expression_quality": 0-100,
       "content_completeness": 0-100
     }
@@ -282,7 +282,7 @@ class AgentConfigurations:
         "llm_config": {**BASE_LLM_CONFIG, "temperature": 0.1},
         "max_consecutive_auto_reply": 1
     }
-    
+
     # 调试导师配置
     DEBUGGING_MENTOR_CONFIG = {
         "name": "DebuggingMentor",
@@ -339,7 +339,7 @@ class AgentConfigurations:
         "llm_config": {**BASE_LLM_CONFIG, "temperature": 0.3},
         "max_consecutive_auto_reply": 2
     }
-    
+
     @classmethod
     def get_agent_config(cls, agent_role: AgentRole) -> Dict[str, Any]:
         """根据角色获取Agent配置"""
@@ -352,12 +352,12 @@ class AgentConfigurations:
             AgentRole.DEBUGGING_MENTOR: cls.DEBUGGING_MENTOR_CONFIG,
         }
         return config_map.get(agent_role, {})
-    
+
     @classmethod
     def get_all_configs(cls) -> Dict[str, Dict[str, Any]]:
         """获取所有Agent配置"""
         return {
-            role.value: cls.get_agent_config(role) 
+            role.value: cls.get_agent_config(role)
             for role in AgentRole
         }
 
@@ -367,22 +367,22 @@ SYSTEM_CONFIG = {
     "max_concurrent_sessions": 50,
     "agent_timeout": 300,  # 秒
     "max_retry_attempts": 3,
-    
-    # 质量控制配置  
+
+    # 质量控制配置
     "quality_threshold": 75,
     "auto_approval_threshold": 85,
     "human_review_threshold": 60,
-    
+
     # 缓存配置
     "cache_enabled": True,
     "cache_ttl": 3600,  # 秒
     "similar_problem_threshold": 0.85,
-    
+
     # 资源限制
     "max_feedback_length": 1200,  # 字符
     "max_analysis_depth": 5,
     "max_resources_per_feedback": 5,
-    
+
     # 性能要求
     "target_response_time": 5.0,  # 秒
     "target_accuracy": 0.85,  # 85%
@@ -408,7 +408,7 @@ COURSE_CONFIGS = {
     "c_programming": {
         "language": "c",
         "common_errors": [
-            "指针使用错误", "内存泄漏", "数组越界", 
+            "指针使用错误", "内存泄漏", "数组越界",
             "未初始化变量", "分号缺失", "头文件包含问题"
         ],
         "key_concepts": [
@@ -416,7 +416,7 @@ COURSE_CONFIGS = {
             "结构体", "文件操作", "预处理器"
         ],
         "difficulty_progression": [
-            "基本语法", "控制结构", "函数", "数组", 
+            "基本语法", "控制结构", "函数", "数组",
             "指针", "结构体", "文件操作", "动态内存"
         ]
     }

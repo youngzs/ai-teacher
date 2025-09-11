@@ -394,16 +394,16 @@
 
 @keyframes glow {
   from {
-    box-shadow: 0 0 5px theme('colors.primary.400');
+    box-shadow: 0 0 5px #60a5fa;
   }
   to {
-    box-shadow: 0 0 20px theme('colors.primary.400'), 0 0 30px theme('colors.primary.400');
+    box-shadow: 0 0 20px #60a5fa, 0 0 30px #60a5fa;
   }
 }
 
 .animate-typing {
   overflow: hidden;
-  border-right: .15em solid theme('colors.primary.500');
+  border-right: .15em solid #3b82f6;
   white-space: nowrap;
   margin: 0 auto;
   letter-spacing: .15em;
@@ -417,7 +417,7 @@
 
 @keyframes blink-caret {
   from, to { border-color: transparent; }
-  50% { border-color: theme('colors.primary.500'); }
+  50% { border-color: #3b82f6; }
 }
 
 /* ===== PRINT UTILITIES ===== */
@@ -483,7 +483,7 @@
 
 .scrollbar-thin {
   scrollbar-width: thin;
-  scrollbar-color: theme('colors.secondary.300') theme('colors.secondary.100');
+  scrollbar-color: #cbd5e1 #f1f5f9;
 }
 
 .scrollbar-thin::-webkit-scrollbar {

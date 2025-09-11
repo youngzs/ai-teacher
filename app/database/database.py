@@ -7,8 +7,9 @@ Date: 2025-09-10
 """
 
 from sqlalchemy.ext.asyncio import create_async_engine, AsyncSession, async_sessionmaker
-from sqlalchemy.ext.declarative import declarative_base
+from sqlalchemy.orm import declarative_base
 from sqlalchemy.pool import StaticPool
+from sqlalchemy.sql import text
 from typing import AsyncGenerator
 import logging
 
@@ -108,7 +109,7 @@ async def check_db_connection():
     """
     try:
         async with SessionLocal() as session:
-            result = await session.execute("SELECT 1")
+            result = await session.execute(text("SELECT 1"))
             return result.scalar() == 1
     except Exception as e:
         logger.error(f"Database connection check failed: {str(e)}")
@@ -128,10 +129,10 @@ async def db_health_check() -> dict:
         
         async with SessionLocal() as session:
             # 执行简单查询测试连接
-            await session.execute("SELECT 1")
+            await session.execute(text("SELECT 1"))
             
             # 获取数据库版本信息
-            version_result = await session.execute("SELECT version()")
+            version_result = await session.execute(text("SELECT version()"))
             db_version = version_result.scalar()
             
             # 检查连接池状态
@@ -239,14 +240,14 @@ class DatabaseManager:
                 ORDER BY table_name;
                 """
                 
-                result = await session.execute(tables_query)
+                result = await session.execute(text(tables_query))
                 tables = result.fetchall()
                 
                 table_info = {}
                 for table in tables:
                     # 获取每个表的行数
                     count_result = await session.execute(
-                        f"SELECT COUNT(*) FROM {table.table_name}"
+                        text(f"SELECT COUNT(*) FROM {table.table_name}")
                     )
                     row_count = count_result.scalar()
                     
@@ -264,7 +265,7 @@ class DatabaseManager:
     async def execute_raw_query(self, query: str, params: dict = None):
         """执行原生SQL查询"""
         async with self.session_factory() as session:
-            result = await session.execute(query, params or {})
+            result = await session.execute(text(query), params or {})
             await session.commit()
             return result
     

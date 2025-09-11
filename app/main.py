@@ -6,7 +6,7 @@ Author: AI Backend Architecture Expert
 Date: 2025-09-10
 """
 
-from fastapi import FastAPI, Middleware, Request, HTTPException
+from fastapi import FastAPI, Request, HTTPException
 from fastapi.middleware.cors import CORSMiddleware
 from fastapi.middleware.trustedhost import TrustedHostMiddleware
 from fastapi.responses import JSONResponse
