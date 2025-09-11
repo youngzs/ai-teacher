@@ -1,0 +1,304 @@
+# AI Teaching Assistant System - Test Orchestration Configuration
+# 测试编排配置文件
+
+# 测试套件配置
+test_suites:
+  - name: unit_tests
+    path: tests/unit
+    markers: 
+      - unit
+    priority: 1
+    timeout: 300  # 5分钟
+    parallel: true
+    dependencies: []
+    description: "单元测试 - 测试独立组件和函数"
+    quality_requirements:
+      min_coverage: 90.0
+      max_failure_rate: 0.0
+
+  - name: integration_tests
+    path: tests/integration
+    markers:
+      - integration
+    priority: 2
+    timeout: 600  # 10分钟
+    parallel: true
+    dependencies: 
+      - unit_tests
+    description: "集成测试 - 测试组件间交互"
+    quality_requirements:
+      min_coverage: 80.0
+      max_failure_rate: 2.0
+
+  - name: api_tests
+    path: tests/api
+    markers:
+      - api
+    priority: 2
+    timeout: 900  # 15分钟
+    parallel: true
+    dependencies:
+      - unit_tests
+    description: "API测试 - 测试REST接口功能"
+    quality_requirements:
+      min_coverage: 100.0  # API需要100%覆盖
+      max_failure_rate: 1.0
+
+  - name: ai_tests
+    path: tests/ai
+    markers:
+      - ai
+    priority: 3
+    timeout: 1800  # 30分钟
+    parallel: false  # AI测试可能需要大量资源
+    dependencies:
+      - unit_tests
+      - integration_tests
+    description: "AI功能测试 - 测试多智能体系统"
+    quality_requirements:
+      min_coverage: 75.0
+      max_failure_rate: 5.0
+
+  - name: frontend_tests
+    path: ai-teacher-frontend/src
+    markers:
+      - frontend
+    priority: 3
+    timeout: 900  # 15分钟
+    parallel: true
+    dependencies:
+      - unit_tests
+    description: "前端组件测试 - 测试React组件"
+    quality_requirements:
+      min_coverage: 70.0
+      max_failure_rate: 3.0
+    test_command: "npm test -- --coverage --watchAll=false"
+
+  - name: e2e_tests
+    path: ai-teacher-frontend/e2e
+    markers:
+      - e2e
+    priority: 4
+    timeout: 2400  # 40分钟
+    parallel: false  # E2E测试通常需要顺序执行
+    dependencies:
+      - api_tests
+      - frontend_tests
+    description: "端到端测试 - 测试完整用户流程"
+    quality_requirements:
+      min_coverage: 0.0  # E2E不考虑覆盖率
+      max_failure_rate: 10.0
+    test_command: "npx playwright test"
+
+  - name: performance_tests
+    path: tests/performance
+    markers:
+      - performance
+      - load
+    priority: 5
+    timeout: 3600  # 60分钟
+    parallel: false
+    dependencies:
+      - api_tests
+    description: "性能测试 - 负载和压力测试"
+    quality_requirements:
+      min_coverage: 0.0
+      max_failure_rate: 15.0  # 性能测试可能有更高失败容忍度
+
+  - name: security_tests
+    path: tests/security
+    markers:
+      - security
+    priority: 4
+    timeout: 1800  # 30分钟
+    parallel: true
+    dependencies:
+      - api_tests
+    description: "安全测试 - 漏洞和权限测试"
+    quality_requirements:
+      min_coverage: 85.0
+      max_failure_rate: 0.0  # 安全测试不允许失败
+
+# 全局质量门限
+quality_gates:
+  # 代码覆盖率要求
+  min_coverage: 80.0
+  
+  # 最大失败率 (%)
+  max_failure_rate: 5.0
+  
+  # 最大执行时间 (分钟)
+  max_duration_minutes: 30
+  
+  # 性能要求
+  performance_requirements:
+    avg_response_time: 2000  # 毫秒
+    max_response_time: 5000  # 毫秒
+    min_throughput: 100      # 请求/秒
+  
+  # 安全要求
+  security_requirements:
+    max_vulnerabilities: 0
+    require_auth_tests: true
+    require_input_validation: true
+
+# 报告配置
+reporting:
+  formats:
+    - html
+    - json
+    - junit
+    - markdown
+  
+  output_dir: test-results
+  
+  # 报告细节级别
+  detail_level: detailed  # minimal, standard, detailed
+  
+  # 历史对比
+  enable_trend_analysis: true
+  history_days: 30
+  
+  # 通知配置
+  notifications:
+    on_failure: true
+    on_quality_gate_fail: true
+    on_performance_degradation: true
+    
+    # 通知渠道 (示例配置)
+    channels:
+      email:
+        enabled: false
+        recipients: []
+      slack:
+        enabled: false
+        webhook_url: ""
+      teams:
+        enabled: false
+        webhook_url: ""
+
+# 环境配置
+environments:
+  # 测试环境配置
+  test:
+    database_url: "sqlite+aiosqlite:///./test.db"
+    redis_url: "redis://localhost:6379/1"
+    ai_service_mode: "test"
+    log_level: "INFO"
+    
+  # CI/CD环境配置  
+  ci:
+    database_url: "postgresql://postgres:postgres@postgres:5432/test_db"
+    redis_url: "redis://redis:6379/0"
+    ai_service_mode: "mock"
+    log_level: "WARNING"
+    
+  # 本地开发环境
+  local:
+    database_url: "postgresql://localhost:5432/ai_teacher_test"
+    redis_url: "redis://localhost:6379/2"
+    ai_service_mode: "local"
+    log_level: "DEBUG"
+
+# 资源配置
+resources:
+  # 并行执行配置
+  max_parallel_suites: 4
+  max_parallel_tests_per_suite: 8
+  
+  # 资源限制
+  memory_limit_mb: 2048
+  cpu_limit_cores: 4
+  
+  # 超时配置
+  default_test_timeout: 300
+  default_suite_timeout: 1800
+  
+  # 重试配置
+  retry_failed_tests: true
+  max_retries: 2
+  retry_delay_seconds: 5
+
+# 数据管理
+test_data:
+  # 测试数据策略
+  strategy: "factory"  # factory, fixtures, seed
+  
+  # 数据清理
+  cleanup_after_suite: true
+  cleanup_after_all: true
+  
+  # 数据生成配置
+  factory_settings:
+    user_count: 50
+    assignment_count: 20
+    submission_count: 100
+    
+  # 数据持久化
+  preserve_on_failure: true
+  backup_test_data: false
+
+# 监控和度量
+monitoring:
+  # 实时监控
+  enable_real_time_monitoring: true
+  monitoring_interval_seconds: 30
+  
+  # 性能监控
+  enable_performance_monitoring: true
+  performance_sampling_rate: 0.1
+  
+  # 资源监控
+  monitor_memory_usage: true
+  monitor_cpu_usage: true
+  monitor_network_io: true
+  
+  # 自定义度量
+  custom_metrics:
+    - name: "ai_response_time"
+      description: "AI分析响应时间"
+      unit: "milliseconds"
+    
+    - name: "database_query_time"
+      description: "数据库查询时间"
+      unit: "milliseconds"
+    
+    - name: "concurrent_users"
+      description: "并发用户数"
+      unit: "count"
+
+# 调试配置
+debugging:
+  # 日志配置
+  enable_detailed_logging: true
+  log_sql_queries: false  # 仅在必要时启用
+  log_ai_requests: true
+  
+  # 故障排除
+  capture_screenshots_on_failure: true  # E2E测试
+  save_page_source_on_failure: true     # E2E测试
+  preserve_test_artifacts: true
+  
+  # 性能调试
+  enable_profiling: false
+  profiling_output_dir: "test-results/profiling"
+
+# 扩展配置
+extensions:
+  # 自定义插件
+  plugins: []
+  
+  # 第三方集成
+  integrations:
+    sonarqube:
+      enabled: false
+      server_url: ""
+      project_key: ""
+    
+    codecov:
+      enabled: true
+      token_env_var: "CODECOV_TOKEN"
+    
+    allure:
+      enabled: false
+      results_dir: "allure-results"

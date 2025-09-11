@@ -1,0 +1,413 @@
+# 性能监控工作流
+# 定期运行性能测试并生成趋势报告
+
+name: 📈 Performance Monitoring
+
+on:
+  schedule:
+    # 每天凌晨3点运行性能测试
+    - cron: '0 3 * * *'
+  
+  workflow_dispatch:
+    inputs:
+      test_duration:
+        description: 'Test duration in minutes'
+        required: true
+        default: '10'
+        type: string
+      
+      max_users:
+        description: 'Maximum concurrent users'
+        required: true
+        default: '100'
+        type: string
+      
+      ramp_up_time:
+        description: 'Ramp-up time in minutes'
+        required: true
+        default: '5'
+        type: string
+
+env:
+  PYTHON_VERSION: '3.11'
+  DATABASE_URL: postgresql://postgres:postgres@localhost:5432/ai_teacher_perf
+  REDIS_URL: redis://localhost:6379/0
+
+jobs:
+  performance-baseline:
+    name: 📊 Performance Baseline Test
+    runs-on: ubuntu-latest
+    timeout-minutes: 45
+    
+    services:
+      postgres:
+        image: postgres:15
+        env:
+          POSTGRES_PASSWORD: postgres
+          POSTGRES_DB: ai_teacher_perf
+        options: >-
+          --health-cmd pg_isready
+          --health-interval 10s
+          --health-timeout 5s
+          --health-retries 5
+        ports:
+          - 5432:5432
+      
+      redis:
+        image: redis:7
+        options: >-
+          --health-cmd "redis-cli ping"
+          --health-interval 10s
+          --health-timeout 5s
+          --health-retries 5
+        ports:
+          - 6379:6379
+    
+    steps:
+      - name: 📥 Checkout Code
+        uses: actions/checkout@v4
+      
+      - name: 🐍 Set up Python
+        uses: actions/setup-python@v4
+        with:
+          python-version: ${{ env.PYTHON_VERSION }}
+          cache: 'pip'
+      
+      - name: 📦 Install Dependencies
+        run: |
+          pip install --upgrade pip
+          pip install -r requirements.txt
+          pip install -r requirements-dev.txt
+          pip install locust
+      
+      - name: 🗄️ Setup Database
+        run: |
+          python init_db.py
+          # 添加性能测试数据
+          python scripts/load_test_data.py --mode performance
+        env:
+          DATABASE_URL: ${{ env.DATABASE_URL }}
+      
+      - name: 🚀 Start Application
+        run: |
+          uvicorn app.main:app --host 0.0.0.0 --port 8000 &
+          sleep 15
+          curl http://localhost:8000/health || exit 1
+        env:
+          DATABASE_URL: ${{ env.DATABASE_URL }}
+          REDIS_URL: ${{ env.REDIS_URL }}
+      
+      - name: ⚡ Run Performance Tests
+        run: |
+          cd tests/performance
+          
+          # 设置测试参数
+          DURATION=${{ github.event.inputs.test_duration || '10' }}
+          MAX_USERS=${{ github.event.inputs.max_users || '100' }}
+          RAMP_UP=${{ github.event.inputs.ramp_up_time || '5' }}
+          
+          echo "🚀 Starting performance test with ${MAX_USERS} users for ${DURATION} minutes"
+          
+          # 运行负载测试
+          locust -f locustfile.py \
+            --users $MAX_USERS \
+            --spawn-rate $(($MAX_USERS / ($RAMP_UP * 60))) \
+            --run-time ${DURATION}m \
+            --host http://localhost:8000 \
+            --headless \
+            --html performance-report-$(date +%Y%m%d-%H%M%S).html \
+            --csv performance-results \
+            --print-stats
+      
+      - name: 📊 Generate Performance Metrics
+        run: |
+          python << 'EOF'
+          import csv
+          import json
+          import os
+          from datetime import datetime
+          
+          # 读取CSV结果
+          stats_file = "tests/performance/performance-results_stats.csv"
+          if os.path.exists(stats_file):
+              with open(stats_file, 'r') as f:
+                  reader = csv.DictReader(f)
+                  stats = list(reader)
+              
+              # 生成性能指标JSON
+              metrics = {
+                  "timestamp": datetime.now().isoformat(),
+                  "test_config": {
+                      "max_users": ${{ github.event.inputs.max_users || '100' }},
+                      "duration_minutes": ${{ github.event.inputs.test_duration || '10' }},
+                      "ramp_up_minutes": ${{ github.event.inputs.ramp_up_time || '5' }}
+                  },
+                  "results": []
+              }
+              
+              for stat in stats:
+                  if stat["Type"] == "Aggregated":
+                      continue
+                  
+                  metrics["results"].append({
+                      "endpoint": stat["Name"],
+                      "method": stat["Type"],
+                      "request_count": int(stat["Request Count"]),
+                      "failure_count": int(stat["Failure Count"]),
+                      "failure_rate": float(stat["Failure Count"]) / max(int(stat["Request Count"]), 1),
+                      "avg_response_time": float(stat["Average Response Time"]),
+                      "median_response_time": float(stat["Median Response Time"]),
+                      "min_response_time": float(stat["Min Response Time"]),
+                      "max_response_time": float(stat["Max Response Time"]),
+                      "avg_content_size": float(stat["Average Content Size"]),
+                      "requests_per_second": float(stat["Requests/s"])
+                  })
+              
+              # 保存指标
+              with open("performance-metrics.json", "w") as f:
+                  json.dump(metrics, f, indent=2)
+              
+              print("📊 Performance metrics generated")
+              print(f"Total endpoints tested: {len(metrics['results'])}")
+          else:
+              print("❌ No performance stats file found")
+          EOF
+      
+      - name: 🔍 Analyze Performance Trends
+        run: |
+          python << 'EOF'
+          import json
+          import os
+          from datetime import datetime, timedelta
+          
+          # 读取当前指标
+          with open("performance-metrics.json", "r") as f:
+              current_metrics = json.load(f)
+          
+          # 性能阈值检查
+          performance_alerts = []
+          
+          for result in current_metrics["results"]:
+              endpoint = result["endpoint"]
+              
+              # 检查响应时间阈值
+              if result["avg_response_time"] > 2000:  # 2秒
+                  performance_alerts.append(f"⚠️ High response time for {endpoint}: {result['avg_response_time']:.2f}ms")
+              
+              # 检查失败率阈值
+              if result["failure_rate"] > 0.05:  # 5%
+                  performance_alerts.append(f"🚨 High failure rate for {endpoint}: {result['failure_rate']:.2%}")
+              
+              # 检查吞吐量
+              if result["requests_per_second"] < 10 and result["request_count"] > 100:
+                  performance_alerts.append(f"🐌 Low throughput for {endpoint}: {result['requests_per_second']:.2f} req/s")
+          
+          # 生成性能报告
+          report = {
+              "test_date": datetime.now().isoformat(),
+              "overall_status": "PASS" if not performance_alerts else "WARNING",
+              "alerts": performance_alerts,
+              "summary": {
+                  "total_endpoints": len(current_metrics["results"]),
+                  "avg_response_time": sum(r["avg_response_time"] for r in current_metrics["results"]) / len(current_metrics["results"]),
+                  "total_requests": sum(r["request_count"] for r in current_metrics["results"]),
+                  "total_failures": sum(r["failure_count"] for r in current_metrics["results"]),
+                  "overall_failure_rate": sum(r["failure_count"] for r in current_metrics["results"]) / max(sum(r["request_count"] for r in current_metrics["results"]), 1)
+              }
+          }
+          
+          with open("performance-report.json", "w") as f:
+              json.dump(report, f, indent=2)
+          
+          # 输出报告
+          print("📈 Performance Analysis Report")
+          print("=" * 50)
+          print(f"Overall Status: {report['overall_status']}")
+          print(f"Average Response Time: {report['summary']['avg_response_time']:.2f}ms")
+          print(f"Overall Failure Rate: {report['summary']['overall_failure_rate']:.2%}")
+          print(f"Total Requests: {report['summary']['total_requests']}")
+          
+          if performance_alerts:
+              print("\n🚨 Performance Alerts:")
+              for alert in performance_alerts:
+                  print(f"  {alert}")
+          else:
+              print("\n✅ No performance issues detected")
+          
+          # 如果有严重问题，设置exit code
+          if report['summary']['overall_failure_rate'] > 0.1:  # 10%失败率
+              exit(1)
+          EOF
+      
+      - name: 📤 Upload Performance Reports
+        uses: actions/upload-artifact@v3
+        if: always()
+        with:
+          name: performance-reports-${{ github.run_number }}
+          path: |
+            tests/performance/performance-report-*.html
+            performance-metrics.json
+            performance-report.json
+            tests/performance/performance-results_*.csv
+          retention-days: 90
+      
+      - name: 💬 Create Performance Issue
+        if: failure()
+        uses: actions/github-script@v6
+        with:
+          script: |
+            const fs = require('fs');
+            
+            let reportContent = "## 🚨 Performance Test Failed\n\n";
+            reportContent += `**Test Run:** [#${{ github.run_number }}](https://github.com/${{ github.repository }}/actions/runs/${{ github.run_id }})\n`;
+            reportContent += `**Date:** ${new Date().toISOString()}\n\n`;
+            
+            try {
+              const report = JSON.parse(fs.readFileSync('performance-report.json', 'utf8'));
+              reportContent += `**Overall Status:** ${report.overall_status}\n`;
+              reportContent += `**Average Response Time:** ${report.summary.avg_response_time.toFixed(2)}ms\n`;
+              reportContent += `**Failure Rate:** ${(report.summary.overall_failure_rate * 100).toFixed(2)}%\n\n`;
+              
+              if (report.alerts && report.alerts.length > 0) {
+                reportContent += "### 🚨 Performance Alerts\n\n";
+                report.alerts.forEach(alert => {
+                  reportContent += `- ${alert}\n`;
+                });
+              }
+            } catch (error) {
+              reportContent += "Could not parse performance report.\n";
+            }
+            
+            reportContent += "\n### 📊 Next Steps\n";
+            reportContent += "1. Review the performance report artifacts\n";
+            reportContent += "2. Identify the root cause of performance degradation\n";
+            reportContent += "3. Implement optimizations\n";
+            reportContent += "4. Re-run performance tests\n";
+            
+            github.rest.issues.create({
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              title: `🚨 Performance Test Failed - Run #${{ github.run_number }}`,
+              body: reportContent,
+              labels: ['performance', 'bug', 'priority-high']
+            });
+
+  performance-comparison:
+    name: 📈 Performance Trend Analysis
+    runs-on: ubuntu-latest
+    needs: [performance-baseline]
+    if: always()
+    
+    steps:
+      - name: 📥 Checkout Code
+        uses: actions/checkout@v4
+      
+      - name: 📊 Download Previous Reports
+        uses: actions/download-artifact@v3
+        continue-on-error: true
+        with:
+          path: previous-reports
+      
+      - name: 🔍 Generate Trend Analysis
+        run: |
+          python << 'EOF'
+          import json
+          import os
+          import glob
+          from datetime import datetime, timedelta
+          
+          print("📈 Analyzing performance trends...")
+          
+          # 查找所有性能报告
+          report_files = glob.glob("previous-reports/**/performance-metrics.json", recursive=True)
+          
+          if len(report_files) < 2:
+              print("ℹ️  Not enough historical data for trend analysis")
+              exit(0)
+          
+          # 加载最近的报告
+          reports = []
+          for file in sorted(report_files)[-5:]:  # 最近5次测试
+              try:
+                  with open(file, 'r') as f:
+                      report = json.load(f)
+                      reports.append(report)
+              except:
+                  continue
+          
+          if len(reports) < 2:
+              print("ℹ️  Could not load enough reports for comparison")
+              exit(0)
+          
+          # 比较最新与前一次的结果
+          latest = reports[-1]
+          previous = reports[-2]
+          
+          print(f"Comparing {len(reports)} performance test runs")
+          
+          # 生成趋势报告
+          trend_report = {
+              "comparison_date": datetime.now().isoformat(),
+              "reports_analyzed": len(reports),
+              "trends": []
+          }
+          
+          # 按端点比较性能
+          latest_endpoints = {r["endpoint"]: r for r in latest["results"]}
+          previous_endpoints = {r["endpoint"]: r for r in previous["results"]}
+          
+          for endpoint in latest_endpoints:
+              if endpoint in previous_endpoints:
+                  latest_data = latest_endpoints[endpoint]
+                  previous_data = previous_endpoints[endpoint]
+                  
+                  response_time_change = latest_data["avg_response_time"] - previous_data["avg_response_time"]
+                  failure_rate_change = latest_data["failure_rate"] - previous_data["failure_rate"]
+                  throughput_change = latest_data["requests_per_second"] - previous_data["requests_per_second"]
+                  
+                  trend = {
+                      "endpoint": endpoint,
+                      "response_time_change_ms": response_time_change,
+                      "response_time_change_percent": (response_time_change / max(previous_data["avg_response_time"], 1)) * 100,
+                      "failure_rate_change": failure_rate_change,
+                      "throughput_change": throughput_change,
+                      "status": "improved" if response_time_change <= 0 and failure_rate_change <= 0 else "degraded"
+                  }
+                  
+                  trend_report["trends"].append(trend)
+          
+          # 保存趋势报告
+          with open("trend-analysis.json", "w") as f:
+              json.dump(trend_report, f, indent=2)
+          
+          # 输出趋势分析
+          print("\n📈 Performance Trend Analysis")
+          print("=" * 50)
+          
+          improved_count = sum(1 for t in trend_report["trends"] if t["status"] == "improved")
+          degraded_count = sum(1 for t in trend_report["trends"] if t["status"] == "degraded")
+          
+          print(f"Improved endpoints: {improved_count}")
+          print(f"Degraded endpoints: {degraded_count}")
+          
+          if degraded_count > 0:
+              print(f"\n🚨 Performance Degradations:")
+              for trend in trend_report["trends"]:
+                  if trend["status"] == "degraded":
+                      print(f"  {trend['endpoint']}: +{trend['response_time_change_ms']:.2f}ms ({trend['response_time_change_percent']:+.1f}%)")
+          
+          if improved_count > 0:
+              print(f"\n✅ Performance Improvements:")
+              for trend in trend_report["trends"]:
+                  if trend["status"] == "improved":
+                      print(f"  {trend['endpoint']}: {trend['response_time_change_ms']:.2f}ms ({trend['response_time_change_percent']:+.1f}%)")
+          EOF
+      
+      - name: 📤 Upload Trend Analysis
+        uses: actions/upload-artifact@v3
+        if: always()
+        with:
+          name: trend-analysis-${{ github.run_number }}
+          path: |
+            trend-analysis.json
+          retention-days: 365  # 保留一年用于长期趋势分析
