@@ -6,24 +6,27 @@ Author: AI Backend Architecture Expert
 Date: 2025-09-10
 """
 
-from fastapi import APIRouter, Depends, HTTPException, status, Query, BackgroundTasks
+from fastapi import APIRouter, Depends, HTTPException, status, Query, BackgroundTasks, Request
 from sqlalchemy.ext.asyncio import AsyncSession
-from sqlalchemy import select, desc, func
+from sqlalchemy import select, desc, func, and_
 from typing import List, Optional, Dict, Any
 from datetime import datetime, timedelta
 import asyncio
 import uuid
 
 from ..database.database import get_db
-from ..database.models import User, Submission, AIFeedback
-from ..core.security import get_current_user_id, UserRole, check_rate_limit
+from ..database.models import User, Submission, AIFeedback, Assignment
+from ..core.dependencies import (
+    get_current_active_user, require_teacher_or_admin, 
+    get_pagination_params, check_ownership_or_teacher, rate_limit_check,
+    get_current_user_id
+)
 from ..schemas.submissions import (
     SubmissionCreate, SubmissionResponse, SubmissionListResponse,
     SubmissionUpdate, BatchSubmissionRequest
 )
 from ..schemas.common import ResponseModel, PaginatedResponse
 from ..utils.logger import get_logger
-from ..main import get_ai_service
 from ..services.ai_service import AITeachingService
 
 logger = get_logger(__name__)
@@ -34,20 +37,14 @@ router = APIRouter()
 async def create_submission(
     submission_data: SubmissionCreate,
     background_tasks: BackgroundTasks,
-    current_user_id: str = Depends(get_current_user_id),
+    request: Request,
+    current_user: User = Depends(get_current_active_user),
     db: AsyncSession = Depends(get_db),
-    ai_service: AITeachingService = Depends(get_ai_service)
+    _: bool = Depends(rate_limit_check)
 ):
     """
     创建新的代码提交
     """
-    # 速率限制检查
-    if not check_rate_limit(f"submission_{current_user_id}", 10):
-        raise HTTPException(
-            status_code=status.HTTP_429_TOO_MANY_REQUESTS,
-            detail="Too many submissions. Please wait before submitting again."
-        )
-    
     # 验证代码内容
     if not submission_data.code.strip():
         raise HTTPException(
@@ -62,18 +59,46 @@ async def create_submission(
             detail="Code is too long. Maximum 50KB allowed."
         )
     
+    # 如果指定了作业ID，验证作业存在且学生有权限访问
+    if submission_data.assignment_id:
+        assignment_result = await db.execute(
+            select(Assignment).where(Assignment.id == submission_data.assignment_id)
+        )
+        assignment = assignment_result.scalar_one_or_none()
+        
+        if not assignment:
+            raise HTTPException(
+                status_code=status.HTTP_404_NOT_FOUND,
+                detail="Assignment not found"
+            )
+        
+        # 检查学生是否在班级中
+        from ..database.models import ClassMembership
+        membership_result = await db.execute(
+            select(ClassMembership).where(
+                and_(
+                    ClassMembership.class_id == assignment.class_id,
+                    ClassMembership.student_id == current_user.id,
+                    ClassMembership.is_active == True
+                )
+            )
+        )
+        if not membership_result.scalar_one_or_none():
+            raise HTTPException(
+                status_code=status.HTTP_403_FORBIDDEN,
+                detail="Access denied to this assignment"
+            )
+    
     try:
         # 创建提交记录
         submission = Submission(
-            id=str(uuid.uuid4()),
-            student_id=current_user_id,
+            student_id=current_user.id,
             assignment_id=submission_data.assignment_id,
             assignment_description=submission_data.assignment_description,
             code=submission_data.code,
-            language=submission_data.language,
+            language=submission_data.language.value,
             student_message=submission_data.student_message,
-            status="submitted",
-            submitted_at=datetime.utcnow()
+            status="submitted"
         )
         
         db.add(submission)
@@ -83,19 +108,19 @@ async def create_submission(
         # 异步处理AI分析
         background_tasks.add_task(
             process_ai_analysis,
-            submission.id,
-            current_user_id,
+            str(submission.id),
+            str(current_user.id),
             submission_data.dict()
         )
         
-        logger.info(f"New submission created: {submission.id} by user {current_user_id}")
+        logger.info(f"New submission created: {submission.id} by user {current_user.username}")
         
         return ResponseModel(
             success=True,
             data=SubmissionResponse(
-                id=submission.id,
-                student_id=submission.student_id,
-                assignment_id=submission.assignment_id,
+                id=str(submission.id),
+                student_id=str(submission.student_id),
+                assignment_id=submission_data.assignment_id,
                 assignment_description=submission.assignment_description,
                 code=submission.code,
                 language=submission.language,
@@ -108,7 +133,7 @@ async def create_submission(
         )
         
     except Exception as e:
-        logger.error(f"Submission creation failed for user {current_user_id}: {str(e)}")
+        logger.error(f"Submission creation failed for user {current_user.username}: {str(e)}")
         await db.rollback()
         raise HTTPException(
             status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
@@ -181,91 +206,99 @@ async def get_submission(
     )
 
 
-@router.get("/", response_model=PaginatedResponse[SubmissionListResponse])
+@router.get("/", response_model=ResponseModel[PaginatedResponse[SubmissionListResponse]])
 async def list_submissions(
-    page: int = Query(1, ge=1, description="页码"),
-    page_size: int = Query(20, ge=1, le=100, description="每页数量"),
+    current_user: User = Depends(get_current_active_user),
+    pagination: Dict[str, Any] = Depends(get_pagination_params),
     assignment_id: Optional[str] = Query(None, description="作业ID筛选"),
     language: Optional[str] = Query(None, description="编程语言筛选"),
     status: Optional[str] = Query(None, description="状态筛选"),
-    current_user_id: str = Depends(get_current_user_id),
     db: AsyncSession = Depends(get_db)
 ):
     """
     获取提交列表（分页）
     """
-    # 检查用户角色
-    user_query = select(User).where(User.id == current_user_id)
-    user_result = await db.execute(user_query)
-    user = user_result.scalar_one_or_none()
-    
-    if not user:
-        raise HTTPException(
-            status_code=status.HTTP_404_NOT_FOUND,
-            detail="User not found"
+    try:
+        # 构建查询条件
+        conditions = []
+        
+        # 学生只能看自己的提交，教师和管理员可以看所有提交
+        if current_user.role == "student":
+            conditions.append(Submission.student_id == current_user.id)
+        
+        # 添加筛选条件
+        if assignment_id:
+            conditions.append(Submission.assignment_id == assignment_id)
+        if language:
+            conditions.append(Submission.language == language)
+        if status:
+            conditions.append(Submission.status == status)
+        
+        # 计算总数
+        count_query = select(func.count(Submission.id)).where(and_(*conditions))
+        total_result = await db.execute(count_query)
+        total_count = total_result.scalar()
+        
+        # 获取分页数据
+        query = (
+            select(Submission)
+            .where(and_(*conditions))
+            .order_by(desc(Submission.submitted_at))
+            .offset(pagination["offset"])
+            .limit(pagination["limit"])
         )
-    
-    # 构建查询
-    query = select(Submission)
-    
-    # 学生只能看自己的提交，教师可以看所有提交
-    if user.role == UserRole.STUDENT:
-        query = query.where(Submission.student_id == current_user_id)
-    
-    # 添加筛选条件
-    if assignment_id:
-        query = query.where(Submission.assignment_id == assignment_id)
-    if language:
-        query = query.where(Submission.language == language)
-    if status:
-        query = query.where(Submission.status == status)
-    
-    # 计算总数
-    count_query = select(func.count()).select_from(query.alias())
-    total_result = await db.execute(count_query)
-    total_count = total_result.scalar()
-    
-    # 应用分页和排序
-    offset = (page - 1) * page_size
-    query = query.order_by(desc(Submission.submitted_at)).offset(offset).limit(page_size)
-    
-    result = await db.execute(query)
-    submissions = result.scalars().all()
-    
-    # 构建响应数据
-    submission_list = []
-    for submission in submissions:
-        # 获取AI反馈状态
-        feedback_query = select(AIFeedback).where(AIFeedback.submission_id == submission.id)
-        feedback_result = await db.execute(feedback_query)
-        feedback = feedback_result.scalar_one_or_none()
         
-        ai_status = "pending"
-        if feedback:
-            ai_status = "completed" if feedback.status == "completed" else "processing"
+        result = await db.execute(query)
+        submissions = result.scalars().all()
         
-        submission_list.append(
-            SubmissionListResponse(
-                id=submission.id,
-                assignment_id=submission.assignment_id,
-                assignment_description=submission.assignment_description,
-                language=submission.language,
-                status=submission.status,
-                submitted_at=submission.submitted_at,
-                ai_analysis_status=ai_status,
-                code_preview=submission.code[:200] + "..." if len(submission.code) > 200 else submission.code
+        # 构建响应数据
+        submission_list = []
+        for submission in submissions:
+            # 获取AI反馈状态
+            feedback_query = select(AIFeedback).where(AIFeedback.submission_id == submission.id)
+            feedback_result = await db.execute(feedback_query)
+            feedback = feedback_result.scalar_one_or_none()
+            
+            ai_status = "pending"
+            if feedback:
+                if feedback.status == "completed":
+                    ai_status = "completed"
+                elif feedback.status == "failed":
+                    ai_status = "failed"
+                else:
+                    ai_status = "processing"
+            
+            submission_list.append(
+                SubmissionListResponse(
+                    id=str(submission.id),
+                    assignment_id=submission.assignment_id,
+                    assignment_description=submission.assignment_description,
+                    language=submission.language,
+                    status=submission.status,
+                    submitted_at=submission.submitted_at,
+                    ai_analysis_status=ai_status,
+                    code_preview=submission.code[:200] + "..." if len(submission.code) > 200 else submission.code
+                )
             )
+        
+        return ResponseModel(
+            success=True,
+            data=PaginatedResponse(
+                items=submission_list,
+                total=total_count,
+                page=pagination["page"],
+                size=pagination["size"],
+                pages=(total_count + pagination["size"] - 1) // pagination["size"]
+            ),
+            message="Submissions retrieved successfully"
         )
-    
-    return PaginatedResponse(
-        success=True,
-        data=submission_list,
-        total=total_count,
-        page=page,
-        page_size=page_size,
-        total_pages=(total_count + page_size - 1) // page_size,
-        message="Submissions retrieved successfully"
-    )
+        
+    except Exception as e:
+        logger.error(f"Error retrieving submissions: {str(e)}")
+        raise HTTPException(
+            status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
+            detail="Failed to retrieve submissions"
+        )
 
 
 @router.put("/{submission_id}", response_model=ResponseModel[SubmissionResponse])

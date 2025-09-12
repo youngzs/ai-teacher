@@ -1,0 +1,675 @@
+2025-09-11 18:55:17,067 - src.agents.teaching_agents - INFO - create_all_agents:78 - Created agent: CodeAnalyzer
+2025-09-11 18:55:17,067 - src.agents.teaching_agents - INFO - create_all_agents:78 - Created agent: PedagogyExpert
+2025-09-11 18:55:17,067 - src.agents.teaching_agents - INFO - create_all_agents:78 - Created agent: StudentProfiler
+2025-09-11 18:55:17,067 - src.agents.teaching_agents - INFO - create_all_agents:78 - Created agent: FeedbackGenerator
+2025-09-11 18:55:17,067 - src.agents.teaching_agents - INFO - create_all_agents:78 - Created agent: QualityController
+2025-09-11 18:55:17,067 - src.agents.teaching_agents - INFO - create_all_agents:78 - Created agent: DebuggingMentor
+2025-09-11 18:55:17,067 - src.agents.teaching_agents - INFO - __init__:152 - Initialized TeachingSystem for python_basics with 6 agents
+2025-09-11 18:56:42,648 - run_ai_backend - INFO - startup_event:66 - Initializing AI Teaching System...
+2025-09-11 18:56:42,648 - src.agents.teaching_agents - INFO - create_all_agents:78 - Created agent: CodeAnalyzer
+2025-09-11 18:56:42,648 - src.agents.teaching_agents - INFO - create_all_agents:78 - Created agent: PedagogyExpert
+2025-09-11 18:56:42,648 - src.agents.teaching_agents - INFO - create_all_agents:78 - Created agent: StudentProfiler
+2025-09-11 18:56:42,648 - src.agents.teaching_agents - INFO - create_all_agents:78 - Created agent: FeedbackGenerator
+2025-09-11 18:56:42,648 - src.agents.teaching_agents - INFO - create_all_agents:78 - Created agent: QualityController
+2025-09-11 18:56:42,648 - src.agents.teaching_agents - INFO - create_all_agents:78 - Created agent: DebuggingMentor
+2025-09-11 18:56:42,648 - src.agents.teaching_agents - INFO - __init__:152 - Initialized TeachingSystem for python_basics with 6 agents
+2025-09-11 18:56:42,648 - run_ai_backend - INFO - startup_event:73 - AI Teaching System initialized successfully
+2025-09-11 18:57:01,655 - watchfiles.main - INFO - _log_changes:308 - 2 changes detected
+2025-09-11 18:57:02,056 - watchfiles.main - INFO - _log_changes:308 - 1 change detected
+2025-09-11 18:57:02,457 - watchfiles.main - INFO - _log_changes:308 - 1 change detected
+2025-09-11 18:57:15,146 - run_ai_backend - INFO - analyze_code_submission:124 - Processing code submission from student student_123
+2025-09-11 18:57:15,146 - run_ai_backend - ERROR - analyze_code_submission:156 - Code analysis failed: 'beginner' is not a valid DifficultyLevel
+2025-09-11 18:57:15,517 - watchfiles.main - INFO - _log_changes:308 - 2 changes detected
+2025-09-11 18:57:36,463 - run_ai_backend - INFO - analyze_code_submission:124 - Processing code submission from student student_123
+2025-09-11 18:57:36,463 - run_ai_backend - ERROR - analyze_code_submission:156 - Code analysis failed: SubmissionData.__init__() got an unexpected keyword argument 'difficulty_level'
+2025-09-11 18:57:36,947 - watchfiles.main - INFO - _log_changes:308 - 2 changes detected
+2025-09-11 18:57:57,387 - watchfiles.main - INFO - _log_changes:308 - 3 changes detected
+2025-09-11 18:57:57,798 - run_ai_backend - INFO - startup_event:66 - Initializing AI Teaching System...
+2025-09-11 18:57:57,798 - src.agents.teaching_agents - INFO - create_all_agents:78 - Created agent: CodeAnalyzer
+2025-09-11 18:57:57,798 - src.agents.teaching_agents - INFO - create_all_agents:78 - Created agent: PedagogyExpert
+2025-09-11 18:57:57,798 - src.agents.teaching_agents - INFO - create_all_agents:78 - Created agent: StudentProfiler
+2025-09-11 18:57:57,798 - src.agents.teaching_agents - INFO - create_all_agents:78 - Created agent: FeedbackGenerator
+2025-09-11 18:57:57,798 - src.agents.teaching_agents - INFO - create_all_agents:78 - Created agent: QualityController
+2025-09-11 18:57:57,798 - src.agents.teaching_agents - INFO - create_all_agents:78 - Created agent: DebuggingMentor
+2025-09-11 18:57:57,798 - src.agents.teaching_agents - INFO - __init__:152 - Initialized TeachingSystem for python_basics with 6 agents
+2025-09-11 18:57:57,798 - run_ai_backend - INFO - startup_event:73 - AI Teaching System initialized successfully
+2025-09-11 18:57:57,923 - watchfiles.main - INFO - _log_changes:308 - 1 change detected
+2025-09-11 18:57:58,273 - watchfiles.main - INFO - _log_changes:308 - 2 changes detected
+2025-09-11 18:57:58,624 - watchfiles.main - INFO - _log_changes:308 - 1 change detected
+2025-09-11 18:58:04,242 - run_ai_backend - INFO - analyze_code_submission:124 - Processing code submission from student student_123
+2025-09-11 18:58:04,242 - src.workflows.teaching_workflows_simple - INFO - execute_assignment_analysis:61 - Starting assignment analysis workflow: assignment_student_123_1757588284
+2025-09-11 18:58:04,242 - src.agents.teaching_agents - INFO - process_submission:165 - Processing submission from student student_123
+2025-09-11 18:58:04,242 - src.agents.teaching_agents - WARNING - _execute_code_safely:339 - Code execution failed: 'ExecutionResult' object has no attribute 'get'
+2025-09-11 18:58:04,242 - src.agents.teaching_agents - INFO - process_submission:209 - Successfully processed submission session_student_123_1757588284
+2025-09-11 18:58:04,242 - src.workflows.teaching_workflows_simple - INFO - execute_assignment_analysis:74 - Assignment analysis completed in 0.00s
+2025-09-11 18:58:04,682 - watchfiles.main - INFO - _log_changes:308 - 2 changes detected
+2025-09-11 19:28:09,982 - run_ai_backend - INFO - startup_event:66 - Initializing AI Teaching System...
+2025-09-11 19:28:09,982 - src.agents.teaching_agents - INFO - create_all_agents:78 - Created agent: CodeAnalyzer
+2025-09-11 19:28:09,982 - src.agents.teaching_agents - INFO - create_all_agents:78 - Created agent: PedagogyExpert
+2025-09-11 19:28:09,982 - src.agents.teaching_agents - INFO - create_all_agents:78 - Created agent: StudentProfiler
+2025-09-11 19:28:09,982 - src.agents.teaching_agents - INFO - create_all_agents:78 - Created agent: FeedbackGenerator
+2025-09-11 19:28:09,982 - src.agents.teaching_agents - INFO - create_all_agents:78 - Created agent: QualityController
+2025-09-11 19:28:09,982 - src.agents.teaching_agents - INFO - create_all_agents:78 - Created agent: DebuggingMentor
+2025-09-11 19:28:09,982 - src.agents.teaching_agents - INFO - __init__:152 - Initialized TeachingSystem for python_basics with 6 agents
+2025-09-11 19:28:09,982 - run_ai_backend - INFO - startup_event:73 - AI Teaching System initialized successfully
+2025-09-11 19:32:10,944 - watchfiles.main - INFO - _log_changes:308 - 2 changes detected
+2025-09-11 19:32:11,345 - watchfiles.main - INFO - _log_changes:308 - 1 change detected
+2025-09-11 19:32:11,745 - watchfiles.main - INFO - _log_changes:308 - 1 change detected
+2025-09-11 19:33:11,191 - watchfiles.main - INFO - _log_changes:308 - 2 changes detected
+2025-09-11 19:33:11,591 - watchfiles.main - INFO - _log_changes:308 - 1 change detected
+2025-09-11 19:34:28,865 - watchfiles.main - INFO - _log_changes:308 - 2 changes detected
+2025-09-11 19:34:29,215 - watchfiles.main - INFO - _log_changes:308 - 1 change detected
+2025-09-11 19:34:29,616 - watchfiles.main - INFO - _log_changes:308 - 1 change detected
+2025-09-11 19:34:32,219 - watchfiles.main - INFO - _log_changes:308 - 2 changes detected
+2025-09-11 19:34:32,570 - watchfiles.main - INFO - _log_changes:308 - 1 change detected
+2025-09-11 19:34:51,682 - watchfiles.main - INFO - _log_changes:308 - 3 changes detected
+2025-09-11 19:34:52,034 - watchfiles.main - INFO - _log_changes:308 - 1 change detected
+2025-09-11 19:34:52,541 - watchfiles.main - INFO - _log_changes:308 - 1 change detected
+2025-09-11 19:34:55,222 - watchfiles.main - INFO - _log_changes:308 - 2 changes detected
+2025-09-11 19:34:55,659 - run_ai_backend - INFO - startup_event:66 - Initializing AI Teaching System...
+2025-09-11 19:34:55,659 - src.agents.teaching_agents - INFO - create_all_agents:78 - Created agent: CodeAnalyzer
+2025-09-11 19:34:55,659 - src.agents.teaching_agents - INFO - create_all_agents:78 - Created agent: PedagogyExpert
+2025-09-11 19:34:55,659 - src.agents.teaching_agents - INFO - create_all_agents:78 - Created agent: StudentProfiler
+2025-09-11 19:34:55,659 - src.agents.teaching_agents - INFO - create_all_agents:78 - Created agent: FeedbackGenerator
+2025-09-11 19:34:55,659 - src.agents.teaching_agents - INFO - create_all_agents:78 - Created agent: QualityController
+2025-09-11 19:34:55,659 - src.agents.teaching_agents - INFO - create_all_agents:78 - Created agent: DebuggingMentor
+2025-09-11 19:34:55,659 - src.agents.teaching_agents - INFO - __init__:152 - Initialized TeachingSystem for python_basics with 6 agents
+2025-09-11 19:34:55,659 - run_ai_backend - INFO - startup_event:73 - AI Teaching System initialized successfully
+2025-09-11 19:34:55,776 - watchfiles.main - INFO - _log_changes:308 - 1 change detected
+2025-09-11 19:34:56,128 - watchfiles.main - INFO - _log_changes:308 - 2 changes detected
+2025-09-11 19:34:56,479 - watchfiles.main - INFO - _log_changes:308 - 1 change detected
+2025-09-11 19:35:09,701 - watchfiles.main - INFO - _log_changes:308 - 2 changes detected
+2025-09-11 19:35:10,127 - run_ai_backend - INFO - startup_event:66 - Initializing AI Teaching System...
+2025-09-11 19:35:10,127 - src.agents.teaching_agents - INFO - create_all_agents:78 - Created agent: CodeAnalyzer
+2025-09-11 19:35:10,127 - src.agents.teaching_agents - INFO - create_all_agents:78 - Created agent: PedagogyExpert
+2025-09-11 19:35:10,127 - src.agents.teaching_agents - INFO - create_all_agents:78 - Created agent: StudentProfiler
+2025-09-11 19:35:10,127 - src.agents.teaching_agents - INFO - create_all_agents:78 - Created agent: FeedbackGenerator
+2025-09-11 19:35:10,127 - src.agents.teaching_agents - INFO - create_all_agents:78 - Created agent: QualityController
+2025-09-11 19:35:10,127 - src.agents.teaching_agents - INFO - create_all_agents:78 - Created agent: DebuggingMentor
+2025-09-11 19:35:10,127 - src.agents.teaching_agents - INFO - __init__:152 - Initialized TeachingSystem for python_basics with 6 agents
+2025-09-11 19:35:10,127 - run_ai_backend - INFO - startup_event:73 - AI Teaching System initialized successfully
+2025-09-11 19:35:10,239 - watchfiles.main - INFO - _log_changes:308 - 3 changes detected
+2025-09-11 19:35:10,597 - watchfiles.main - INFO - _log_changes:308 - 1 change detected
+2025-09-11 19:35:23,657 - watchfiles.main - INFO - _log_changes:308 - 2 changes detected
+2025-09-11 19:35:24,052 - run_ai_backend - INFO - startup_event:66 - Initializing AI Teaching System...
+2025-09-11 19:35:24,052 - src.agents.teaching_agents - INFO - create_all_agents:78 - Created agent: CodeAnalyzer
+2025-09-11 19:35:24,052 - src.agents.teaching_agents - INFO - create_all_agents:78 - Created agent: PedagogyExpert
+2025-09-11 19:35:24,052 - src.agents.teaching_agents - INFO - create_all_agents:78 - Created agent: StudentProfiler
+2025-09-11 19:35:24,052 - src.agents.teaching_agents - INFO - create_all_agents:78 - Created agent: FeedbackGenerator
+2025-09-11 19:35:24,053 - src.agents.teaching_agents - INFO - create_all_agents:78 - Created agent: QualityController
+2025-09-11 19:35:24,053 - src.agents.teaching_agents - INFO - create_all_agents:78 - Created agent: DebuggingMentor
+2025-09-11 19:35:24,053 - src.agents.teaching_agents - INFO - __init__:152 - Initialized TeachingSystem for python_basics with 6 agents
+2025-09-11 19:35:24,053 - run_ai_backend - INFO - startup_event:73 - AI Teaching System initialized successfully
+2025-09-11 19:35:24,193 - watchfiles.main - INFO - _log_changes:308 - 1 change detected
+2025-09-11 19:35:24,544 - watchfiles.main - INFO - _log_changes:308 - 3 changes detected
+2025-09-11 19:35:31,565 - watchfiles.main - INFO - _log_changes:308 - 2 changes detected
+2025-09-11 19:35:31,900 - run_ai_backend - INFO - startup_event:66 - Initializing AI Teaching System...
+2025-09-11 19:35:31,900 - src.agents.teaching_agents - INFO - create_all_agents:78 - Created agent: CodeAnalyzer
+2025-09-11 19:35:31,900 - src.agents.teaching_agents - INFO - create_all_agents:78 - Created agent: PedagogyExpert
+2025-09-11 19:35:31,900 - src.agents.teaching_agents - INFO - create_all_agents:78 - Created agent: StudentProfiler
+2025-09-11 19:35:31,900 - src.agents.teaching_agents - INFO - create_all_agents:78 - Created agent: FeedbackGenerator
+2025-09-11 19:35:31,900 - src.agents.teaching_agents - INFO - create_all_agents:78 - Created agent: QualityController
+2025-09-11 19:35:31,900 - src.agents.teaching_agents - INFO - create_all_agents:78 - Created agent: DebuggingMentor
+2025-09-11 19:35:31,900 - src.agents.teaching_agents - INFO - __init__:152 - Initialized TeachingSystem for python_basics with 6 agents
+2025-09-11 19:35:31,900 - run_ai_backend - INFO - startup_event:73 - AI Teaching System initialized successfully
+2025-09-11 19:35:32,022 - watchfiles.main - INFO - _log_changes:308 - 3 changes detected
+2025-09-11 19:35:32,423 - watchfiles.main - INFO - _log_changes:308 - 3 changes detected
+2025-09-11 19:35:43,361 - watchfiles.main - INFO - _log_changes:308 - 2 changes detected
+2025-09-11 19:35:43,762 - watchfiles.main - INFO - _log_changes:308 - 1 change detected
+2025-09-11 19:35:57,445 - watchfiles.main - INFO - _log_changes:308 - 4 changes detected
+2025-09-11 19:35:57,764 - run_ai_backend - INFO - startup_event:66 - Initializing AI Teaching System...
+2025-09-11 19:35:57,764 - src.agents.teaching_agents - INFO - create_all_agents:78 - Created agent: CodeAnalyzer
+2025-09-11 19:35:57,764 - src.agents.teaching_agents - INFO - create_all_agents:78 - Created agent: PedagogyExpert
+2025-09-11 19:35:57,764 - src.agents.teaching_agents - INFO - create_all_agents:78 - Created agent: StudentProfiler
+2025-09-11 19:35:57,764 - src.agents.teaching_agents - INFO - create_all_agents:78 - Created agent: FeedbackGenerator
+2025-09-11 19:35:57,764 - src.agents.teaching_agents - INFO - create_all_agents:78 - Created agent: QualityController
+2025-09-11 19:35:57,764 - src.agents.teaching_agents - INFO - create_all_agents:78 - Created agent: DebuggingMentor
+2025-09-11 19:35:57,764 - src.agents.teaching_agents - INFO - __init__:152 - Initialized TeachingSystem for python_basics with 6 agents
+2025-09-11 19:35:57,764 - run_ai_backend - INFO - startup_event:73 - AI Teaching System initialized successfully
+2025-09-11 19:35:57,916 - watchfiles.main - INFO - _log_changes:308 - 1 change detected
+2025-09-11 19:36:09,736 - watchfiles.main - INFO - _log_changes:308 - 2 changes detected
+2025-09-11 19:36:10,086 - watchfiles.main - INFO - _log_changes:308 - 1 change detected
+2025-09-11 19:36:10,487 - watchfiles.main - INFO - _log_changes:308 - 1 change detected
+2025-09-11 19:36:15,043 - watchfiles.main - INFO - _log_changes:308 - 2 changes detected
+2025-09-11 19:36:15,415 - run_ai_backend - INFO - startup_event:66 - Initializing AI Teaching System...
+2025-09-11 19:36:15,415 - src.agents.teaching_agents - INFO - create_all_agents:78 - Created agent: CodeAnalyzer
+2025-09-11 19:36:15,415 - src.agents.teaching_agents - INFO - create_all_agents:78 - Created agent: PedagogyExpert
+2025-09-11 19:36:15,415 - src.agents.teaching_agents - INFO - create_all_agents:78 - Created agent: StudentProfiler
+2025-09-11 19:36:15,415 - src.agents.teaching_agents - INFO - create_all_agents:78 - Created agent: FeedbackGenerator
+2025-09-11 19:36:15,415 - src.agents.teaching_agents - INFO - create_all_agents:78 - Created agent: QualityController
+2025-09-11 19:36:15,415 - src.agents.teaching_agents - INFO - create_all_agents:78 - Created agent: DebuggingMentor
+2025-09-11 19:36:15,415 - src.agents.teaching_agents - INFO - __init__:152 - Initialized TeachingSystem for python_basics with 6 agents
+2025-09-11 19:36:15,415 - run_ai_backend - INFO - startup_event:73 - AI Teaching System initialized successfully
+2025-09-11 19:36:15,548 - watchfiles.main - INFO - _log_changes:308 - 1 change detected
+2025-09-11 19:36:15,898 - watchfiles.main - INFO - _log_changes:308 - 2 changes detected
+2025-09-11 19:36:32,030 - watchfiles.main - INFO - _log_changes:308 - 2 changes detected
+2025-09-11 19:36:32,381 - watchfiles.main - INFO - _log_changes:308 - 1 change detected
+2025-09-11 19:36:50,184 - watchfiles.main - INFO - _log_changes:308 - 2 changes detected
+2025-09-11 19:36:50,535 - watchfiles.main - INFO - _log_changes:308 - 1 change detected
+2025-09-11 19:37:13,554 - watchfiles.main - INFO - _log_changes:308 - 2 changes detected
+2025-09-11 19:37:13,954 - watchfiles.main - INFO - _log_changes:308 - 1 change detected
+2025-09-11 19:37:19,662 - watchfiles.main - INFO - _log_changes:308 - 2 changes detected
+2025-09-11 19:37:20,049 - run_ai_backend - INFO - startup_event:66 - Initializing AI Teaching System...
+2025-09-11 19:37:20,049 - src.agents.teaching_agents - INFO - create_all_agents:78 - Created agent: CodeAnalyzer
+2025-09-11 19:37:20,049 - src.agents.teaching_agents - INFO - create_all_agents:78 - Created agent: PedagogyExpert
+2025-09-11 19:37:20,049 - src.agents.teaching_agents - INFO - create_all_agents:78 - Created agent: StudentProfiler
+2025-09-11 19:37:20,049 - src.agents.teaching_agents - INFO - create_all_agents:78 - Created agent: FeedbackGenerator
+2025-09-11 19:37:20,049 - src.agents.teaching_agents - INFO - create_all_agents:78 - Created agent: QualityController
+2025-09-11 19:37:20,049 - src.agents.teaching_agents - INFO - create_all_agents:78 - Created agent: DebuggingMentor
+2025-09-11 19:37:20,049 - src.agents.teaching_agents - INFO - __init__:152 - Initialized TeachingSystem for python_basics with 6 agents
+2025-09-11 19:37:20,049 - run_ai_backend - INFO - startup_event:73 - AI Teaching System initialized successfully
+2025-09-11 19:37:20,192 - watchfiles.main - INFO - _log_changes:308 - 1 change detected
+2025-09-11 19:37:20,543 - watchfiles.main - INFO - _log_changes:308 - 1 change detected
+2025-09-11 19:37:23,798 - watchfiles.main - INFO - _log_changes:308 - 38 changes detected
+2025-09-11 19:37:24,148 - watchfiles.main - INFO - _log_changes:308 - 1 change detected
+2025-09-11 19:37:24,599 - watchfiles.main - INFO - _log_changes:308 - 1 change detected
+2025-09-11 19:37:39,662 - watchfiles.main - INFO - _log_changes:308 - 2 changes detected
+2025-09-11 19:37:40,013 - watchfiles.main - INFO - _log_changes:308 - 1 change detected
+2025-09-11 19:37:40,413 - watchfiles.main - INFO - _log_changes:308 - 1 change detected
+2025-09-11 19:37:40,864 - watchfiles.main - INFO - _log_changes:308 - 2 changes detected
+2025-09-11 19:37:47,440 - watchfiles.main - INFO - _log_changes:308 - 2 changes detected
+2025-09-11 19:37:47,795 - run_ai_backend - INFO - startup_event:66 - Initializing AI Teaching System...
+2025-09-11 19:37:47,795 - src.agents.teaching_agents - INFO - create_all_agents:78 - Created agent: CodeAnalyzer
+2025-09-11 19:37:47,795 - src.agents.teaching_agents - INFO - create_all_agents:78 - Created agent: PedagogyExpert
+2025-09-11 19:37:47,795 - src.agents.teaching_agents - INFO - create_all_agents:78 - Created agent: StudentProfiler
+2025-09-11 19:37:47,795 - src.agents.teaching_agents - INFO - create_all_agents:78 - Created agent: FeedbackGenerator
+2025-09-11 19:37:47,795 - src.agents.teaching_agents - INFO - create_all_agents:78 - Created agent: QualityController
+2025-09-11 19:37:47,795 - src.agents.teaching_agents - INFO - create_all_agents:78 - Created agent: DebuggingMentor
+2025-09-11 19:37:47,795 - src.agents.teaching_agents - INFO - __init__:152 - Initialized TeachingSystem for python_basics with 6 agents
+2025-09-11 19:37:47,795 - run_ai_backend - INFO - startup_event:73 - AI Teaching System initialized successfully
+2025-09-11 19:37:47,944 - watchfiles.main - INFO - _log_changes:308 - 3 changes detected
+2025-09-11 19:38:26,709 - watchfiles.main - INFO - _log_changes:308 - 2 changes detected
+2025-09-11 19:38:27,059 - watchfiles.main - INFO - _log_changes:308 - 1 change detected
+2025-09-11 19:38:27,459 - watchfiles.main - INFO - _log_changes:308 - 1 change detected
+2025-09-11 19:38:54,263 - watchfiles.main - INFO - _log_changes:308 - 166 changes detected
+2025-09-11 19:38:54,665 - watchfiles.main - INFO - _log_changes:308 - 1 change detected
+2025-09-11 19:38:55,968 - watchfiles.main - INFO - _log_changes:308 - 2 changes detected
+2025-09-11 19:38:56,319 - watchfiles.main - INFO - _log_changes:308 - 1 change detected
+2025-09-11 19:38:56,719 - watchfiles.main - INFO - _log_changes:308 - 1 change detected
+2025-09-11 19:39:00,880 - watchfiles.main - INFO - _log_changes:308 - 2 changes detected
+2025-09-11 19:39:01,230 - watchfiles.main - INFO - _log_changes:308 - 1 change detected
+2025-09-11 19:39:01,633 - watchfiles.main - INFO - _log_changes:308 - 1 change detected
+2025-09-11 19:39:05,789 - watchfiles.main - INFO - _log_changes:308 - 2 changes detected
+2025-09-11 19:39:06,190 - watchfiles.main - INFO - _log_changes:308 - 1 change detected
+2025-09-11 19:39:06,590 - watchfiles.main - INFO - _log_changes:308 - 1 change detected
+2025-09-11 19:39:07,391 - watchfiles.main - INFO - _log_changes:308 - 1 change detected
+2025-09-11 19:39:07,742 - watchfiles.main - INFO - _log_changes:308 - 1 change detected
+2025-09-11 19:39:08,116 - run_ai_backend - INFO - startup_event:66 - Initializing AI Teaching System...
+2025-09-11 19:39:08,116 - src.agents.teaching_agents - INFO - create_all_agents:78 - Created agent: CodeAnalyzer
+2025-09-11 19:39:08,116 - src.agents.teaching_agents - INFO - create_all_agents:78 - Created agent: PedagogyExpert
+2025-09-11 19:39:08,116 - src.agents.teaching_agents - INFO - create_all_agents:78 - Created agent: StudentProfiler
+2025-09-11 19:39:08,116 - src.agents.teaching_agents - INFO - create_all_agents:78 - Created agent: FeedbackGenerator
+2025-09-11 19:39:08,116 - src.agents.teaching_agents - INFO - create_all_agents:78 - Created agent: QualityController
+2025-09-11 19:39:08,116 - src.agents.teaching_agents - INFO - create_all_agents:78 - Created agent: DebuggingMentor
+2025-09-11 19:39:08,116 - src.agents.teaching_agents - INFO - __init__:152 - Initialized TeachingSystem for python_basics with 6 agents
+2025-09-11 19:39:08,116 - run_ai_backend - INFO - startup_event:73 - AI Teaching System initialized successfully
+2025-09-11 19:39:08,277 - watchfiles.main - INFO - _log_changes:308 - 1 change detected
+2025-09-11 19:40:18,528 - watchfiles.main - INFO - _log_changes:308 - 1 change detected
+2025-09-11 19:40:18,929 - watchfiles.main - INFO - _log_changes:308 - 1 change detected
+2025-09-11 19:40:35,098 - watchfiles.main - INFO - _log_changes:308 - 1 change detected
+2025-09-11 19:40:35,499 - watchfiles.main - INFO - _log_changes:308 - 1 change detected
+2025-09-11 19:41:17,394 - watchfiles.main - INFO - _log_changes:308 - 2 changes detected
+2025-09-11 19:41:17,795 - watchfiles.main - INFO - _log_changes:308 - 1 change detected
+2025-09-11 19:41:28,866 - watchfiles.main - INFO - _log_changes:308 - 2 changes detected
+2025-09-11 19:41:29,216 - watchfiles.main - INFO - _log_changes:308 - 1 change detected
+2025-09-11 19:41:29,667 - watchfiles.main - INFO - _log_changes:308 - 1 change detected
+2025-09-11 19:41:37,964 - watchfiles.main - INFO - _log_changes:308 - 1 change detected
+2025-09-11 19:41:38,364 - watchfiles.main - INFO - _log_changes:308 - 2 changes detected
+2025-09-11 19:41:38,815 - watchfiles.main - INFO - _log_changes:308 - 1 change detected
+2025-09-11 19:41:50,388 - watchfiles.main - INFO - _log_changes:308 - 2 changes detected
+2025-09-11 19:41:50,781 - run_ai_backend - INFO - startup_event:66 - Initializing AI Teaching System...
+2025-09-11 19:41:50,781 - src.agents.teaching_agents - INFO - create_all_agents:78 - Created agent: CodeAnalyzer
+2025-09-11 19:41:50,781 - src.agents.teaching_agents - INFO - create_all_agents:78 - Created agent: PedagogyExpert
+2025-09-11 19:41:50,781 - src.agents.teaching_agents - INFO - create_all_agents:78 - Created agent: StudentProfiler
+2025-09-11 19:41:50,781 - src.agents.teaching_agents - INFO - create_all_agents:78 - Created agent: FeedbackGenerator
+2025-09-11 19:41:50,781 - src.agents.teaching_agents - INFO - create_all_agents:78 - Created agent: QualityController
+2025-09-11 19:41:50,782 - src.agents.teaching_agents - INFO - create_all_agents:78 - Created agent: DebuggingMentor
+2025-09-11 19:41:50,782 - src.agents.teaching_agents - INFO - __init__:152 - Initialized TeachingSystem for python_basics with 6 agents
+2025-09-11 19:41:50,782 - run_ai_backend - INFO - startup_event:73 - AI Teaching System initialized successfully
+2025-09-11 19:41:50,916 - watchfiles.main - INFO - _log_changes:308 - 1 change detected
+2025-09-11 19:41:57,726 - watchfiles.main - INFO - _log_changes:308 - 2 changes detected
+2025-09-11 19:41:58,127 - watchfiles.main - INFO - _log_changes:308 - 1 change detected
+2025-09-11 19:41:58,527 - watchfiles.main - INFO - _log_changes:308 - 1 change detected
+2025-09-11 19:42:00,980 - watchfiles.main - INFO - _log_changes:308 - 9 changes detected
+2025-09-11 19:42:01,381 - watchfiles.main - INFO - _log_changes:308 - 1 change detected
+2025-09-11 19:42:01,782 - watchfiles.main - INFO - _log_changes:308 - 1 change detected
+2025-09-11 19:42:10,208 - watchfiles.main - INFO - _log_changes:308 - 2 changes detected
+2025-09-11 19:42:10,608 - run_ai_backend - INFO - startup_event:66 - Initializing AI Teaching System...
+2025-09-11 19:42:10,608 - src.agents.teaching_agents - INFO - create_all_agents:78 - Created agent: CodeAnalyzer
+2025-09-11 19:42:10,608 - src.agents.teaching_agents - INFO - create_all_agents:78 - Created agent: PedagogyExpert
+2025-09-11 19:42:10,608 - src.agents.teaching_agents - INFO - create_all_agents:78 - Created agent: StudentProfiler
+2025-09-11 19:42:10,608 - src.agents.teaching_agents - INFO - create_all_agents:78 - Created agent: FeedbackGenerator
+2025-09-11 19:42:10,608 - src.agents.teaching_agents - INFO - create_all_agents:78 - Created agent: QualityController
+2025-09-11 19:42:10,608 - src.agents.teaching_agents - INFO - create_all_agents:78 - Created agent: DebuggingMentor
+2025-09-11 19:42:10,608 - src.agents.teaching_agents - INFO - __init__:152 - Initialized TeachingSystem for python_basics with 6 agents
+2025-09-11 19:42:10,608 - run_ai_backend - INFO - startup_event:73 - AI Teaching System initialized successfully
+2025-09-11 19:42:10,734 - watchfiles.main - INFO - _log_changes:308 - 1 change detected
+2025-09-11 19:42:20,500 - watchfiles.main - INFO - _log_changes:308 - 4 changes detected
+2025-09-11 19:42:20,901 - watchfiles.main - INFO - _log_changes:308 - 1 change detected
+2025-09-11 19:42:21,802 - watchfiles.main - INFO - _log_changes:308 - 2 changes detected
+2025-09-11 19:42:22,152 - watchfiles.main - INFO - _log_changes:308 - 1 change detected
+2025-09-11 19:42:22,553 - watchfiles.main - INFO - _log_changes:308 - 1 change detected
+2025-09-11 19:42:26,319 - watchfiles.main - INFO - _log_changes:308 - 2 changes detected
+2025-09-11 19:42:26,669 - watchfiles.main - INFO - _log_changes:308 - 1 change detected
+2025-09-11 19:42:29,172 - watchfiles.main - INFO - _log_changes:308 - 2 changes detected
+2025-09-11 19:42:29,546 - run_ai_backend - INFO - startup_event:66 - Initializing AI Teaching System...
+2025-09-11 19:42:29,547 - src.agents.teaching_agents - INFO - create_all_agents:78 - Created agent: CodeAnalyzer
+2025-09-11 19:42:29,547 - src.agents.teaching_agents - INFO - create_all_agents:78 - Created agent: PedagogyExpert
+2025-09-11 19:42:29,547 - src.agents.teaching_agents - INFO - create_all_agents:78 - Created agent: StudentProfiler
+2025-09-11 19:42:29,547 - src.agents.teaching_agents - INFO - create_all_agents:78 - Created agent: FeedbackGenerator
+2025-09-11 19:42:29,547 - src.agents.teaching_agents - INFO - create_all_agents:78 - Created agent: QualityController
+2025-09-11 19:42:29,547 - src.agents.teaching_agents - INFO - create_all_agents:78 - Created agent: DebuggingMentor
+2025-09-11 19:42:29,547 - src.agents.teaching_agents - INFO - __init__:152 - Initialized TeachingSystem for python_basics with 6 agents
+2025-09-11 19:42:29,547 - run_ai_backend - INFO - startup_event:73 - AI Teaching System initialized successfully
+2025-09-11 19:42:29,692 - watchfiles.main - INFO - _log_changes:308 - 1 change detected
+2025-09-11 19:42:30,793 - watchfiles.main - INFO - _log_changes:308 - 2 changes detected
+2025-09-11 19:42:31,144 - watchfiles.main - INFO - _log_changes:308 - 1 change detected
+2025-09-11 19:42:31,595 - watchfiles.main - INFO - _log_changes:308 - 1 change detected
+2025-09-11 19:42:35,349 - watchfiles.main - INFO - _log_changes:308 - 2 changes detected
+2025-09-11 19:42:35,700 - watchfiles.main - INFO - _log_changes:308 - 1 change detected
+2025-09-11 19:42:41,306 - watchfiles.main - INFO - _log_changes:308 - 2 changes detected
+2025-09-11 19:42:41,657 - watchfiles.main - INFO - _log_changes:308 - 1 change detected
+2025-09-11 19:42:49,452 - watchfiles.main - INFO - _log_changes:308 - 2 changes detected
+2025-09-11 19:42:49,903 - watchfiles.main - INFO - _log_changes:308 - 3 changes detected
+2025-09-11 19:42:50,232 - run_ai_backend - INFO - startup_event:66 - Initializing AI Teaching System...
+2025-09-11 19:42:50,232 - src.agents.teaching_agents - INFO - create_all_agents:78 - Created agent: CodeAnalyzer
+2025-09-11 19:42:50,232 - src.agents.teaching_agents - INFO - create_all_agents:78 - Created agent: PedagogyExpert
+2025-09-11 19:42:50,232 - src.agents.teaching_agents - INFO - create_all_agents:78 - Created agent: StudentProfiler
+2025-09-11 19:42:50,232 - src.agents.teaching_agents - INFO - create_all_agents:78 - Created agent: FeedbackGenerator
+2025-09-11 19:42:50,232 - src.agents.teaching_agents - INFO - create_all_agents:78 - Created agent: QualityController
+2025-09-11 19:42:50,232 - src.agents.teaching_agents - INFO - create_all_agents:78 - Created agent: DebuggingMentor
+2025-09-11 19:42:50,232 - src.agents.teaching_agents - INFO - __init__:152 - Initialized TeachingSystem for python_basics with 6 agents
+2025-09-11 19:42:50,232 - run_ai_backend - INFO - startup_event:73 - AI Teaching System initialized successfully
+2025-09-11 19:42:50,714 - watchfiles.main - INFO - _log_changes:308 - 1 change detected
+2025-09-11 19:42:54,870 - watchfiles.main - INFO - _log_changes:308 - 2 changes detected
+2025-09-11 19:42:55,270 - watchfiles.main - INFO - _log_changes:308 - 1 change detected
+2025-09-11 19:42:55,671 - watchfiles.main - INFO - _log_changes:308 - 1 change detected
+2025-09-11 19:42:57,773 - watchfiles.main - INFO - _log_changes:308 - 2 changes detected
+2025-09-11 19:42:58,164 - run_ai_backend - INFO - startup_event:66 - Initializing AI Teaching System...
+2025-09-11 19:42:58,164 - src.agents.teaching_agents - INFO - create_all_agents:78 - Created agent: CodeAnalyzer
+2025-09-11 19:42:58,164 - src.agents.teaching_agents - INFO - create_all_agents:78 - Created agent: PedagogyExpert
+2025-09-11 19:42:58,164 - src.agents.teaching_agents - INFO - create_all_agents:78 - Created agent: StudentProfiler
+2025-09-11 19:42:58,164 - src.agents.teaching_agents - INFO - create_all_agents:78 - Created agent: FeedbackGenerator
+2025-09-11 19:42:58,164 - src.agents.teaching_agents - INFO - create_all_agents:78 - Created agent: QualityController
+2025-09-11 19:42:58,164 - src.agents.teaching_agents - INFO - create_all_agents:78 - Created agent: DebuggingMentor
+2025-09-11 19:42:58,164 - src.agents.teaching_agents - INFO - __init__:152 - Initialized TeachingSystem for python_basics with 6 agents
+2025-09-11 19:42:58,164 - run_ai_backend - INFO - startup_event:73 - AI Teaching System initialized successfully
+2025-09-11 19:42:58,297 - watchfiles.main - INFO - _log_changes:308 - 1 change detected
+2025-09-11 19:42:58,647 - watchfiles.main - INFO - _log_changes:308 - 1 change detected
+2025-09-11 19:43:06,056 - watchfiles.main - INFO - _log_changes:308 - 2 changes detected
+2025-09-11 19:43:06,359 - run_ai_backend - INFO - startup_event:66 - Initializing AI Teaching System...
+2025-09-11 19:43:06,359 - src.agents.teaching_agents - INFO - create_all_agents:78 - Created agent: CodeAnalyzer
+2025-09-11 19:43:06,359 - src.agents.teaching_agents - INFO - create_all_agents:78 - Created agent: PedagogyExpert
+2025-09-11 19:43:06,359 - src.agents.teaching_agents - INFO - create_all_agents:78 - Created agent: StudentProfiler
+2025-09-11 19:43:06,359 - src.agents.teaching_agents - INFO - create_all_agents:78 - Created agent: FeedbackGenerator
+2025-09-11 19:43:06,359 - src.agents.teaching_agents - INFO - create_all_agents:78 - Created agent: QualityController
+2025-09-11 19:43:06,359 - src.agents.teaching_agents - INFO - create_all_agents:78 - Created agent: DebuggingMentor
+2025-09-11 19:43:06,359 - src.agents.teaching_agents - INFO - __init__:152 - Initialized TeachingSystem for python_basics with 6 agents
+2025-09-11 19:43:06,359 - run_ai_backend - INFO - startup_event:73 - AI Teaching System initialized successfully
+2025-09-11 19:43:06,527 - watchfiles.main - INFO - _log_changes:308 - 1 change detected
+2025-09-11 19:43:39,676 - watchfiles.main - INFO - _log_changes:308 - 2 changes detected
+2025-09-11 19:43:40,027 - watchfiles.main - INFO - _log_changes:308 - 1 change detected
+2025-09-11 19:43:40,427 - watchfiles.main - INFO - _log_changes:308 - 1 change detected
+2025-09-11 19:43:48,693 - watchfiles.main - INFO - _log_changes:308 - 2 changes detected
+2025-09-11 19:43:49,087 - run_ai_backend - INFO - startup_event:66 - Initializing AI Teaching System...
+2025-09-11 19:43:49,087 - src.agents.teaching_agents - INFO - create_all_agents:78 - Created agent: CodeAnalyzer
+2025-09-11 19:43:49,087 - src.agents.teaching_agents - INFO - create_all_agents:78 - Created agent: PedagogyExpert
+2025-09-11 19:43:49,087 - src.agents.teaching_agents - INFO - create_all_agents:78 - Created agent: StudentProfiler
+2025-09-11 19:43:49,087 - src.agents.teaching_agents - INFO - create_all_agents:78 - Created agent: FeedbackGenerator
+2025-09-11 19:43:49,087 - src.agents.teaching_agents - INFO - create_all_agents:78 - Created agent: QualityController
+2025-09-11 19:43:49,087 - src.agents.teaching_agents - INFO - create_all_agents:78 - Created agent: DebuggingMentor
+2025-09-11 19:43:49,087 - src.agents.teaching_agents - INFO - __init__:152 - Initialized TeachingSystem for python_basics with 6 agents
+2025-09-11 19:43:49,087 - run_ai_backend - INFO - startup_event:73 - AI Teaching System initialized successfully
+2025-09-11 19:43:49,239 - watchfiles.main - INFO - _log_changes:308 - 1 change detected
+2025-09-11 19:43:49,590 - watchfiles.main - INFO - _log_changes:308 - 1 change detected
+2025-09-11 19:44:16,425 - watchfiles.main - INFO - _log_changes:308 - 2 changes detected
+2025-09-11 19:44:16,776 - watchfiles.main - INFO - _log_changes:308 - 1 change detected
+2025-09-11 19:45:07,815 - watchfiles.main - INFO - _log_changes:308 - 2 changes detected
+2025-09-11 19:45:08,146 - run_ai_backend - INFO - startup_event:66 - Initializing AI Teaching System...
+2025-09-11 19:45:08,146 - src.agents.teaching_agents - INFO - create_all_agents:78 - Created agent: CodeAnalyzer
+2025-09-11 19:45:08,146 - src.agents.teaching_agents - INFO - create_all_agents:78 - Created agent: PedagogyExpert
+2025-09-11 19:45:08,146 - src.agents.teaching_agents - INFO - create_all_agents:78 - Created agent: StudentProfiler
+2025-09-11 19:45:08,146 - src.agents.teaching_agents - INFO - create_all_agents:78 - Created agent: FeedbackGenerator
+2025-09-11 19:45:08,146 - src.agents.teaching_agents - INFO - create_all_agents:78 - Created agent: QualityController
+2025-09-11 19:45:08,146 - src.agents.teaching_agents - INFO - create_all_agents:78 - Created agent: DebuggingMentor
+2025-09-11 19:45:08,146 - src.agents.teaching_agents - INFO - __init__:152 - Initialized TeachingSystem for python_basics with 6 agents
+2025-09-11 19:45:08,146 - run_ai_backend - INFO - startup_event:73 - AI Teaching System initialized successfully
+2025-09-11 19:45:08,286 - watchfiles.main - INFO - _log_changes:308 - 1 change detected
+2025-09-11 19:45:08,636 - watchfiles.main - INFO - _log_changes:308 - 1 change detected
+2025-09-11 19:45:21,776 - watchfiles.main - INFO - _log_changes:308 - 2 changes detected
+2025-09-11 19:45:22,175 - run_ai_backend - INFO - startup_event:66 - Initializing AI Teaching System...
+2025-09-11 19:45:22,175 - src.agents.teaching_agents - INFO - create_all_agents:78 - Created agent: CodeAnalyzer
+2025-09-11 19:45:22,175 - src.agents.teaching_agents - INFO - create_all_agents:78 - Created agent: PedagogyExpert
+2025-09-11 19:45:22,175 - src.agents.teaching_agents - INFO - create_all_agents:78 - Created agent: StudentProfiler
+2025-09-11 19:45:22,175 - src.agents.teaching_agents - INFO - create_all_agents:78 - Created agent: FeedbackGenerator
+2025-09-11 19:45:22,175 - src.agents.teaching_agents - INFO - create_all_agents:78 - Created agent: QualityController
+2025-09-11 19:45:22,175 - src.agents.teaching_agents - INFO - create_all_agents:78 - Created agent: DebuggingMentor
+2025-09-11 19:45:22,175 - src.agents.teaching_agents - INFO - __init__:152 - Initialized TeachingSystem for python_basics with 6 agents
+2025-09-11 19:45:22,175 - run_ai_backend - INFO - startup_event:73 - AI Teaching System initialized successfully
+2025-09-11 19:45:22,326 - watchfiles.main - INFO - _log_changes:308 - 1 change detected
+2025-09-11 19:45:22,676 - watchfiles.main - INFO - _log_changes:308 - 1 change detected
+2025-09-11 19:45:27,082 - watchfiles.main - INFO - _log_changes:308 - 2 changes detected
+2025-09-11 19:45:27,432 - watchfiles.main - INFO - _log_changes:308 - 1 change detected
+2025-09-11 19:45:44,354 - watchfiles.main - INFO - _log_changes:308 - 2 changes detected
+2025-09-11 19:45:44,710 - run_ai_backend - INFO - startup_event:66 - Initializing AI Teaching System...
+2025-09-11 19:45:44,710 - src.agents.teaching_agents - INFO - create_all_agents:78 - Created agent: CodeAnalyzer
+2025-09-11 19:45:44,710 - src.agents.teaching_agents - INFO - create_all_agents:78 - Created agent: PedagogyExpert
+2025-09-11 19:45:44,710 - src.agents.teaching_agents - INFO - create_all_agents:78 - Created agent: StudentProfiler
+2025-09-11 19:45:44,710 - src.agents.teaching_agents - INFO - create_all_agents:78 - Created agent: FeedbackGenerator
+2025-09-11 19:45:44,710 - src.agents.teaching_agents - INFO - create_all_agents:78 - Created agent: QualityController
+2025-09-11 19:45:44,710 - src.agents.teaching_agents - INFO - create_all_agents:78 - Created agent: DebuggingMentor
+2025-09-11 19:45:44,710 - src.agents.teaching_agents - INFO - __init__:152 - Initialized TeachingSystem for python_basics with 6 agents
+2025-09-11 19:45:44,710 - run_ai_backend - INFO - startup_event:73 - AI Teaching System initialized successfully
+2025-09-11 19:45:44,861 - watchfiles.main - INFO - _log_changes:308 - 1 change detected
+2025-09-11 19:45:57,428 - watchfiles.main - INFO - _log_changes:308 - 2 changes detected
+2025-09-11 19:45:57,779 - watchfiles.main - INFO - _log_changes:308 - 1 change detected
+2025-09-11 19:46:05,193 - watchfiles.main - INFO - _log_changes:308 - 2 changes detected
+2025-09-11 19:46:05,546 - run_ai_backend - INFO - startup_event:66 - Initializing AI Teaching System...
+2025-09-11 19:46:05,546 - src.agents.teaching_agents - INFO - create_all_agents:78 - Created agent: CodeAnalyzer
+2025-09-11 19:46:05,546 - src.agents.teaching_agents - INFO - create_all_agents:78 - Created agent: PedagogyExpert
+2025-09-11 19:46:05,546 - src.agents.teaching_agents - INFO - create_all_agents:78 - Created agent: StudentProfiler
+2025-09-11 19:46:05,546 - src.agents.teaching_agents - INFO - create_all_agents:78 - Created agent: FeedbackGenerator
+2025-09-11 19:46:05,546 - src.agents.teaching_agents - INFO - create_all_agents:78 - Created agent: QualityController
+2025-09-11 19:46:05,546 - src.agents.teaching_agents - INFO - create_all_agents:78 - Created agent: DebuggingMentor
+2025-09-11 19:46:05,546 - src.agents.teaching_agents - INFO - __init__:152 - Initialized TeachingSystem for python_basics with 6 agents
+2025-09-11 19:46:05,546 - run_ai_backend - INFO - startup_event:73 - AI Teaching System initialized successfully
+2025-09-11 19:46:05,699 - watchfiles.main - INFO - _log_changes:308 - 1 change detected
+2025-09-11 19:47:06,280 - watchfiles.main - INFO - _log_changes:308 - 2 changes detected
+2025-09-11 19:47:06,681 - watchfiles.main - INFO - _log_changes:308 - 1 change detected
+2025-09-11 19:47:11,237 - watchfiles.main - INFO - _log_changes:308 - 2 changes detected
+2025-09-11 19:47:11,598 - run_ai_backend - INFO - startup_event:66 - Initializing AI Teaching System...
+2025-09-11 19:47:11,599 - src.agents.teaching_agents - INFO - create_all_agents:78 - Created agent: CodeAnalyzer
+2025-09-11 19:47:11,599 - src.agents.teaching_agents - INFO - create_all_agents:78 - Created agent: PedagogyExpert
+2025-09-11 19:47:11,599 - src.agents.teaching_agents - INFO - create_all_agents:78 - Created agent: StudentProfiler
+2025-09-11 19:47:11,599 - src.agents.teaching_agents - INFO - create_all_agents:78 - Created agent: FeedbackGenerator
+2025-09-11 19:47:11,599 - src.agents.teaching_agents - INFO - create_all_agents:78 - Created agent: QualityController
+2025-09-11 19:47:11,599 - src.agents.teaching_agents - INFO - create_all_agents:78 - Created agent: DebuggingMentor
+2025-09-11 19:47:11,599 - src.agents.teaching_agents - INFO - __init__:152 - Initialized TeachingSystem for python_basics with 6 agents
+2025-09-11 19:47:11,599 - run_ai_backend - INFO - startup_event:73 - AI Teaching System initialized successfully
+2025-09-11 19:47:11,741 - watchfiles.main - INFO - _log_changes:308 - 1 change detected
+2025-09-11 19:47:16,160 - watchfiles.main - INFO - _log_changes:308 - 2 changes detected
+2025-09-11 19:47:16,534 - run_ai_backend - INFO - startup_event:66 - Initializing AI Teaching System...
+2025-09-11 19:47:16,534 - src.agents.teaching_agents - INFO - create_all_agents:78 - Created agent: CodeAnalyzer
+2025-09-11 19:47:16,534 - src.agents.teaching_agents - INFO - create_all_agents:78 - Created agent: PedagogyExpert
+2025-09-11 19:47:16,534 - src.agents.teaching_agents - INFO - create_all_agents:78 - Created agent: StudentProfiler
+2025-09-11 19:47:16,534 - src.agents.teaching_agents - INFO - create_all_agents:78 - Created agent: FeedbackGenerator
+2025-09-11 19:47:16,534 - src.agents.teaching_agents - INFO - create_all_agents:78 - Created agent: QualityController
+2025-09-11 19:47:16,534 - src.agents.teaching_agents - INFO - create_all_agents:78 - Created agent: DebuggingMentor
+2025-09-11 19:47:16,534 - src.agents.teaching_agents - INFO - __init__:152 - Initialized TeachingSystem for python_basics with 6 agents
+2025-09-11 19:47:16,534 - run_ai_backend - INFO - startup_event:73 - AI Teaching System initialized successfully
+2025-09-11 19:47:16,663 - watchfiles.main - INFO - _log_changes:308 - 1 change detected
+2025-09-11 19:47:24,769 - watchfiles.main - INFO - _log_changes:308 - 2 changes detected
+2025-09-11 19:47:25,079 - run_ai_backend - INFO - startup_event:66 - Initializing AI Teaching System...
+2025-09-11 19:47:25,080 - src.agents.teaching_agents - INFO - create_all_agents:78 - Created agent: CodeAnalyzer
+2025-09-11 19:47:25,080 - src.agents.teaching_agents - INFO - create_all_agents:78 - Created agent: PedagogyExpert
+2025-09-11 19:47:25,080 - src.agents.teaching_agents - INFO - create_all_agents:78 - Created agent: StudentProfiler
+2025-09-11 19:47:25,080 - src.agents.teaching_agents - INFO - create_all_agents:78 - Created agent: FeedbackGenerator
+2025-09-11 19:47:25,080 - src.agents.teaching_agents - INFO - create_all_agents:78 - Created agent: QualityController
+2025-09-11 19:47:25,080 - src.agents.teaching_agents - INFO - create_all_agents:78 - Created agent: DebuggingMentor
+2025-09-11 19:47:25,080 - src.agents.teaching_agents - INFO - __init__:152 - Initialized TeachingSystem for python_basics with 6 agents
+2025-09-11 19:47:25,080 - run_ai_backend - INFO - startup_event:73 - AI Teaching System initialized successfully
+2025-09-11 19:47:25,234 - watchfiles.main - INFO - _log_changes:308 - 1 change detected
+2025-09-11 19:47:25,584 - watchfiles.main - INFO - _log_changes:308 - 1 change detected
+2025-09-11 19:47:29,339 - watchfiles.main - INFO - _log_changes:308 - 2 changes detected
+2025-09-11 19:47:29,695 - run_ai_backend - INFO - startup_event:66 - Initializing AI Teaching System...
+2025-09-11 19:47:29,695 - src.agents.teaching_agents - INFO - create_all_agents:78 - Created agent: CodeAnalyzer
+2025-09-11 19:47:29,695 - src.agents.teaching_agents - INFO - create_all_agents:78 - Created agent: PedagogyExpert
+2025-09-11 19:47:29,695 - src.agents.teaching_agents - INFO - create_all_agents:78 - Created agent: StudentProfiler
+2025-09-11 19:47:29,695 - src.agents.teaching_agents - INFO - create_all_agents:78 - Created agent: FeedbackGenerator
+2025-09-11 19:47:29,695 - src.agents.teaching_agents - INFO - create_all_agents:78 - Created agent: QualityController
+2025-09-11 19:47:29,695 - src.agents.teaching_agents - INFO - create_all_agents:78 - Created agent: DebuggingMentor
+2025-09-11 19:47:29,695 - src.agents.teaching_agents - INFO - __init__:152 - Initialized TeachingSystem for python_basics with 6 agents
+2025-09-11 19:47:29,695 - run_ai_backend - INFO - startup_event:73 - AI Teaching System initialized successfully
+2025-09-11 19:47:29,841 - watchfiles.main - INFO - _log_changes:308 - 1 change detected
+2025-09-11 19:48:04,562 - watchfiles.main - INFO - _log_changes:308 - 2 changes detected
+2025-09-11 19:48:04,913 - watchfiles.main - INFO - _log_changes:308 - 1 change detected
+2025-09-11 19:48:23,001 - watchfiles.main - INFO - _log_changes:308 - 2 changes detected
+2025-09-11 19:48:23,352 - watchfiles.main - INFO - _log_changes:308 - 1 change detected
+2025-09-11 19:48:23,752 - watchfiles.main - INFO - _log_changes:308 - 1 change detected
+2025-09-11 19:48:35,628 - watchfiles.main - INFO - _log_changes:308 - 2 changes detected
+2025-09-11 19:48:35,974 - run_ai_backend - INFO - startup_event:66 - Initializing AI Teaching System...
+2025-09-11 19:48:35,974 - src.agents.teaching_agents - INFO - create_all_agents:78 - Created agent: CodeAnalyzer
+2025-09-11 19:48:35,974 - src.agents.teaching_agents - INFO - create_all_agents:78 - Created agent: PedagogyExpert
+2025-09-11 19:48:35,974 - src.agents.teaching_agents - INFO - create_all_agents:78 - Created agent: StudentProfiler
+2025-09-11 19:48:35,974 - src.agents.teaching_agents - INFO - create_all_agents:78 - Created agent: FeedbackGenerator
+2025-09-11 19:48:35,974 - src.agents.teaching_agents - INFO - create_all_agents:78 - Created agent: QualityController
+2025-09-11 19:48:35,974 - src.agents.teaching_agents - INFO - create_all_agents:78 - Created agent: DebuggingMentor
+2025-09-11 19:48:35,974 - src.agents.teaching_agents - INFO - __init__:152 - Initialized TeachingSystem for python_basics with 6 agents
+2025-09-11 19:48:35,974 - run_ai_backend - INFO - startup_event:73 - AI Teaching System initialized successfully
+2025-09-11 19:48:36,110 - watchfiles.main - INFO - _log_changes:308 - 3 changes detected
+2025-09-11 19:48:36,460 - watchfiles.main - INFO - _log_changes:308 - 4 changes detected
+2025-09-11 19:48:41,020 - watchfiles.main - INFO - _log_changes:308 - 2 changes detected
+2025-09-11 19:48:41,381 - run_ai_backend - INFO - startup_event:66 - Initializing AI Teaching System...
+2025-09-11 19:48:41,382 - src.agents.teaching_agents - INFO - create_all_agents:78 - Created agent: CodeAnalyzer
+2025-09-11 19:48:41,382 - src.agents.teaching_agents - INFO - create_all_agents:78 - Created agent: PedagogyExpert
+2025-09-11 19:48:41,382 - src.agents.teaching_agents - INFO - create_all_agents:78 - Created agent: StudentProfiler
+2025-09-11 19:48:41,382 - src.agents.teaching_agents - INFO - create_all_agents:78 - Created agent: FeedbackGenerator
+2025-09-11 19:48:41,382 - src.agents.teaching_agents - INFO - create_all_agents:78 - Created agent: QualityController
+2025-09-11 19:48:41,382 - src.agents.teaching_agents - INFO - create_all_agents:78 - Created agent: DebuggingMentor
+2025-09-11 19:48:41,382 - src.agents.teaching_agents - INFO - __init__:152 - Initialized TeachingSystem for python_basics with 6 agents
+2025-09-11 19:48:41,382 - run_ai_backend - INFO - startup_event:73 - AI Teaching System initialized successfully
+2025-09-11 19:48:41,536 - watchfiles.main - INFO - _log_changes:308 - 3 changes detected
+2025-09-11 19:48:48,345 - watchfiles.main - INFO - _log_changes:308 - 2 changes detected
+2025-09-11 19:48:48,745 - watchfiles.main - INFO - _log_changes:308 - 1 change detected
+2025-09-11 19:51:06,818 - watchfiles.main - INFO - _log_changes:308 - 2 changes detected
+2025-09-11 19:51:07,170 - run_ai_backend - INFO - startup_event:66 - Initializing AI Teaching System...
+2025-09-11 19:51:07,170 - src.agents.teaching_agents - INFO - create_all_agents:78 - Created agent: CodeAnalyzer
+2025-09-11 19:51:07,170 - src.agents.teaching_agents - INFO - create_all_agents:78 - Created agent: PedagogyExpert
+2025-09-11 19:51:07,170 - src.agents.teaching_agents - INFO - create_all_agents:78 - Created agent: StudentProfiler
+2025-09-11 19:51:07,170 - src.agents.teaching_agents - INFO - create_all_agents:78 - Created agent: FeedbackGenerator
+2025-09-11 19:51:07,170 - src.agents.teaching_agents - INFO - create_all_agents:78 - Created agent: QualityController
+2025-09-11 19:51:07,171 - src.agents.teaching_agents - INFO - create_all_agents:78 - Created agent: DebuggingMentor
+2025-09-11 19:51:07,171 - src.agents.teaching_agents - INFO - __init__:152 - Initialized TeachingSystem for python_basics with 6 agents
+2025-09-11 19:51:07,171 - run_ai_backend - INFO - startup_event:73 - AI Teaching System initialized successfully
+2025-09-11 19:51:07,314 - watchfiles.main - INFO - _log_changes:308 - 1 change detected
+2025-09-11 19:51:07,665 - watchfiles.main - INFO - _log_changes:308 - 15 changes detected
+2025-09-11 19:52:21,528 - watchfiles.main - INFO - _log_changes:308 - 2 changes detected
+2025-09-11 19:52:21,902 - run_ai_backend - INFO - startup_event:66 - Initializing AI Teaching System...
+2025-09-11 19:52:21,902 - src.agents.teaching_agents - INFO - create_all_agents:78 - Created agent: CodeAnalyzer
+2025-09-11 19:52:21,903 - src.agents.teaching_agents - INFO - create_all_agents:78 - Created agent: PedagogyExpert
+2025-09-11 19:52:21,903 - src.agents.teaching_agents - INFO - create_all_agents:78 - Created agent: StudentProfiler
+2025-09-11 19:52:21,903 - src.agents.teaching_agents - INFO - create_all_agents:78 - Created agent: FeedbackGenerator
+2025-09-11 19:52:21,903 - src.agents.teaching_agents - INFO - create_all_agents:78 - Created agent: QualityController
+2025-09-11 19:52:21,903 - src.agents.teaching_agents - INFO - create_all_agents:78 - Created agent: DebuggingMentor
+2025-09-11 19:52:21,903 - src.agents.teaching_agents - INFO - __init__:152 - Initialized TeachingSystem for python_basics with 6 agents
+2025-09-11 19:52:21,903 - run_ai_backend - INFO - startup_event:73 - AI Teaching System initialized successfully
+2025-09-11 19:52:22,042 - watchfiles.main - INFO - _log_changes:308 - 1 change detected
+2025-09-11 19:52:22,393 - watchfiles.main - INFO - _log_changes:308 - 3 changes detected
+2025-09-11 19:52:31,458 - watchfiles.main - INFO - _log_changes:308 - 706 changes detected
+2025-09-11 19:52:31,834 - run_ai_backend - INFO - startup_event:66 - Initializing AI Teaching System...
+2025-09-11 19:52:31,834 - src.agents.teaching_agents - INFO - create_all_agents:78 - Created agent: CodeAnalyzer
+2025-09-11 19:52:31,834 - src.agents.teaching_agents - INFO - create_all_agents:78 - Created agent: PedagogyExpert
+2025-09-11 19:52:31,834 - src.agents.teaching_agents - INFO - create_all_agents:78 - Created agent: StudentProfiler
+2025-09-11 19:52:31,834 - src.agents.teaching_agents - INFO - create_all_agents:78 - Created agent: FeedbackGenerator
+2025-09-11 19:52:31,834 - src.agents.teaching_agents - INFO - create_all_agents:78 - Created agent: QualityController
+2025-09-11 19:52:31,834 - src.agents.teaching_agents - INFO - create_all_agents:78 - Created agent: DebuggingMentor
+2025-09-11 19:52:31,834 - src.agents.teaching_agents - INFO - __init__:152 - Initialized TeachingSystem for python_basics with 6 agents
+2025-09-11 19:52:31,834 - run_ai_backend - INFO - startup_event:73 - AI Teaching System initialized successfully
+2025-09-11 19:52:31,971 - watchfiles.main - INFO - _log_changes:308 - 1 change detected
+2025-09-11 19:53:01,332 - watchfiles.main - INFO - _log_changes:308 - 2 changes detected
+2025-09-11 19:53:01,713 - run_ai_backend - INFO - startup_event:66 - Initializing AI Teaching System...
+2025-09-11 19:53:01,713 - src.agents.teaching_agents - INFO - create_all_agents:78 - Created agent: CodeAnalyzer
+2025-09-11 19:53:01,713 - src.agents.teaching_agents - INFO - create_all_agents:78 - Created agent: PedagogyExpert
+2025-09-11 19:53:01,713 - src.agents.teaching_agents - INFO - create_all_agents:78 - Created agent: StudentProfiler
+2025-09-11 19:53:01,713 - src.agents.teaching_agents - INFO - create_all_agents:78 - Created agent: FeedbackGenerator
+2025-09-11 19:53:01,713 - src.agents.teaching_agents - INFO - create_all_agents:78 - Created agent: QualityController
+2025-09-11 19:53:01,713 - src.agents.teaching_agents - INFO - create_all_agents:78 - Created agent: DebuggingMentor
+2025-09-11 19:53:01,713 - src.agents.teaching_agents - INFO - __init__:152 - Initialized TeachingSystem for python_basics with 6 agents
+2025-09-11 19:53:01,713 - run_ai_backend - INFO - startup_event:73 - AI Teaching System initialized successfully
+2025-09-11 19:53:01,838 - watchfiles.main - INFO - _log_changes:308 - 1 change detected
+2025-09-11 19:53:02,189 - watchfiles.main - INFO - _log_changes:308 - 2 changes detected
+2025-09-11 19:53:02,539 - watchfiles.main - INFO - _log_changes:308 - 1 change detected
+2025-09-11 19:55:37,889 - watchfiles.main - INFO - _log_changes:308 - 2 changes detected
+2025-09-11 19:55:38,246 - run_ai_backend - INFO - startup_event:66 - Initializing AI Teaching System...
+2025-09-11 19:55:38,246 - src.agents.teaching_agents - INFO - create_all_agents:78 - Created agent: CodeAnalyzer
+2025-09-11 19:55:38,246 - src.agents.teaching_agents - INFO - create_all_agents:78 - Created agent: PedagogyExpert
+2025-09-11 19:55:38,246 - src.agents.teaching_agents - INFO - create_all_agents:78 - Created agent: StudentProfiler
+2025-09-11 19:55:38,246 - src.agents.teaching_agents - INFO - create_all_agents:78 - Created agent: FeedbackGenerator
+2025-09-11 19:55:38,246 - src.agents.teaching_agents - INFO - create_all_agents:78 - Created agent: QualityController
+2025-09-11 19:55:38,246 - src.agents.teaching_agents - INFO - create_all_agents:78 - Created agent: DebuggingMentor
+2025-09-11 19:55:38,246 - src.agents.teaching_agents - INFO - __init__:152 - Initialized TeachingSystem for python_basics with 6 agents
+2025-09-11 19:55:38,246 - run_ai_backend - INFO - startup_event:73 - AI Teaching System initialized successfully
+2025-09-11 19:55:38,384 - watchfiles.main - INFO - _log_changes:308 - 13 changes detected
+2025-09-11 19:55:38,735 - watchfiles.main - INFO - _log_changes:308 - 2 changes detected
+2025-09-11 19:56:27,239 - watchfiles.main - INFO - _log_changes:308 - 2 changes detected
+2025-09-11 19:56:27,627 - run_ai_backend - INFO - startup_event:66 - Initializing AI Teaching System...
+2025-09-11 19:56:27,627 - src.agents.teaching_agents - INFO - create_all_agents:78 - Created agent: CodeAnalyzer
+2025-09-11 19:56:27,627 - src.agents.teaching_agents - INFO - create_all_agents:78 - Created agent: PedagogyExpert
+2025-09-11 19:56:27,627 - src.agents.teaching_agents - INFO - create_all_agents:78 - Created agent: StudentProfiler
+2025-09-11 19:56:27,627 - src.agents.teaching_agents - INFO - create_all_agents:78 - Created agent: FeedbackGenerator
+2025-09-11 19:56:27,627 - src.agents.teaching_agents - INFO - create_all_agents:78 - Created agent: QualityController
+2025-09-11 19:56:27,627 - src.agents.teaching_agents - INFO - create_all_agents:78 - Created agent: DebuggingMentor
+2025-09-11 19:56:27,627 - src.agents.teaching_agents - INFO - __init__:152 - Initialized TeachingSystem for python_basics with 6 agents
+2025-09-11 19:56:27,627 - run_ai_backend - INFO - startup_event:73 - AI Teaching System initialized successfully
+2025-09-11 19:56:27,754 - watchfiles.main - INFO - _log_changes:308 - 1 change detected
+2025-09-11 19:56:28,105 - watchfiles.main - INFO - _log_changes:308 - 2 changes detected
+2025-09-11 19:56:28,455 - watchfiles.main - INFO - _log_changes:308 - 1 change detected
+2025-09-11 19:56:32,160 - watchfiles.main - INFO - _log_changes:308 - 2 changes detected
+2025-09-11 19:56:32,556 - run_ai_backend - INFO - startup_event:66 - Initializing AI Teaching System...
+2025-09-11 19:56:32,556 - src.agents.teaching_agents - INFO - create_all_agents:78 - Created agent: CodeAnalyzer
+2025-09-11 19:56:32,556 - src.agents.teaching_agents - INFO - create_all_agents:78 - Created agent: PedagogyExpert
+2025-09-11 19:56:32,556 - src.agents.teaching_agents - INFO - create_all_agents:78 - Created agent: StudentProfiler
+2025-09-11 19:56:32,556 - src.agents.teaching_agents - INFO - create_all_agents:78 - Created agent: FeedbackGenerator
+2025-09-11 19:56:32,556 - src.agents.teaching_agents - INFO - create_all_agents:78 - Created agent: QualityController
+2025-09-11 19:56:32,556 - src.agents.teaching_agents - INFO - create_all_agents:78 - Created agent: DebuggingMentor
+2025-09-11 19:56:32,556 - src.agents.teaching_agents - INFO - __init__:152 - Initialized TeachingSystem for python_basics with 6 agents
+2025-09-11 19:56:32,556 - run_ai_backend - INFO - startup_event:73 - AI Teaching System initialized successfully
+2025-09-11 19:56:32,691 - watchfiles.main - INFO - _log_changes:308 - 1 change detected
+2025-09-11 19:56:33,042 - watchfiles.main - INFO - _log_changes:308 - 2 changes detected
+2025-09-11 19:56:33,392 - watchfiles.main - INFO - _log_changes:308 - 1 change detected
+2025-09-11 19:58:07,084 - watchfiles.main - INFO - _log_changes:308 - 2 changes detected
+2025-09-11 19:58:07,434 - watchfiles.main - INFO - _log_changes:308 - 1 change detected
+2025-09-11 20:00:46,120 - watchfiles.main - INFO - _log_changes:308 - 2 changes detected
+2025-09-11 20:00:46,471 - watchfiles.main - INFO - _log_changes:308 - 1 change detected
+2025-09-11 20:01:16,107 - watchfiles.main - INFO - _log_changes:308 - 2 changes detected
+2025-09-11 20:01:16,512 - run_ai_backend - INFO - startup_event:66 - Initializing AI Teaching System...
+2025-09-11 20:01:16,513 - src.agents.teaching_agents - INFO - create_all_agents:78 - Created agent: CodeAnalyzer
+2025-09-11 20:01:16,513 - src.agents.teaching_agents - INFO - create_all_agents:78 - Created agent: PedagogyExpert
+2025-09-11 20:01:16,513 - src.agents.teaching_agents - INFO - create_all_agents:78 - Created agent: StudentProfiler
+2025-09-11 20:01:16,513 - src.agents.teaching_agents - INFO - create_all_agents:78 - Created agent: FeedbackGenerator
+2025-09-11 20:01:16,513 - src.agents.teaching_agents - INFO - create_all_agents:78 - Created agent: QualityController
+2025-09-11 20:01:16,513 - src.agents.teaching_agents - INFO - create_all_agents:78 - Created agent: DebuggingMentor
+2025-09-11 20:01:16,513 - src.agents.teaching_agents - INFO - __init__:152 - Initialized TeachingSystem for python_basics with 6 agents
+2025-09-11 20:01:16,513 - run_ai_backend - INFO - startup_event:73 - AI Teaching System initialized successfully
+2025-09-11 20:01:16,602 - watchfiles.main - INFO - _log_changes:308 - 1 change detected
+2025-09-11 20:02:33,082 - watchfiles.main - INFO - _log_changes:308 - 1 change detected
+2025-09-11 20:02:33,433 - watchfiles.main - INFO - _log_changes:308 - 1 change detected
+2025-09-11 20:02:33,783 - watchfiles.main - INFO - _log_changes:308 - 1 change detected
+2025-09-11 20:03:50,671 - watchfiles.main - INFO - _log_changes:308 - 2 changes detected
+2025-09-11 20:03:50,998 - run_ai_backend - INFO - startup_event:66 - Initializing AI Teaching System...
+2025-09-11 20:03:51,000 - src.agents.teaching_agents - INFO - create_all_agents:78 - Created agent: CodeAnalyzer
+2025-09-11 20:03:51,000 - src.agents.teaching_agents - INFO - create_all_agents:78 - Created agent: PedagogyExpert
+2025-09-11 20:03:51,000 - src.agents.teaching_agents - INFO - create_all_agents:78 - Created agent: StudentProfiler
+2025-09-11 20:03:51,000 - src.agents.teaching_agents - INFO - create_all_agents:78 - Created agent: FeedbackGenerator
+2025-09-11 20:03:51,000 - src.agents.teaching_agents - INFO - create_all_agents:78 - Created agent: QualityController
+2025-09-11 20:03:51,000 - src.agents.teaching_agents - INFO - create_all_agents:78 - Created agent: DebuggingMentor
+2025-09-11 20:03:51,000 - src.agents.teaching_agents - INFO - __init__:152 - Initialized TeachingSystem for python_basics with 6 agents
+2025-09-11 20:03:51,000 - run_ai_backend - INFO - startup_event:73 - AI Teaching System initialized successfully
+2025-09-11 20:03:51,144 - watchfiles.main - INFO - _log_changes:308 - 1 change detected
+2025-09-11 20:03:51,494 - watchfiles.main - INFO - _log_changes:308 - 1 change detected
+2025-09-11 20:04:03,835 - watchfiles.main - INFO - _log_changes:308 - 2 changes detected
+2025-09-11 20:04:04,236 - watchfiles.main - INFO - _log_changes:308 - 1 change detected
+2025-09-11 20:04:04,637 - watchfiles.main - INFO - _log_changes:308 - 1 change detected
+2025-09-11 20:05:19,233 - watchfiles.main - INFO - _log_changes:308 - 3 changes detected
+2025-09-11 20:05:19,566 - run_ai_backend - INFO - startup_event:66 - Initializing AI Teaching System...
+2025-09-11 20:05:19,566 - src.agents.teaching_agents - INFO - create_all_agents:78 - Created agent: CodeAnalyzer
+2025-09-11 20:05:19,566 - src.agents.teaching_agents - INFO - create_all_agents:78 - Created agent: PedagogyExpert
+2025-09-11 20:05:19,566 - src.agents.teaching_agents - INFO - create_all_agents:78 - Created agent: StudentProfiler
+2025-09-11 20:05:19,566 - src.agents.teaching_agents - INFO - create_all_agents:78 - Created agent: FeedbackGenerator
+2025-09-11 20:05:19,566 - src.agents.teaching_agents - INFO - create_all_agents:78 - Created agent: QualityController
+2025-09-11 20:05:19,566 - src.agents.teaching_agents - INFO - create_all_agents:78 - Created agent: DebuggingMentor
+2025-09-11 20:05:19,566 - src.agents.teaching_agents - INFO - __init__:152 - Initialized TeachingSystem for python_basics with 6 agents
+2025-09-11 20:05:19,566 - run_ai_backend - INFO - startup_event:73 - AI Teaching System initialized successfully
+2025-09-11 20:05:19,692 - watchfiles.main - INFO - _log_changes:308 - 1 change detected
+2025-09-11 20:06:02,624 - watchfiles.main - INFO - _log_changes:308 - 2 changes detected
+2025-09-11 20:06:03,075 - watchfiles.main - INFO - _log_changes:308 - 1 change detected
+2025-09-11 20:06:03,475 - watchfiles.main - INFO - _log_changes:308 - 1 change detected
+2025-09-11 20:06:48,970 - watchfiles.main - INFO - _log_changes:308 - 2 changes detected
+2025-09-11 20:06:49,339 - run_ai_backend - INFO - startup_event:66 - Initializing AI Teaching System...
+2025-09-11 20:06:49,339 - src.agents.teaching_agents - INFO - create_all_agents:78 - Created agent: CodeAnalyzer
+2025-09-11 20:06:49,339 - src.agents.teaching_agents - INFO - create_all_agents:78 - Created agent: PedagogyExpert
+2025-09-11 20:06:49,339 - src.agents.teaching_agents - INFO - create_all_agents:78 - Created agent: StudentProfiler
+2025-09-11 20:06:49,339 - src.agents.teaching_agents - INFO - create_all_agents:78 - Created agent: FeedbackGenerator
+2025-09-11 20:06:49,339 - src.agents.teaching_agents - INFO - create_all_agents:78 - Created agent: QualityController
+2025-09-11 20:06:49,339 - src.agents.teaching_agents - INFO - create_all_agents:78 - Created agent: DebuggingMentor
+2025-09-11 20:06:49,339 - src.agents.teaching_agents - INFO - __init__:152 - Initialized TeachingSystem for python_basics with 6 agents
+2025-09-11 20:06:49,339 - run_ai_backend - INFO - startup_event:73 - AI Teaching System initialized successfully
+2025-09-11 20:06:49,490 - watchfiles.main - INFO - _log_changes:308 - 1 change detected
+2025-09-11 20:06:49,840 - watchfiles.main - INFO - _log_changes:308 - 1 change detected
+2025-09-11 20:09:06,290 - watchfiles.main - INFO - _log_changes:308 - 2 changes detected
+2025-09-11 20:09:06,641 - watchfiles.main - INFO - _log_changes:308 - 1 change detected
+2025-09-11 20:09:09,504 - watchfiles.main - INFO - _log_changes:308 - 3 changes detected
+2025-09-11 20:09:09,835 - run_ai_backend - INFO - startup_event:66 - Initializing AI Teaching System...
+2025-09-11 20:09:09,835 - src.agents.teaching_agents - INFO - create_all_agents:78 - Created agent: CodeAnalyzer
+2025-09-11 20:09:09,835 - src.agents.teaching_agents - INFO - create_all_agents:78 - Created agent: PedagogyExpert
+2025-09-11 20:09:09,835 - src.agents.teaching_agents - INFO - create_all_agents:78 - Created agent: StudentProfiler
+2025-09-11 20:09:09,835 - src.agents.teaching_agents - INFO - create_all_agents:78 - Created agent: FeedbackGenerator
+2025-09-11 20:09:09,835 - src.agents.teaching_agents - INFO - create_all_agents:78 - Created agent: QualityController
+2025-09-11 20:09:09,835 - src.agents.teaching_agents - INFO - create_all_agents:78 - Created agent: DebuggingMentor
+2025-09-11 20:09:09,835 - src.agents.teaching_agents - INFO - __init__:152 - Initialized TeachingSystem for python_basics with 6 agents
+2025-09-11 20:09:09,835 - run_ai_backend - INFO - startup_event:73 - AI Teaching System initialized successfully
+2025-09-11 20:09:09,984 - watchfiles.main - INFO - _log_changes:308 - 1 change detected
+2025-09-11 20:10:23,249 - watchfiles.main - INFO - _log_changes:308 - 2 changes detected
+2025-09-11 20:10:23,650 - watchfiles.main - INFO - _log_changes:308 - 1 change detected
+2025-09-11 20:10:28,158 - watchfiles.main - INFO - _log_changes:308 - 2 changes detected
+2025-09-11 20:10:28,539 - run_ai_backend - INFO - startup_event:66 - Initializing AI Teaching System...
+2025-09-11 20:10:28,539 - src.agents.teaching_agents - INFO - create_all_agents:78 - Created agent: CodeAnalyzer
+2025-09-11 20:10:28,539 - src.agents.teaching_agents - INFO - create_all_agents:78 - Created agent: PedagogyExpert
+2025-09-11 20:10:28,539 - src.agents.teaching_agents - INFO - create_all_agents:78 - Created agent: StudentProfiler
+2025-09-11 20:10:28,539 - src.agents.teaching_agents - INFO - create_all_agents:78 - Created agent: FeedbackGenerator
+2025-09-11 20:10:28,539 - src.agents.teaching_agents - INFO - create_all_agents:78 - Created agent: QualityController
+2025-09-11 20:10:28,539 - src.agents.teaching_agents - INFO - create_all_agents:78 - Created agent: DebuggingMentor
+2025-09-11 20:10:28,539 - src.agents.teaching_agents - INFO - __init__:152 - Initialized TeachingSystem for python_basics with 6 agents
+2025-09-11 20:10:28,539 - run_ai_backend - INFO - startup_event:73 - AI Teaching System initialized successfully
+2025-09-11 20:10:28,680 - watchfiles.main - INFO - _log_changes:308 - 1 change detected
+2025-09-11 20:10:40,936 - watchfiles.main - INFO - _log_changes:308 - 2 changes detected
+2025-09-11 20:10:41,255 - run_ai_backend - INFO - startup_event:66 - Initializing AI Teaching System...
+2025-09-11 20:10:41,256 - src.agents.teaching_agents - INFO - create_all_agents:78 - Created agent: CodeAnalyzer
+2025-09-11 20:10:41,256 - src.agents.teaching_agents - INFO - create_all_agents:78 - Created agent: PedagogyExpert
+2025-09-11 20:10:41,256 - src.agents.teaching_agents - INFO - create_all_agents:78 - Created agent: StudentProfiler
+2025-09-11 20:10:41,256 - src.agents.teaching_agents - INFO - create_all_agents:78 - Created agent: FeedbackGenerator
+2025-09-11 20:10:41,256 - src.agents.teaching_agents - INFO - create_all_agents:78 - Created agent: QualityController
+2025-09-11 20:10:41,256 - src.agents.teaching_agents - INFO - create_all_agents:78 - Created agent: DebuggingMentor
+2025-09-11 20:10:41,256 - src.agents.teaching_agents - INFO - __init__:152 - Initialized TeachingSystem for python_basics with 6 agents
+2025-09-11 20:10:41,256 - run_ai_backend - INFO - startup_event:73 - AI Teaching System initialized successfully
+2025-09-11 20:10:41,396 - watchfiles.main - INFO - _log_changes:308 - 1 change detected
+2025-09-11 20:10:45,872 - watchfiles.main - INFO - _log_changes:308 - 2 changes detected
+2025-09-11 20:10:46,191 - run_ai_backend - INFO - startup_event:66 - Initializing AI Teaching System...
+2025-09-11 20:10:46,191 - src.agents.teaching_agents - INFO - create_all_agents:78 - Created agent: CodeAnalyzer
+2025-09-11 20:10:46,191 - src.agents.teaching_agents - INFO - create_all_agents:78 - Created agent: PedagogyExpert
+2025-09-11 20:10:46,191 - src.agents.teaching_agents - INFO - create_all_agents:78 - Created agent: StudentProfiler
+2025-09-11 20:10:46,191 - src.agents.teaching_agents - INFO - create_all_agents:78 - Created agent: FeedbackGenerator
+2025-09-11 20:10:46,191 - src.agents.teaching_agents - INFO - create_all_agents:78 - Created agent: QualityController
+2025-09-11 20:10:46,191 - src.agents.teaching_agents - INFO - create_all_agents:78 - Created agent: DebuggingMentor
+2025-09-11 20:10:46,191 - src.agents.teaching_agents - INFO - __init__:152 - Initialized TeachingSystem for python_basics with 6 agents
+2025-09-11 20:10:46,191 - run_ai_backend - INFO - startup_event:73 - AI Teaching System initialized successfully
+2025-09-11 20:10:46,337 - watchfiles.main - INFO - _log_changes:308 - 1 change detected
+2025-09-11 20:11:02,844 - watchfiles.main - INFO - _log_changes:308 - 13 changes detected
+2025-09-11 20:11:03,247 - watchfiles.main - INFO - _log_changes:308 - 1 change detected
+2025-09-11 20:11:03,698 - watchfiles.main - INFO - _log_changes:308 - 1 change detected
+2025-09-11 20:11:11,719 - run_optimized_ai_backend - INFO - lifespan:73 - Starting AI Teaching System optimization...
+2025-09-11 20:11:11,719 - run_optimized_ai_backend - INFO - lifespan:85 - Intelligent cache initialized
+2025-09-11 20:11:11,719 - src.core.connection_pool - INFO - start_processors:412 - Started 5 request processors
+2025-09-11 20:11:11,719 - src.core.connection_pool - INFO - create_pool:577 - Created connection pool: ai_backend
+2025-09-11 20:11:11,719 - run_optimized_ai_backend - INFO - lifespan:96 - Connection pool initialized
+2025-09-11 20:11:11,719 - src.agents.optimized_teaching_agents - INFO - __init__:504 - Optimized TeachingSystem initialized for python_basics
+2025-09-11 20:11:11,719 - run_optimized_ai_backend - INFO - lifespan:100 - Optimized teaching system initialized
+2025-09-11 20:11:11,719 - run_optimized_ai_backend - INFO - lifespan:104 - Enhanced code analyzer initialized
+2025-09-11 20:11:11,719 - run_optimized_ai_backend - INFO - lifespan:106 - AI Teaching System optimization completed successfully
+2025-09-11 20:11:11,720 - run_optimized_ai_backend - INFO - lifespan:120 - Shutting down optimized AI system...
+2025-09-11 20:11:11,720 - src.core.intelligent_cache - INFO - close:603 - Intelligent cache system closed
+2025-09-11 20:11:11,720 - src.core.connection_pool - INFO - stop_processors:424 - Stopped all request processors
+2025-09-11 20:11:11,720 - src.core.connection_pool - INFO - close_all:373 - All connections closed
+2025-09-11 20:11:11,720 - src.core.connection_pool - INFO - close_pool:598 - Closed connection pool: ai_backend
+2025-09-11 20:11:11,720 - src.core.connection_pool - INFO - close_all_pools:607 - Closed all connection pools
+2025-09-11 20:11:11,720 - run_optimized_ai_backend - INFO - lifespan:128 - Optimized AI system shutdown completed
+2025-09-11 20:11:11,971 - watchfiles.main - INFO - _log_changes:308 - 3 changes detected
+2025-09-11 20:11:30,319 - run_optimized_ai_backend - INFO - lifespan:73 - Starting AI Teaching System optimization...
+2025-09-11 20:11:30,319 - run_optimized_ai_backend - INFO - lifespan:85 - Intelligent cache initialized
+2025-09-11 20:11:30,320 - src.core.connection_pool - INFO - start_processors:412 - Started 5 request processors
+2025-09-11 20:11:30,320 - src.core.connection_pool - INFO - create_pool:577 - Created connection pool: ai_backend
+2025-09-11 20:11:30,320 - run_optimized_ai_backend - INFO - lifespan:96 - Connection pool initialized
+2025-09-11 20:11:30,320 - src.agents.optimized_teaching_agents - INFO - __init__:504 - Optimized TeachingSystem initialized for python_basics
+2025-09-11 20:11:30,320 - run_optimized_ai_backend - INFO - lifespan:100 - Optimized teaching system initialized
+2025-09-11 20:11:30,320 - run_optimized_ai_backend - INFO - lifespan:104 - Enhanced code analyzer initialized
+2025-09-11 20:11:30,320 - run_optimized_ai_backend - INFO - lifespan:106 - AI Teaching System optimization completed successfully

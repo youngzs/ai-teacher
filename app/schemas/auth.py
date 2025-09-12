@@ -84,7 +84,7 @@ class UserLogin(BaseModel):
             "example": {
                 "identifier": "student@example.com",
                 "password": "SecurePass123",
-                "remember_me": false
+                "remember_me": False
             }
         }
 
@@ -121,7 +121,7 @@ class UserResponse(BaseModel):
                 "email": "student@example.com",
                 "full_name": "张三",
                 "role": "student",
-                "is_active": true,
+                "is_active": True,
                 "phone": "13800138000",
                 "organization": "计算机科学学院",
                 "avatar_url": "https://example.com/avatars/student123.jpg",
@@ -158,7 +158,7 @@ class TokenResponse(BaseModel):
                     "email": "student@example.com",
                     "full_name": "张三",
                     "role": "student",
-                    "is_active": true
+                    "is_active": True
                 },
                 "permissions": ["read:own_submissions", "write:own_submissions"]
             }
@@ -263,8 +263,8 @@ class UserUpdate(BaseModel):
                     "theme": "dark",
                     "language": "zh-CN",
                     "notifications": {
-                        "email": true,
-                        "push": false
+                        "email": True,
+                        "push": False
                     }
                 }
             }

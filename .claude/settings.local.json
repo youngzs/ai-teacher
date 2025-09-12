@@ -26,7 +26,9 @@
       "Bash(lsof:*)",
       "Bash(kill:*)",
       "Bash(xargs -r kill -9)",
-      "Bash(PGPASSWORD=dev_password_123 psql -h localhost -U ai_teacher -d ai_teacher_dev -c \"\nDROP SCHEMA IF EXISTS public CASCADE;\nCREATE SCHEMA public;\nGRANT ALL ON SCHEMA public TO ai_teacher;\nGRANT ALL ON SCHEMA public TO public;\n\")"
+      "Bash(PGPASSWORD=dev_password_123 psql -h localhost -U ai_teacher -d ai_teacher_dev -c \"\nDROP SCHEMA IF EXISTS public CASCADE;\nCREATE SCHEMA public;\nGRANT ALL ON SCHEMA public TO ai_teacher;\nGRANT ALL ON SCHEMA public TO public;\n\")",
+      "Bash(./health_check.sh:*)",
+      "Bash(grep:*)"
     ],
     "deny": [],
     "ask": []

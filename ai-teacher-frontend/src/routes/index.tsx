@@ -31,6 +31,9 @@ import FeedbackHistory from '../pages/student/FeedbackHistory';
 import NotFoundPage from '../pages/error/NotFoundPage';
 import UnauthorizedPage from '../pages/error/UnauthorizedPage';
 
+// Development Pages  
+import { ApiTestPage } from '../pages/ApiTestPage';
+
 const router = createBrowserRouter([
   {
     path: '/',
@@ -177,6 +180,12 @@ const router = createBrowserRouter([
           },
         ],
       },
+
+      // Development routes (only in dev mode)
+      ...(import.meta.env.DEV ? [{
+        path: 'api-test',
+        element: <ApiTestPage />,
+      }] : []),
 
       // Error routes
       {

@@ -18,6 +18,7 @@ os.environ.setdefault("REDIS_URL", "redis://:dev_redis_123@localhost:6379/0")
 
 from .database import engine, SessionLocal, Base
 from .core.config import settings
+from .api import auth, courses, submissions
 
 @asynccontextmanager
 async def lifespan(app: FastAPI):
@@ -147,6 +148,25 @@ async def system_info():
             "metrics_collection": settings.ENABLE_METRICS_COLLECTION
         }
     }
+
+# API路由注册
+app.include_router(
+    auth.router,
+    prefix="/api/auth",
+    tags=["Authentication"]
+)
+
+app.include_router(
+    courses.router,
+    prefix="/api/courses",
+    tags=["Courses & Assignments"]
+)
+
+app.include_router(
+    submissions.router,
+    prefix="/api/submissions",
+    tags=["Code Submissions"]
+)
 
 if __name__ == "__main__":
     import uvicorn

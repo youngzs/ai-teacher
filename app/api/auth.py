@@ -6,9 +6,10 @@ Author: AI Backend Architecture Expert
 Date: 2025-09-10
 """
 
-from fastapi import APIRouter, Depends, HTTPException, status, Form
+from fastapi import APIRouter, Depends, HTTPException, status, Form, Request
 from fastapi.security import OAuth2PasswordRequestForm
 from sqlalchemy.ext.asyncio import AsyncSession
+from sqlalchemy import select
 from typing import Dict, Any
 import re
 from datetime import datetime, timedelta
@@ -17,9 +18,10 @@ from ..database.database import get_db
 from ..database.models import User
 from ..core.security import (
     create_access_token, create_refresh_token, verify_password, 
-    create_password_hash, verify_token, get_current_user_id,
+    create_password_hash, verify_token,
     UserRole, check_rate_limit
 )
+from ..core.dependencies import get_current_active_user, rate_limit_check
 from ..core.config import settings
 from ..schemas.auth import (
     UserRegister, UserLogin, TokenResponse, UserResponse,
@@ -61,7 +63,9 @@ def validate_password(password: str) -> tuple[bool, str]:
 @router.post("/register", response_model=ResponseModel[UserResponse])
 async def register(
     user_data: UserRegister,
-    db: AsyncSession = Depends(get_db)
+    request: Request,
+    db: AsyncSession = Depends(get_db),
+    _: bool = Depends(rate_limit_check)
 ):
     """
     用户注册
@@ -71,13 +75,6 @@ async def register(
         raise HTTPException(
             status_code=status.HTTP_403_FORBIDDEN,
             detail="Registration is currently disabled"
-        )
-    
-    # 速率限制检查
-    if not check_rate_limit(f"register_{user_data.email}", 5):
-        raise HTTPException(
-            status_code=status.HTTP_429_TOO_MANY_REQUESTS,
-            detail="Too many registration attempts. Please try again later."
         )
     
     # 验证邮箱格式
@@ -96,22 +93,20 @@ async def register(
         )
     
     # 检查邮箱是否已存在
-    existing_user = await db.execute(
-        "SELECT id FROM users WHERE email = :email",
-        {"email": user_data.email}
+    existing_user_result = await db.execute(
+        select(User).where(User.email == user_data.email)
     )
-    if existing_user.first():
+    if existing_user_result.scalar_one_or_none():
         raise HTTPException(
             status_code=status.HTTP_400_BAD_REQUEST,
             detail="Email already registered"
         )
     
     # 检查用户名是否已存在
-    existing_username = await db.execute(
-        "SELECT id FROM users WHERE username = :username",
-        {"username": user_data.username}
+    existing_username_result = await db.execute(
+        select(User).where(User.username == user_data.username)
     )
-    if existing_username.first():
+    if existing_username_result.scalar_one_or_none():
         raise HTTPException(
             status_code=status.HTTP_400_BAD_REQUEST,
             detail="Username already taken"
@@ -126,9 +121,8 @@ async def register(
             email=user_data.email,
             hashed_password=hashed_password,
             full_name=user_data.full_name,
-            role=user_data.role or UserRole.STUDENT,
-            is_active=True,
-            created_at=datetime.utcnow()
+            role=user_data.role.value if user_data.role else "student",
+            is_active=True
         )
         
         db.add(new_user)
@@ -140,7 +134,7 @@ async def register(
         return ResponseModel(
             success=True,
             data=UserResponse(
-                id=new_user.id,
+                id=str(new_user.id),
                 username=new_user.username,
                 email=new_user.email,
                 full_name=new_user.full_name,
@@ -163,31 +157,21 @@ async def register(
 @router.post("/login", response_model=ResponseModel[TokenResponse])
 async def login(
     form_data: OAuth2PasswordRequestForm = Depends(),
-    db: AsyncSession = Depends(get_db)
+    db: AsyncSession = Depends(get_db),
+    _: bool = Depends(rate_limit_check)
 ):
     """
     用户登录
     """
-    # 速率限制检查
-    if not check_rate_limit(f"login_{form_data.username}", 10):
-        raise HTTPException(
-            status_code=status.HTTP_429_TOO_MANY_REQUESTS,
-            detail="Too many login attempts. Please try again later."
-        )
-    
     # 查找用户（支持邮箱或用户名登录）
-    user_query = await db.execute(
-        """
-        SELECT id, username, email, hashed_password, full_name, role, 
-               is_active, last_login_at 
-        FROM users 
-        WHERE (email = :identifier OR username = :identifier) 
-        AND is_active = true
-        """,
-        {"identifier": form_data.username}
+    user_result = await db.execute(
+        select(User).where(
+            (User.email == form_data.username) | (User.username == form_data.username),
+            User.is_active == True
+        )
     )
     
-    user = user_query.first()
+    user = user_result.scalar_one_or_none()
     
     if not user or not verify_password(form_data.password, user.hashed_password):
         logger.warning(f"Failed login attempt for: {form_data.username}")
@@ -199,21 +183,18 @@ async def login(
     
     try:
         # 更新最后登录时间
-        await db.execute(
-            "UPDATE users SET last_login_at = :now WHERE id = :user_id",
-            {"now": datetime.utcnow(), "user_id": user.id}
-        )
+        user.last_login_at = datetime.utcnow()
         await db.commit()
         
         # 创建访问令牌和刷新令牌
         access_token = create_access_token(
-            subject=user.id,
+            subject=str(user.id),
             additional_claims={
                 "role": user.role,
                 "username": user.username
             }
         )
-        refresh_token = create_refresh_token(subject=user.id)
+        refresh_token = create_refresh_token(subject=str(user.id))
         
         logger.info(f"User logged in: {user.email}")
         
@@ -225,12 +206,13 @@ async def login(
                 token_type="bearer",
                 expires_in=settings.ACCESS_TOKEN_EXPIRE_MINUTES * 60,
                 user=UserResponse(
-                    id=user.id,
+                    id=str(user.id),
                     username=user.username,
                     email=user.email,
                     full_name=user.full_name,
                     role=user.role,
                     is_active=user.is_active,
+                    created_at=user.created_at,
                     last_login_at=user.last_login_at
                 )
             ),
@@ -322,7 +304,7 @@ async def refresh_token(
 
 @router.post("/logout", response_model=ResponseModel[Dict[str, str]])
 async def logout(
-    current_user_id: str = Depends(get_current_user_id)
+    current_user: User = Depends(get_current_active_user)
 ):
     """
     用户登出
@@ -330,7 +312,7 @@ async def logout(
     # 在实际应用中，这里可以将令牌加入黑名单
     # 目前只是简单的成功响应
     
-    logger.info(f"User logged out: {current_user_id}")
+    logger.info(f"User logged out: {current_user.id}")
     
     return ResponseModel(
         success=True,
@@ -456,42 +438,23 @@ async def confirm_password_reset(
 
 
 @router.get("/me", response_model=ResponseModel[UserResponse])
-async def get_current_user(
-    current_user_id: str = Depends(get_current_user_id),
-    db: AsyncSession = Depends(get_db)
+async def get_current_user_info(
+    current_user: User = Depends(get_current_active_user)
 ):
     """
     获取当前用户信息
     """
-    user_query = await db.execute(
-        """
-        SELECT id, username, email, full_name, role, is_active, 
-               created_at, last_login_at 
-        FROM users 
-        WHERE id = :user_id
-        """,
-        {"user_id": current_user_id}
-    )
-    
-    user = user_query.first()
-    
-    if not user:
-        raise HTTPException(
-            status_code=status.HTTP_404_NOT_FOUND,
-            detail="User not found"
-        )
-    
     return ResponseModel(
         success=True,
         data=UserResponse(
-            id=user.id,
-            username=user.username,
-            email=user.email,
-            full_name=user.full_name,
-            role=user.role,
-            is_active=user.is_active,
-            created_at=user.created_at,
-            last_login_at=user.last_login_at
+            id=str(current_user.id),
+            username=current_user.username,
+            email=current_user.email,
+            full_name=current_user.full_name,
+            role=current_user.role,
+            is_active=current_user.is_active,
+            created_at=current_user.created_at,
+            last_login_at=current_user.last_login_at
         ),
         message="User information retrieved successfully"
     )

@@ -17,11 +17,11 @@ from typing import Any, Dict
 import asyncio
 import uvloop
 
-from .database import engine, SessionLocal
+from .database.database import engine, SessionLocal, init_db
 from .database.models import Base
-from .api import auth, submissions, analysis, users, dashboard
+from .api import auth, submissions, analysis, users, dashboard, courses
 from .core.config import settings
-from .core.security import create_access_token
+from .core.security import create_access_token, SecurityHeaders
 from .services.ai_service import AITeachingService
 from .utils.logger import setup_logging, get_logger
 
@@ -42,9 +42,8 @@ async def lifespan(app: FastAPI):
     # 设置事件循环策略
     asyncio.set_event_loop_policy(uvloop.EventLoopPolicy())
     
-    # 创建数据库表
-    async with engine.begin() as conn:
-        await conn.run_sync(Base.metadata.create_all)
+    # 初始化数据库
+    await init_db()
     
     # 初始化AI服务
     global ai_service
@@ -85,6 +84,19 @@ app.add_middleware(
     TrustedHostMiddleware,
     allowed_hosts=settings.ALLOWED_HOSTS
 )
+
+
+@app.middleware("http")
+async def add_security_headers(request: Request, call_next):
+    """添加安全头部中间件"""
+    response = await call_next(request)
+    
+    # 添加安全头部
+    security_headers = SecurityHeaders.get_security_headers()
+    for header, value in security_headers.items():
+        response.headers[header] = value
+    
+    return response
 
 
 @app.middleware("http")
@@ -199,6 +211,12 @@ app.include_router(
     dashboard.router,
     prefix="/api/v1/dashboard",
     tags=["Dashboard"]
+)
+
+app.include_router(
+    courses.router,
+    prefix="/api/v1/courses",
+    tags=["Courses & Assignments"]
 )
 
 

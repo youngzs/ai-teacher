@@ -357,6 +357,226 @@ class AuditLog(Base):
     )
 
 
+class Course(Base):
+    """课程表模型"""
+    __tablename__ = "courses"
+    
+    id = Column(UUID(as_uuid=True), primary_key=True, default=uuid.uuid4)
+    name = Column(String(100), nullable=False)  # 课程名称
+    code = Column(String(20), nullable=True)    # 课程代码
+    language = Column(String(20), nullable=False)  # 编程语言 (C, Python)
+    
+    # 课程信息
+    description = Column(Text, nullable=True)
+    total_hours = Column(Integer, nullable=False, default=0)  # 总课时
+    difficulty_level = Column(String(20), nullable=True)  # 难度等级
+    prerequisites = Column(JSONB, default=[])  # 先修课程
+    
+    # 课程结构化数据
+    curriculum_data = Column(JSONB, default={})  # 课程大纲
+    learning_objectives = Column(JSONB, default=[])  # 学习目标
+    
+    # 状态
+    is_active = Column(Boolean, default=True, nullable=False)
+    
+    # 时间戳
+    created_at = Column(DateTime(timezone=True), server_default=func.now(), nullable=False)
+    updated_at = Column(DateTime(timezone=True), onupdate=func.now())
+    
+    # 关系定义
+    lessons = relationship("Lesson", back_populates="course", cascade="all, delete-orphan")
+    learning_paths = relationship("LearningPath", back_populates="course", cascade="all, delete-orphan")
+    course_exercises = relationship("CourseExercise", back_populates="course", cascade="all, delete-orphan")
+    
+    # 索引
+    __table_args__ = (
+        Index('idx_course_language', 'language', 'is_active'),
+        Index('idx_course_difficulty', 'difficulty_level', 'is_active'),
+    )
+
+
+class Lesson(Base):
+    """课时表模型"""
+    __tablename__ = "lessons"
+    
+    id = Column(UUID(as_uuid=True), primary_key=True, default=uuid.uuid4)
+    course_id = Column(UUID(as_uuid=True), ForeignKey("courses.id"), nullable=False)
+    
+    # 课时基本信息
+    lesson_number = Column(Integer, nullable=False)  # 课时序号
+    title = Column(String(200), nullable=False)      # 课时标题
+    subtitle = Column(String(300), nullable=True)    # 子标题
+    duration = Column(Integer, nullable=True)        # 课时时长(分钟)
+    
+    # 课时内容
+    content = Column(Text, nullable=True)            # 课时内容
+    learning_objectives = Column(JSONB, default=[])  # 学习目标
+    key_concepts = Column(JSONB, default=[])         # 关键概念
+    
+    # 教学结构化数据
+    teaching_structure = Column(JSONB, default={})   # 教学结构
+    ai_support_strategies = Column(JSONB, default={})  # AI支持策略
+    
+    # 状态
+    is_active = Column(Boolean, default=True, nullable=False)
+    
+    # 时间戳
+    created_at = Column(DateTime(timezone=True), server_default=func.now(), nullable=False)
+    updated_at = Column(DateTime(timezone=True), onupdate=func.now())
+    
+    # 关系定义
+    course = relationship("Course", back_populates="lessons")
+    lesson_exercises = relationship("LessonExercise", back_populates="lesson", cascade="all, delete-orphan")
+    
+    # 索引
+    __table_args__ = (
+        Index('idx_lesson_course_number', 'course_id', 'lesson_number', unique=True),
+        Index('idx_lesson_active', 'is_active', 'lesson_number'),
+    )
+
+
+class CourseExercise(Base):
+    """课程练习表模型"""
+    __tablename__ = "course_exercises"
+    
+    id = Column(UUID(as_uuid=True), primary_key=True, default=uuid.uuid4)
+    course_id = Column(UUID(as_uuid=True), ForeignKey("courses.id"), nullable=False)
+    
+    # 练习基本信息
+    exercise_number = Column(String(20), nullable=False)  # 练习编号 (如: 1.1, 2.3)
+    title = Column(String(200), nullable=False)
+    exercise_type = Column(String(30), nullable=False)   # 练习类型: choice, coding, essay
+    difficulty_level = Column(Integer, nullable=False, default=1)  # 难度级别 1-5
+    
+    # 练习内容
+    question = Column(Text, nullable=False)              # 题目内容
+    options = Column(JSONB, default=[])                  # 选择题选项
+    correct_answer = Column(Text, nullable=True)         # 正确答案
+    sample_code = Column(Text, nullable=True)            # 示例代码
+    
+    # 教学设计
+    knowledge_points = Column(JSONB, default=[])         # 知识点
+    ai_feedback_config = Column(JSONB, default={})       # AI反馈配置
+    teaching_hints = Column(JSONB, default=[])           # 教学提示
+    
+    # 状态
+    is_active = Column(Boolean, default=True, nullable=False)
+    
+    # 时间戳
+    created_at = Column(DateTime(timezone=True), server_default=func.now(), nullable=False)
+    updated_at = Column(DateTime(timezone=True), onupdate=func.now())
+    
+    # 关系定义
+    course = relationship("Course", back_populates="course_exercises")
+    
+    # 索引
+    __table_args__ = (
+        Index('idx_exercise_course_number', 'course_id', 'exercise_number'),
+        Index('idx_exercise_type_difficulty', 'exercise_type', 'difficulty_level'),
+    )
+
+
+class LessonExercise(Base):
+    """课时练习关联表"""
+    __tablename__ = "lesson_exercises"
+    
+    id = Column(UUID(as_uuid=True), primary_key=True, default=uuid.uuid4)
+    lesson_id = Column(UUID(as_uuid=True), ForeignKey("lessons.id"), nullable=False)
+    exercise_id = Column(UUID(as_uuid=True), ForeignKey("course_exercises.id"), nullable=False)
+    
+    # 关联信息
+    order_number = Column(Integer, nullable=False, default=1)  # 在课时中的顺序
+    is_required = Column(Boolean, default=True, nullable=False)  # 是否必做
+    
+    # 时间戳
+    created_at = Column(DateTime(timezone=True), server_default=func.now(), nullable=False)
+    
+    # 关系定义
+    lesson = relationship("Lesson", back_populates="lesson_exercises")
+    exercise = relationship("CourseExercise")
+    
+    # 约束
+    __table_args__ = (
+        Index('idx_lesson_exercise', 'lesson_id', 'exercise_id', unique=True),
+    )
+
+
+class LearningPath(Base):
+    """学习路径表模型"""
+    __tablename__ = "learning_paths"
+    
+    id = Column(UUID(as_uuid=True), primary_key=True, default=uuid.uuid4)
+    student_id = Column(UUID(as_uuid=True), ForeignKey("users.id"), nullable=False)
+    course_id = Column(UUID(as_uuid=True), ForeignKey("courses.id"), nullable=False)
+    
+    # 学习进度
+    current_lesson = Column(Integer, nullable=False, default=1)  # 当前课时
+    completed_lessons = Column(JSONB, default=[])  # 已完成课时列表
+    
+    # 学习数据
+    progress_percentage = Column(Float, nullable=False, default=0.0)  # 进度百分比
+    learning_hours = Column(Float, nullable=False, default=0.0)       # 学习时长
+    
+    # 个性化数据
+    learning_style = Column(JSONB, default={})      # 学习风格偏好
+    difficulty_adjustment = Column(Float, default=1.0)  # 难度调整系数
+    recommended_exercises = Column(JSONB, default=[])   # 推荐练习
+    
+    # 状态追踪
+    last_study_time = Column(DateTime(timezone=True), nullable=True)
+    status = Column(String(20), default="active", nullable=False)  # active, paused, completed
+    
+    # 时间戳
+    created_at = Column(DateTime(timezone=True), server_default=func.now(), nullable=False)
+    updated_at = Column(DateTime(timezone=True), onupdate=func.now())
+    
+    # 关系定义
+    student = relationship("User")
+    course = relationship("Course", back_populates="learning_paths")
+    
+    # 约束
+    __table_args__ = (
+        Index('idx_learning_path_student_course', 'student_id', 'course_id', unique=True),
+        Index('idx_learning_path_progress', 'progress_percentage', 'status'),
+    )
+
+
+class StudentExerciseAttempt(Base):
+    """学生练习尝试记录表"""
+    __tablename__ = "student_exercise_attempts"
+    
+    id = Column(UUID(as_uuid=True), primary_key=True, default=uuid.uuid4)
+    student_id = Column(UUID(as_uuid=True), ForeignKey("users.id"), nullable=False)
+    exercise_id = Column(UUID(as_uuid=True), ForeignKey("course_exercises.id"), nullable=False)
+    
+    # 尝试信息
+    attempt_number = Column(Integer, nullable=False, default=1)  # 尝试次数
+    student_answer = Column(Text, nullable=False)               # 学生答案
+    is_correct = Column(Boolean, nullable=False, default=False) # 是否正确
+    score = Column(Float, nullable=False, default=0.0)          # 得分
+    
+    # AI反馈
+    ai_feedback = Column(JSONB, default={})                     # AI反馈内容
+    feedback_quality = Column(Float, nullable=True)             # 反馈质量评分
+    
+    # 学习数据
+    time_spent = Column(Integer, nullable=True)                 # 花费时间(秒)
+    hint_used = Column(Boolean, default=False, nullable=False)  # 是否使用提示
+    
+    # 时间戳
+    created_at = Column(DateTime(timezone=True), server_default=func.now(), nullable=False)
+    
+    # 关系定义
+    student = relationship("User")
+    exercise = relationship("CourseExercise")
+    
+    # 索引
+    __table_args__ = (
+        Index('idx_attempt_student_exercise', 'student_id', 'exercise_id', 'created_at'),
+        Index('idx_attempt_score', 'score', 'is_correct'),
+    )
+
+
 # 视图定义（用于复杂查询）
 class StudentStatistics:
     """学生统计信息视图（虚拟模型）"""

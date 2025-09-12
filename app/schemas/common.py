@@ -130,7 +130,7 @@ class PaginationParams(BaseModel):
 class SortParams(BaseModel):
     """排序参数模式"""
     sort_by: str = Field("created_at", description="排序字段")
-    sort_order: str = Field("desc", description="排序方向", regex="^(asc|desc)$")
+    sort_order: str = Field("desc", description="排序方向", pattern="^(asc|desc)$")
     
     @validator('sort_order')
     def validate_sort_order(cls, v):

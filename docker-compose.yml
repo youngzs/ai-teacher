@@ -3,15 +3,19 @@
 
 version: '3.8'
 
+# 加载环境变量文件
+# 使用: cp .env.docker .env (如果需要自定义配置)
+x-common-env: &common-env
+  env_file:
+    - .env.docker
+
 services:
   # PostgreSQL数据库
   database:
+    <<: *common-env
     image: postgres:15-alpine
     container_name: ai-teacher-db
     environment:
-      POSTGRES_DB: ai_teacher_dev
-      POSTGRES_USER: ai_teacher
-      POSTGRES_PASSWORD: dev_password_123
       PGDATA: /var/lib/postgresql/data/pgdata
     volumes:
       - postgres_data:/var/lib/postgresql/data
@@ -29,9 +33,10 @@ services:
 
   # Redis缓存
   redis:
+    <<: *common-env
     image: redis:7-alpine
     container_name: ai-teacher-redis
-    command: redis-server --requirepass dev_redis_123 --maxmemory 256mb --maxmemory-policy allkeys-lru
+    command: redis-server --requirepass ${REDIS_PASSWORD} --maxmemory 256mb --maxmemory-policy allkeys-lru
     volumes:
       - redis_data:/data
       - ./scripts/redis.conf:/etc/redis/redis.conf:ro
@@ -48,17 +53,12 @@ services:
 
   # 后端API服务
   backend:
+    <<: *common-env
     build:
       context: .
       dockerfile: Dockerfile
       target: development
     container_name: ai-teacher-backend
-    environment:
-      - DATABASE_URL=postgresql+asyncpg://ai_teacher:dev_password_123@database:5432/ai_teacher_dev
-      - REDIS_URL=redis://:dev_redis_123@redis:6379/0
-      - ENVIRONMENT=development
-      - DEBUG=true
-      - SECRET_KEY=dev-secret-key-change-in-production-123456789
     volumes:
       - .:/app
       - backend_logs:/app/logs
@@ -80,26 +80,54 @@ services:
       start_period: 60s
     restart: unless-stopped
 
+  # AI后端服务 (AutoGen多智能体系统)
+  ai-backend:
+    <<: *common-env
+    build:
+      context: .
+      dockerfile: Dockerfile
+      target: development
+    container_name: ai-teacher-ai-backend
+    command: ["python", "run_ai_backend.py"]
+    volumes:
+      - .:/app
+      - backend_logs:/app/logs
+      - uploads_data:/app/uploads
+    ports:
+      - "8001:8001"
+    networks:
+      - ai-teacher-network
+    depends_on:
+      database:
+        condition: service_healthy
+      redis:
+        condition: service_healthy
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:8001/health"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+      start_period: 60s
+    restart: unless-stopped
+
   # 前端应用
   frontend:
+    <<: *common-env
     build:
       context: ./ai-teacher-frontend
       dockerfile: Dockerfile
       target: development
     container_name: ai-teacher-frontend
-    environment:
-      - VITE_API_BASE_URL=http://localhost:8000
-      - VITE_WS_URL=ws://localhost:8000/ws
-      - NODE_ENV=development
     volumes:
       - ./ai-teacher-frontend:/app
       - /app/node_modules
     ports:
-      - "3000:5173"
+      - "3001:5173"
     networks:
       - ai-teacher-network
     depends_on:
       - backend
+      - ai-backend
     restart: unless-stopped
 
   # 数据库管理工具 (可选)
