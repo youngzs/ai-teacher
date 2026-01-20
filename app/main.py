@@ -19,7 +19,7 @@ import uvloop
 
 from .database.database import engine, SessionLocal, init_db
 from .database.models import Base
-from .api import auth, submissions, analysis, users, dashboard, courses
+from .api import auth, submissions, analysis, users, dashboard, courses, execution
 from .core.config import settings
 from .core.security import create_access_token, SecurityHeaders
 from .services.ai_service import AITeachingService
@@ -217,6 +217,12 @@ app.include_router(
     courses.router,
     prefix="/api/v1/courses",
     tags=["Courses & Assignments"]
+)
+
+app.include_router(
+    execution.router,
+    prefix="/api/v1/execution",
+    tags=["Code Execution"]
 )
 
 
