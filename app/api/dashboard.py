@@ -4,6 +4,7 @@ AI教学助手系统 - 仪表板API端点
 
 Author: AI Backend Architecture Expert
 Date: 2025-09-10
+Updated: Sprint 3 - 使用Repository模式和增强健康检查
 """
 
 from fastapi import APIRouter, Depends, HTTPException, status, Query
@@ -12,15 +13,33 @@ from sqlalchemy import select, func, desc, text
 from typing import List, Optional, Dict, Any
 from datetime import datetime, timedelta
 
-from ..database.database import get_db
+from ..database.database import get_db, comprehensive_health_check
 from ..database.models import User, Submission, AIFeedback, SystemMetrics
 from ..core.security import get_current_user_id, UserRole, require_role
 from ..schemas.common import ResponseModel
 from ..utils.logger import get_logger
 from ..main import get_ai_service
+# Sprint 3: 导入Repository和服务
+from ..repositories import StudentRepository, StudentProfileRepository, AIFeedbackRepository
 
 logger = get_logger(__name__)
 router = APIRouter()
+
+
+# Sprint 3: Repository依赖注入
+def get_student_repository(db: AsyncSession = Depends(get_db)) -> StudentRepository:
+    """获取学生仓库实例"""
+    return StudentRepository(db)
+
+
+def get_profile_repository(db: AsyncSession = Depends(get_db)) -> StudentProfileRepository:
+    """获取学生画像仓库实例"""
+    return StudentProfileRepository(db)
+
+
+def get_feedback_repository(db: AsyncSession = Depends(get_db)) -> AIFeedbackRepository:
+    """获取AI反馈仓库实例"""
+    return AIFeedbackRepository(db)
 
 
 @router.get("/overview", response_model=ResponseModel[Dict[str, Any]])
@@ -223,36 +242,47 @@ async def get_analytics(
 async def get_system_health(
     current_user_id: str = Depends(get_current_user_id),
     db: AsyncSession = Depends(get_db),
-    ai_service = Depends(get_ai_service)
+    ai_service = Depends(get_ai_service),
+    feedback_repo: AIFeedbackRepository = Depends(get_feedback_repository)
 ):
-    """获取系统健康状态（仅管理员）"""
+    """
+    获取系统健康状态（仅管理员）
+    Sprint 3: 使用增强的健康检查功能
+    """
     try:
-        # 数据库健康检查
-        db_health = await _check_database_health(db)
-        
+        # Sprint 3: 使用增强的数据库健康检查
+        db_health = await comprehensive_health_check()
+
         # AI服务健康检查
         ai_health = await ai_service.health_check()
-        
+
+        # Sprint 3: 使用Repository获取反馈统计
+        feedback_stats = await feedback_repo.get_statistics(days=7)
+
         # 系统指标
         system_metrics = await _get_system_metrics(db)
-        
+
+        # 合并反馈统计到系统指标
+        system_metrics["recent_feedback_stats"] = feedback_stats
+
         health_data = {
-            "overall_status": "healthy" if db_health["status"] == "healthy" and ai_health else "unhealthy",
+            "overall_status": "healthy" if db_health.get("connection") and ai_health else "unhealthy",
             "database": db_health,
             "ai_service": {
                 "status": "healthy" if ai_health else "unhealthy",
-                "initialized": ai_service.is_initialized
+                "initialized": ai_service.is_initialized,
+                "using_real_api": getattr(ai_service, 'use_real_api', False)
             },
             "system_metrics": system_metrics,
             "timestamp": datetime.utcnow().isoformat()
         }
-        
+
         return ResponseModel(
             success=True,
             data=health_data,
             message="System health retrieved successfully"
         )
-        
+
     except Exception as e:
         logger.error(f"Failed to get system health: {str(e)}")
         raise HTTPException(

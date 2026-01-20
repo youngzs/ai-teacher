@@ -1,9 +1,10 @@
 """
-AI教学助手系统 - AI服务集成
-集成现有的AI Agent系统，提供异步API接口
+AI教学助手系统 - AI服务集成 (Sprint 3 更新)
+集成现有的AI Agent系统，支持真实OpenAI API和Mock模式
 
-Author: AI Backend Architecture Expert  
+Author: AI Backend Architecture Expert
 Date: 2025-09-10
+Updated: 2026-01-19 (Sprint 3)
 """
 
 import asyncio
@@ -27,6 +28,9 @@ from src.models.teaching_models import (
 )
 from src.utils.logger import get_logger, log_agent_activity, log_performance_metric
 
+# Sprint 3: 导入真实的Agent系统
+from src.agents.real_teaching_agents import RealMultiAgentTeachingSystem, get_teaching_system
+
 from ..core.config import settings
 from ..utils.cache import CacheManager
 
@@ -35,11 +39,13 @@ logger = get_logger(__name__)
 
 class AITeachingService:
     """
-    AI教学服务类
-    
-    提供异步的AI教学功能接口，整合现有的多Agent系统
+    AI教学服务类 (Sprint 3 更新)
+
+    提供异步的AI教学功能接口，支持:
+    - 真实OpenAI API (当配置了API Key时)
+    - Mock模式 (用于开发和测试)
     """
-    
+
     def __init__(self):
         self.teaching_system: Optional[MultiAgentTeachingSystem] = None
         self.workflow_manager: Optional[WorkflowManager] = None
@@ -47,26 +53,43 @@ class AITeachingService:
         self.thread_pool = ThreadPoolExecutor(max_workers=settings.MAX_AI_SESSIONS)
         self.is_initialized = False
         self.session_counter = 0
-        
+
+        # Sprint 3: 真实API系统
+        self.real_teaching_system: Optional[RealMultiAgentTeachingSystem] = None
+        self.use_real_api = bool(settings.OPENAI_API_KEY)
+
     async def initialize(self):
         """初始化AI服务"""
         try:
             logger.info("Initializing AI Teaching Service...")
-            
-            # 初始化多Agent教学系统
+
+            if self.use_real_api:
+                # Sprint 3: 使用真实的OpenAI API
+                logger.info("OpenAI API key detected, initializing REAL AI system...")
+                self.real_teaching_system = await get_teaching_system()
+
+                if self.real_teaching_system.is_mock_mode:
+                    logger.warning("Real system fell back to MOCK mode")
+                    self.use_real_api = False
+                else:
+                    logger.info("REAL OpenAI API system initialized successfully")
+            else:
+                logger.info("No OpenAI API key, using MOCK system...")
+
+            # 初始化Mock系统作为后备
             self.teaching_system = MultiAgentTeachingSystem("ai_teacher_backend")
-            
-            # 初始化工作流管理器
             self.workflow_manager = WorkflowManager(self.teaching_system)
-            
+
             # 验证系统状态
             health_check = await self.health_check()
             if not health_check:
                 raise Exception("AI system health check failed")
-            
+
             self.is_initialized = True
-            logger.info("AI Teaching Service initialized successfully")
-            
+
+            mode = "REAL API" if self.use_real_api else "MOCK"
+            logger.info(f"AI Teaching Service initialized successfully ({mode} mode)")
+
         except Exception as e:
             logger.error(f"Failed to initialize AI Teaching Service: {str(e)}")
             raise
@@ -116,108 +139,125 @@ class AITeachingService:
     
     async def process_submission(self, submission_data: SubmissionData) -> TeachingFeedback:
         """
-        处理代码提交，进行AI分析并生成反馈
-        
+        处理代码提交，进行AI分析并生成反馈 (Sprint 3 更新)
+
+        支持真实OpenAI API和Mock模式自动切换
+
         Args:
             submission_data: 提交数据
-            
+
         Returns:
             TeachingFeedback: AI反馈结果
         """
         if not self.is_initialized:
             raise RuntimeError("AI service is not initialized")
-        
+
         # 生成会话ID
         session_id = f"session_{uuid.uuid4().hex[:8]}_{int(datetime.now().timestamp())}"
-        
+
         try:
             start_time = datetime.now()
-            
+
             # 检查缓存
             cache_key = self._generate_cache_key(submission_data)
             cached_result = await self.cache_manager.get(cache_key)
-            
+
             if cached_result and not getattr(submission_data, 'force_reanalyze', False):
                 logger.info(f"Returning cached result for submission: {submission_data.student_id}")
                 return TeachingFeedback.from_dict(cached_result)
-            
+
             # 记录开始处理
+            language_value = submission_data.language.value if hasattr(submission_data.language, 'value') else str(submission_data.language)
             log_agent_activity("AITeachingService", "started_processing", {
                 "session_id": session_id,
                 "student_id": submission_data.student_id,
                 "assignment_id": submission_data.assignment_id,
-                "language": submission_data.language.value
+                "language": language_value,
+                "mode": "real_api" if self.use_real_api else "mock"
             })
-            
-            # 异步执行AI分析
-            result = await self._execute_assignment_analysis(submission_data, session_id)
-            
+
+            # Sprint 3: 选择使用真实API还是Mock系统
+            if self.use_real_api and self.real_teaching_system:
+                logger.info(f"Using REAL API for submission analysis: {session_id}")
+                result = await self.real_teaching_system.process_submission(submission_data)
+            else:
+                logger.info(f"Using MOCK system for submission analysis: {session_id}")
+                result = await self._execute_assignment_analysis(submission_data, session_id)
+
             # 计算处理时间
             processing_time = (datetime.now() - start_time).total_seconds()
-            
+
             # 记录性能指标
             log_performance_metric("ai_submission_processing_time", processing_time, "s", {
-                "language": submission_data.language.value,
-                "code_length": len(submission_data.code)
+                "language": language_value,
+                "code_length": len(submission_data.code),
+                "mode": "real_api" if self.use_real_api else "mock"
             })
-            
+
             # 缓存结果
             await self.cache_manager.set(
-                cache_key, 
-                result.to_dict(), 
+                cache_key,
+                result.to_dict(),
                 expire_time=settings.REDIS_EXPIRE_TIME
             )
-            
+
             logger.info(f"AI analysis completed for session {session_id} in {processing_time:.2f}s")
-            
+
             return result
-            
+
         except Exception as e:
             logger.error(f"AI submission processing failed for session {session_id}: {str(e)}")
-            
+
             # 记录失败
             log_agent_activity("AITeachingService", "processing_failed", {
                 "session_id": session_id,
                 "student_id": submission_data.student_id,
                 "error": str(e)
             })
-            
+
             raise
     
     async def process_debugging_session(self, submission_data: SubmissionData) -> TeachingFeedback:
         """
-        处理调试会话
-        
+        处理调试会话 (Sprint 3 更新)
+
         Args:
             submission_data: 提交数据
-            
+
         Returns:
             TeachingFeedback: 调试指导反馈
         """
         if not self.is_initialized:
             raise RuntimeError("AI service is not initialized")
-        
+
         session_id = f"debug_{uuid.uuid4().hex[:8]}_{int(datetime.now().timestamp())}"
-        
+
         try:
             start_time = datetime.now()
-            
+            language_value = submission_data.language.value if hasattr(submission_data.language, 'value') else str(submission_data.language)
+
             logger.info(f"Starting debugging session: {session_id}")
-            
-            # 执行调试分析
-            result = await self._execute_debugging_analysis(submission_data, session_id)
-            
+
+            # Sprint 3: 选择使用真实API还是Mock系统
+            if self.use_real_api and self.real_teaching_system:
+                logger.info(f"Using REAL API for debugging session: {session_id}")
+                result = await self.real_teaching_system.process_debugging_session(submission_data)
+            else:
+                logger.info(f"Using MOCK system for debugging session: {session_id}")
+                result = await self._execute_debugging_analysis(submission_data, session_id)
+
             processing_time = (datetime.now() - start_time).total_seconds()
-            
+
             # 记录指标
             log_performance_metric("ai_debugging_processing_time", processing_time, "s", {
-                "language": submission_data.language.value
+                "language": language_value,
+                "mode": "real_api" if self.use_real_api else "mock"
             })
-            
+
             logger.info(f"Debugging session completed: {session_id} in {processing_time:.2f}s")
-            
+
             return result
-            
+
         except Exception as e:
             logger.error(f"Debugging session failed for {session_id}: {str(e)}")
             raise
