@@ -4,6 +4,7 @@ AI教学助手系统 - AI分析API端点
 
 Author: AI Backend Architecture Expert
 Date: 2025-09-10
+Updated: Sprint 3 - 使用Repository模式重构
 """
 
 from fastapi import APIRouter, Depends, HTTPException, status, Query, BackgroundTasks
@@ -25,9 +26,27 @@ from ..schemas.common import ResponseModel, PaginatedResponse
 from ..utils.logger import get_logger
 from ..main import get_ai_service
 from ..services.ai_service import AITeachingService
+# Sprint 3: 导入Repository
+from ..repositories import SubmissionRepository, AIFeedbackRepository, StudentProfileRepository
 
 logger = get_logger(__name__)
 router = APIRouter()
+
+
+# Sprint 3: Repository依赖注入
+def get_submission_repository(db: AsyncSession = Depends(get_db)) -> SubmissionRepository:
+    """获取提交仓库实例"""
+    return SubmissionRepository(db)
+
+
+def get_feedback_repository(db: AsyncSession = Depends(get_db)) -> AIFeedbackRepository:
+    """获取AI反馈仓库实例"""
+    return AIFeedbackRepository(db)
+
+
+def get_profile_repository(db: AsyncSession = Depends(get_db)) -> StudentProfileRepository:
+    """获取学生画像仓库实例"""
+    return StudentProfileRepository(db)
 
 
 @router.post("/", response_model=ResponseModel[AnalysisResponse])
@@ -204,52 +223,48 @@ async def analyze_code(
 async def get_feedback(
     submission_id: str,
     current_user_id: str = Depends(get_current_user_id),
-    db: AsyncSession = Depends(get_db)
+    db: AsyncSession = Depends(get_db),
+    submission_repo: SubmissionRepository = Depends(get_submission_repository),
+    feedback_repo: AIFeedbackRepository = Depends(get_feedback_repository)
 ):
     """
     获取指定提交的AI反馈
+    Sprint 3: 使用Repository模式
     """
-    # 验证提交存在性和权限
-    submission_query = select(Submission).where(Submission.id == submission_id)
-    submission_result = await db.execute(submission_query)
-    submission = submission_result.scalar_one_or_none()
-    
+    # Sprint 3: 使用Repository验证提交存在性
+    submission = await submission_repo.get_by_id(submission_id)
+
     if not submission:
         raise HTTPException(
             status_code=status.HTTP_404_NOT_FOUND,
             detail="Submission not found"
         )
-    
+
     # 权限检查
-    if submission.student_id != current_user_id:
+    if str(submission.student_id) != current_user_id:
         user_query = select(User).where(User.id == current_user_id)
         user_result = await db.execute(user_query)
         user = user_result.scalar_one_or_none()
-        
+
         if not user or user.role not in [UserRole.TEACHER, UserRole.ADMIN]:
             raise HTTPException(
                 status_code=status.HTTP_403_FORBIDDEN,
                 detail="Not authorized to view this feedback"
             )
-    
-    # 获取AI反馈
-    feedback_query = select(AIFeedback).where(
-        AIFeedback.submission_id == submission_id
-    ).order_by(desc(AIFeedback.created_at))
-    
-    feedback_result = await db.execute(feedback_query)
-    feedback = feedback_result.scalar_one_or_none()
-    
+
+    # Sprint 3: 使用Repository获取AI反馈
+    feedback = await feedback_repo.get_by_submission(submission_id)
+
     if not feedback:
         raise HTTPException(
             status_code=status.HTTP_404_NOT_FOUND,
             detail="No feedback available for this submission"
         )
-    
+
     return ResponseModel(
         success=True,
         data=FeedbackResponse(
-            feedback_id=feedback.id,
+            feedback_id=str(feedback.id),
             submission_id=submission_id,
             overall_score=feedback.overall_score,
             analysis_result=feedback.analysis_result,
@@ -413,63 +428,48 @@ async def get_student_analysis_history(
     page: int = Query(1, ge=1),
     page_size: int = Query(10, ge=1, le=50),
     current_user_id: str = Depends(get_current_user_id),
-    db: AsyncSession = Depends(get_db)
+    db: AsyncSession = Depends(get_db),
+    feedback_repo: AIFeedbackRepository = Depends(get_feedback_repository)
 ):
     """
     获取学生的分析历史记录
+    Sprint 3: 使用Repository模式
     """
     # 权限检查：学生只能查看自己的历史，教师可以查看所有学生的历史
     if student_id != current_user_id:
         user_query = select(User).where(User.id == current_user_id)
         user_result = await db.execute(user_query)
         user = user_result.scalar_one_or_none()
-        
+
         if not user or user.role not in [UserRole.TEACHER, UserRole.ADMIN]:
             raise HTTPException(
                 status_code=status.HTTP_403_FORBIDDEN,
                 detail="Not authorized to view this student's history"
             )
-    
+
     try:
-        # 获取学生的分析历史
-        offset = (page - 1) * page_size
-        
-        query = """
-        SELECT f.id, f.submission_id, f.overall_score, f.analysis_result, 
-               f.status, f.created_at, f.processing_time
-        FROM ai_feedback f
-        JOIN submissions s ON f.submission_id = s.id
-        WHERE s.student_id = :student_id AND f.status = 'completed'
-        ORDER BY f.created_at DESC
-        LIMIT :limit OFFSET :offset
-        """
-        
-        result = await db.execute(
-            query,
-            {"student_id": student_id, "limit": page_size, "offset": offset}
-        )
-        
-        feedback_records = result.fetchall()
-        
+        # Sprint 3: 使用Repository获取学生的分析历史
+        history = await feedback_repo.get_student_history(student_id, limit=page_size)
+
         response_data = [
             AnalysisResponse(
-                submission_id=record.submission_id,
-                analysis_id=record.id,
-                status=record.status,
-                overall_score=record.overall_score,
-                analysis_result=record.analysis_result,
-                created_at=record.created_at,
-                processing_time=record.processing_time
+                submission_id=record.get("assignment_id", ""),
+                analysis_id=record.get("feedback_id", ""),
+                status="completed",
+                overall_score=record.get("score", 0.0),
+                analysis_result=record.get("analysis_summary", {}),
+                created_at=datetime.fromisoformat(record["created_at"]) if record.get("created_at") else None,
+                processing_time=record.get("processing_time", 0.0)
             )
-            for record in feedback_records
+            for record in history
         ]
-        
+
         return ResponseModel(
             success=True,
             data=response_data,
             message="Analysis history retrieved successfully"
         )
-        
+
     except Exception as e:
         logger.error(f"Failed to retrieve analysis history for student {student_id}: {str(e)}")
         raise HTTPException(

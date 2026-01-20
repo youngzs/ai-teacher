@@ -10,26 +10,37 @@ from sqlalchemy.ext.asyncio import create_async_engine, AsyncSession, async_sess
 from sqlalchemy.orm import declarative_base
 from sqlalchemy.pool import StaticPool
 from sqlalchemy.sql import text
-from typing import AsyncGenerator
+from typing import AsyncGenerator, Optional
 import logging
+import time
+from tenacity import retry, stop_after_attempt, wait_exponential, retry_if_exception_type
+from sqlalchemy.exc import OperationalError, InterfaceError
 
 from ..core.config import settings
 
 logger = logging.getLogger(__name__)
 
-# 创建异步数据库引擎
+# 创建异步数据库引擎 - Sprint 3优化版
+_connect_args = {}
+if "postgresql" in settings.DATABASE_URL:
+    _connect_args = {
+        "server_settings": {
+            "application_name": "ai_teaching_assistant",
+            "statement_timeout": "60000",  # SQL语句超时60秒
+        },
+        "command_timeout": 60,  # 命令超时60秒
+    }
+
 engine = create_async_engine(
     settings.DATABASE_URL,
     echo=settings.DATABASE_ECHO,
     pool_size=settings.DATABASE_POOL_SIZE,
     max_overflow=settings.DATABASE_MAX_OVERFLOW,
-    pool_pre_ping=True,  # 验证连接有效性
-    pool_recycle=3600,   # 1小时后回收连接
-    connect_args={
-        "server_settings": {
-            "application_name": "ai_teaching_assistant",
-        }
-    } if "postgresql" in settings.DATABASE_URL else {}
+    pool_pre_ping=True,           # 连接前验证有效性
+    pool_recycle=3600,            # 1小时后回收连接
+    pool_timeout=30,              # 获取连接超时30秒
+    pool_reset_on_return="rollback",  # 返回连接时回滚
+    connect_args=_connect_args
 )
 
 # 创建会话制造器
@@ -48,13 +59,45 @@ Base = declarative_base()
 async def get_db() -> AsyncGenerator[AsyncSession, None]:
     """
     获取数据库会话依赖项
-    
+
     用于FastAPI的依赖注入系统，确保每个请求都有独立的数据库会话，
     并在请求结束后正确关闭会话。
     """
     async with SessionLocal() as session:
         try:
             yield session
+        except Exception as e:
+            logger.error(f"Database session error: {str(e)}")
+            await session.rollback()
+            raise
+        finally:
+            await session.close()
+
+
+# Sprint 3: 带重试机制的数据库会话获取
+@retry(
+    stop=stop_after_attempt(3),
+    wait=wait_exponential(multiplier=1, min=2, max=10),
+    retry=retry_if_exception_type((OperationalError, InterfaceError)),
+    before_sleep=lambda retry_state: logger.warning(
+        f"Database connection retry attempt {retry_state.attempt_number}"
+    )
+)
+async def get_db_with_retry() -> AsyncGenerator[AsyncSession, None]:
+    """
+    带重试机制的数据库会话获取
+
+    在连接失败时自动重试，适用于需要高可靠性的场景
+    """
+    async with SessionLocal() as session:
+        try:
+            # 验证连接有效性
+            await session.execute(text("SELECT 1"))
+            yield session
+        except (OperationalError, InterfaceError) as e:
+            logger.error(f"Database connection error (will retry): {str(e)}")
+            await session.rollback()
+            raise
         except Exception as e:
             logger.error(f"Database session error: {str(e)}")
             await session.rollback()
@@ -333,16 +376,93 @@ class ConnectionPoolMonitor:
         logger.info(f"Connection Pool Stats: {stats}")
 
 
+# Sprint 3: 全面健康检查
+async def comprehensive_health_check() -> dict:
+    """
+    全面的数据库健康检查
+
+    Returns:
+        dict: 包含连接状态、读写能力、连接池状态等详细信息
+    """
+    checks = {
+        "connection": False,
+        "read_write": False,
+        "pool_status": {},
+        "response_time_ms": 0,
+        "database_info": {},
+        "errors": []
+    }
+
+    start_time = time.time()
+
+    try:
+        async with SessionLocal() as session:
+            # 1. 基础连接检查
+            result = await session.execute(text("SELECT 1"))
+            checks["connection"] = result.scalar() == 1
+
+            # 2. 读写能力检查
+            try:
+                await session.execute(text("""
+                    CREATE TEMP TABLE IF NOT EXISTS _health_check_temp (
+                        id SERIAL PRIMARY KEY,
+                        ts TIMESTAMP DEFAULT NOW()
+                    )
+                """))
+                await session.execute(text(
+                    "INSERT INTO _health_check_temp DEFAULT VALUES"
+                ))
+                checks["read_write"] = True
+            except Exception as rw_error:
+                checks["errors"].append(f"Read/Write check failed: {str(rw_error)}")
+
+            # 3. 获取数据库版本
+            version_result = await session.execute(text("SELECT version()"))
+            checks["database_info"]["version"] = version_result.scalar()
+
+            # 4. 获取数据库大小
+            try:
+                size_result = await session.execute(text(
+                    "SELECT pg_size_pretty(pg_database_size(current_database()))"
+                ))
+                checks["database_info"]["size"] = size_result.scalar()
+            except:
+                pass
+
+            # 5. 连接池状态
+            pool = engine.pool
+            checks["pool_status"] = {
+                "size": pool.size(),
+                "checked_in": pool.checkedin(),
+                "checked_out": pool.checkedout(),
+                "overflow": pool.overflow(),
+                "invalid": pool.invalid(),
+                "utilization_percent": round(
+                    (pool.checkedout() / max(pool.size(), 1)) * 100, 1
+                )
+            }
+
+    except Exception as e:
+        checks["errors"].append(str(e))
+
+    checks["response_time_ms"] = round((time.time() - start_time) * 1000, 2)
+    checks["status"] = "healthy" if checks["connection"] and not checks["errors"] else "unhealthy"
+
+    return checks
+
+
 # 导出主要组件
 __all__ = [
     "Base",
-    "engine", 
+    "engine",
     "SessionLocal",
     "get_db",
+    "get_db_with_retry",
     "init_db",
     "close_db",
     "check_db_connection",
     "db_health_check",
+    "comprehensive_health_check",
     "db_transaction",
     "db_manager",
     "ConnectionPoolMonitor"
