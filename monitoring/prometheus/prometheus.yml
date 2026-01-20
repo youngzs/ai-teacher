@@ -1,0 +1,69 @@
+# Prometheus Configuration for AI Teaching Assistant System
+# Sprint 5: 监控系统完善
+
+global:
+  scrape_interval: 15s
+  evaluation_interval: 15s
+  external_labels:
+    monitor: 'ai-teacher-monitor'
+
+# Alertmanager配置
+alerting:
+  alertmanagers:
+    - static_configs:
+        - targets:
+          # - alertmanager:9093
+
+# 告警规则文件
+rule_files:
+  - "alert_rules.yml"
+
+# 抓取配置
+scrape_configs:
+  # Prometheus自身监控
+  - job_name: 'prometheus'
+    static_configs:
+      - targets: ['localhost:9090']
+
+  # AI Teaching Assistant API
+  - job_name: 'ai-teacher-api'
+    metrics_path: '/metrics'
+    static_configs:
+      - targets: ['api:8000']
+    relabel_configs:
+      - source_labels: [__address__]
+        target_label: instance
+        replacement: 'ai-teacher-api'
+
+  # AI Backend Service (if separate)
+  - job_name: 'ai-teacher-backend'
+    metrics_path: '/metrics'
+    static_configs:
+      - targets: ['ai-backend:8001']
+    relabel_configs:
+      - source_labels: [__address__]
+        target_label: instance
+        replacement: 'ai-backend'
+
+  # PostgreSQL监控 (需要postgres_exporter)
+  - job_name: 'postgresql'
+    static_configs:
+      - targets: ['postgres-exporter:9187']
+    relabel_configs:
+      - source_labels: [__address__]
+        target_label: instance
+        replacement: 'postgresql'
+
+  # Redis监控 (需要redis_exporter)
+  - job_name: 'redis'
+    static_configs:
+      - targets: ['redis-exporter:9121']
+    relabel_configs:
+      - source_labels: [__address__]
+        target_label: instance
+        replacement: 'redis'
+
+  # Node Exporter (主机指标)
+  - job_name: 'node'
+    static_configs:
+      - targets: ['node-exporter:9100']

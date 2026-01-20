@@ -1,0 +1,222 @@
+# Prometheus Alert Rules for AI Teaching Assistant System
+# Sprint 5: 告警规则配置
+
+groups:
+  # ============= 系统健康告警 =============
+  - name: system_health
+    rules:
+      # 服务不可用
+      - alert: ServiceDown
+        expr: up == 0
+        for: 1m
+        labels:
+          severity: critical
+        annotations:
+          summary: "服务不可用: {{ $labels.job }}"
+          description: "服务 {{ $labels.job }} 已经宕机超过1分钟"
+
+      # CPU使用率过高
+      - alert: HighCPUUsage
+        expr: process_cpu_seconds_total > 0.8
+        for: 5m
+        labels:
+          severity: warning
+        annotations:
+          summary: "CPU使用率过高"
+          description: "进程CPU使用率超过80%，持续5分钟"
+
+      # 内存使用率过高
+      - alert: HighMemoryUsage
+        expr: process_resident_memory_bytes / 1024 / 1024 / 1024 > 2
+        for: 5m
+        labels:
+          severity: warning
+        annotations:
+          summary: "内存使用过高"
+          description: "进程内存使用超过2GB，持续5分钟"
+
+  # ============= HTTP服务告警 =============
+  - name: http_alerts
+    rules:
+      # 高错误率
+      - alert: HighHTTPErrorRate
+        expr: |
+          sum(rate(http_requests_total{status_code=~"5.."}[5m]))
+          / sum(rate(http_requests_total[5m])) > 0.05
+        for: 5m
+        labels:
+          severity: critical
+        annotations:
+          summary: "HTTP错误率过高"
+          description: "5xx错误率超过5%，持续5分钟。当前值: {{ $value | humanizePercentage }}"
+
+      # 高延迟
+      - alert: HighHTTPLatency
+        expr: |
+          histogram_quantile(0.99, sum(rate(http_request_duration_seconds_bucket[5m])) by (le)) > 2
+        for: 5m
+        labels:
+          severity: warning
+        annotations:
+          summary: "HTTP响应延迟过高"
+          description: "P99延迟超过2秒，持续5分钟。当前值: {{ $value | humanizeDuration }}"
+
+      # 请求量突增
+      - alert: HTTPRequestSpike
+        expr: |
+          sum(rate(http_requests_total[5m]))
+          / sum(rate(http_requests_total[1h] offset 1d)) > 2
+        for: 10m
+        labels:
+          severity: warning
+        annotations:
+          summary: "HTTP请求量突增"
+          description: "当前请求量是昨天同期的2倍以上"
+
+  # ============= AI服务告警 =============
+  - name: ai_service_alerts
+    rules:
+      # AI分析超时
+      - alert: AIAnalysisSlow
+        expr: |
+          histogram_quantile(0.99, sum(rate(ai_analysis_duration_seconds_bucket[5m])) by (le)) > 10
+        for: 10m
+        labels:
+          severity: warning
+        annotations:
+          summary: "AI分析响应缓慢"
+          description: "AI分析P99延迟超过10秒，持续10分钟"
+
+      # AI服务错误率高
+      - alert: AIServiceHighErrorRate
+        expr: |
+          sum(rate(ai_analysis_requests_total{status="error"}[5m]))
+          / sum(rate(ai_analysis_requests_total[5m])) > 0.1
+        for: 5m
+        labels:
+          severity: critical
+        annotations:
+          summary: "AI服务错误率过高"
+          description: "AI服务错误率超过10%。当前值: {{ $value | humanizePercentage }}"
+
+      # API成本告警
+      - alert: AIAPICostHigh
+        expr: |
+          increase(ai_api_cost_usd_total[1h]) > 10
+        for: 0m
+        labels:
+          severity: warning
+        annotations:
+          summary: "AI API成本过高"
+          description: "过去1小时AI API成本超过$10。当前值: ${{ $value | printf \"%.2f\" }}"
+
+      # 每日成本告警
+      - alert: AIAPIDailyCostHigh
+        expr: |
+          increase(ai_api_cost_usd_total[24h]) > 100
+        for: 0m
+        labels:
+          severity: critical
+        annotations:
+          summary: "AI API日成本过高"
+          description: "过去24小时AI API成本超过$100。当前值: ${{ $value | printf \"%.2f\" }}"
+
+      # 缓存命中率低
+      - alert: AILowCacheHitRate
+        expr: |
+          sum(rate(ai_cache_operations_total{operation="hit"}[1h]))
+          / sum(rate(ai_cache_operations_total{operation=~"hit|miss"}[1h])) < 0.5
+        for: 30m
+        labels:
+          severity: warning
+        annotations:
+          summary: "AI缓存命中率低"
+          description: "AI分析缓存命中率低于50%，建议检查缓存策略"
+
+  # ============= 代码执行告警 =============
+  - name: code_execution_alerts
+    rules:
+      # 代码执行超时率高
+      - alert: CodeExecutionTimeoutHigh
+        expr: |
+          sum(rate(code_execution_total{status="timeout"}[5m]))
+          / sum(rate(code_execution_total[5m])) > 0.1
+        for: 5m
+        labels:
+          severity: warning
+        annotations:
+          summary: "代码执行超时率高"
+          description: "代码执行超时率超过10%"
+
+      # 编译错误率高
+      - alert: CompilationErrorRateHigh
+        expr: |
+          sum(rate(code_compilation_errors_total[5m]))
+          / sum(rate(code_execution_total[5m])) > 0.3
+        for: 10m
+        labels:
+          severity: info
+        annotations:
+          summary: "代码编译错误率高"
+          description: "编译错误率超过30%，可能需要检查题目难度或提示"
+
+  # ============= 数据库告警 =============
+  - name: database_alerts
+    rules:
+      # 数据库连接池耗尽
+      - alert: DatabaseConnectionPoolExhausted
+        expr: db_connections_active / db_pool_size > 0.9
+        for: 5m
+        labels:
+          severity: critical
+        annotations:
+          summary: "数据库连接池即将耗尽"
+          description: "数据库连接池使用率超过90%。活跃: {{ $value | printf \"%.0f\" }}"
+
+      # 数据库查询慢
+      - alert: DatabaseSlowQueries
+        expr: |
+          histogram_quantile(0.99, sum(rate(db_query_duration_seconds_bucket[5m])) by (le)) > 0.5
+        for: 5m
+        labels:
+          severity: warning
+        annotations:
+          summary: "数据库查询缓慢"
+          description: "数据库查询P99延迟超过500ms"
+
+      # 数据库错误率高
+      - alert: DatabaseErrorRateHigh
+        expr: |
+          sum(rate(db_query_errors_total[5m])) > 1
+        for: 5m
+        labels:
+          severity: critical
+        annotations:
+          summary: "数据库错误率高"
+          description: "数据库每分钟错误超过1次"
+
+  # ============= 用户活动告警 =============
+  - name: user_activity_alerts
+    rules:
+      # 登录失败率高
+      - alert: HighLoginFailureRate
+        expr: |
+          sum(rate(user_logins_total{status="failed"}[5m]))
+          / sum(rate(user_logins_total[5m])) > 0.3
+        for: 5m
+        labels:
+          severity: warning
+        annotations:
+          summary: "登录失败率高"
+          description: "登录失败率超过30%，可能存在暴力破解尝试"
+
+      # 活跃用户突降
+      - alert: ActiveUsersDrop
+        expr: |
+          user_active_sessions < 10 and hour() >= 8 and hour() <= 22
+        for: 30m
+        labels:
+          severity: info
+        annotations:
+          summary: "活跃用户数量低"
+          description: "工作时间内活跃用户少于10人"

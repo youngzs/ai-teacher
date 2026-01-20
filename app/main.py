@@ -9,7 +9,7 @@ Date: 2025-09-10
 from fastapi import FastAPI, Request, HTTPException
 from fastapi.middleware.cors import CORSMiddleware
 from fastapi.middleware.trustedhost import TrustedHostMiddleware
-from fastapi.responses import JSONResponse
+from fastapi.responses import JSONResponse, Response
 from contextlib import asynccontextmanager
 import logging
 import time
@@ -22,6 +22,12 @@ from .database.models import Base
 from .api import auth, submissions, analysis, users, dashboard, courses, execution
 from .core.config import settings
 from .core.security import create_access_token, SecurityHeaders
+from .core.metrics import (
+    PrometheusMiddleware,
+    get_metrics,
+    get_metrics_content_type,
+    app_info,
+)
 from .services.ai_service import AITeachingService
 from .utils.logger import setup_logging, get_logger
 
@@ -84,6 +90,9 @@ app.add_middleware(
     TrustedHostMiddleware,
     allowed_hosts=settings.ALLOWED_HOSTS
 )
+
+# Sprint 5: Prometheus监控中间件
+app.add_middleware(PrometheusMiddleware)
 
 
 @app.middleware("http")
@@ -178,8 +187,19 @@ async def root():
         "message": "AI Teaching Assistant API",
         "version": "1.0.0",
         "docs": "/api/docs",
-        "health": "/health"
+        "health": "/health",
+        "metrics": "/metrics"
     }
+
+
+# Sprint 5: Prometheus指标端点
+@app.get("/metrics", tags=["Monitoring"])
+async def metrics():
+    """Prometheus指标导出端点"""
+    return Response(
+        content=get_metrics(),
+        media_type=get_metrics_content_type()
+    )
 
 
 # API路由注册
